@@ -26,17 +26,6 @@ const TABLE_COLUMNS = [
   { key: "observacoes", label: "Observações", type: "text" },
 ];
 
-const CHART_COLORS = [
-  "var(--color-blue-700)",
-  "var(--color-teal-700)",
-  "var(--color-green-700)",
-  "var(--color-orange-700)",
-  "var(--color-blue-900)",
-  "var(--color-teal-600)",
-  "var(--color-yellow-700)",
-  "var(--color-slate-500)",
-];
-
 const elements = {
   search: document.querySelector("#global-search"),
   searchForm: document.querySelector(".top-search"),
@@ -84,14 +73,6 @@ const elements = {
   footerUpdated: document.querySelector("#footer-updated"),
   activeContractsList: document.querySelector("#active-contracts-list"),
   activeContractsSummary: document.querySelector("#active-contracts-summary"),
-  statusChart: document.querySelector("#status-chart"),
-  valueModalidadeChart: document.querySelector("#value-modalidade-chart"),
-  countModalidadeChart: document.querySelector("#count-modalidade-chart"),
-  valueCategoriaChart: document.querySelector("#value-categoria-chart"),
-  monthlyDueChart: document.querySelector("#monthly-due-chart"),
-  topCompaniesChart: document.querySelector("#top-companies-chart"),
-  topManagersChart: document.querySelector("#top-managers-chart"),
-  pendenciasChart: document.querySelector("#pendencias-chart"),
   upcomingList: document.querySelector("#upcoming-list"),
 };
 
@@ -160,7 +141,7 @@ function renderErrorState() {
   renderQuickAccess([]);
   renderIndicators([]);
   renderActiveContracts([]);
-  renderCharts([]);
+  renderUpcoming([]);
   renderTable([]);
   elements.lastUpdate.textContent = "Dados indisponíveis";
   if (elements.footerUpdated) {
@@ -438,7 +419,7 @@ function render(items) {
   renderQuickAccess(contracts);
   renderIndicators(items);
   renderActiveContracts(items);
-  renderCharts(items);
+  renderUpcoming(items);
   renderTable(items);
 }
 
@@ -480,18 +461,6 @@ function renderIndicators(items) {
   elements.kpiNoFiscal.textContent = summary.noFiscal;
   renderPriorityAlerts(summary);
   renderBaseHealth(summary);
-}
-
-function renderCharts(items) {
-  renderStatusChart(items);
-  renderValueByModalidadeChart(items);
-  renderCountByModalidadeChart(items);
-  renderValueByCategoriaChart(items);
-  renderMonthlyDueChart(items);
-  renderTopCompaniesChart(items);
-  renderTopManagersChart(items);
-  renderPendenciasChart(items);
-  renderUpcoming(items);
 }
 
 function renderPriorityAlerts(summary) {
@@ -576,249 +545,6 @@ function renderBaseHealth(summary) {
       </div>
     `;
   }).join("");
-}
-
-function renderStatusChart(items) {
-  const rows = ContractData.STATUS_LABELS.map((status) => {
-    const statusItems = items.filter((item) => item.statusCalculado === status);
-    const totalValue = sumNumericValue(statusItems);
-    return {
-      label: status,
-      value: statusItems.length,
-      valueLabel: formatContractCount(statusItems.length),
-      detailLabel: formatCurrency.format(totalValue),
-      color: statusColor(status),
-      title: `${status}: ${formatContractCount(statusItems.length)} · ${formatCurrency.format(totalValue)}`,
-    };
-  }).filter((row) => row.value > 0);
-
-  renderHorizontalMetricChart(elements.statusChart, rows, {
-    maxValue: items.length,
-    emptyMessage: chartEmptyMessage(items),
-  });
-}
-
-function renderValueByModalidadeChart(items) {
-  const rows = buildValueRows(items, (item) => item.modalidade || "Não informado")
-    .map((row, index) => ({
-      ...row,
-      valueLabel: formatCurrency.format(row.value),
-      detailLabel: formatContractCount(row.count),
-      color: chartColor(index),
-      title: `${row.label}: ${formatCurrency.format(row.value)} · ${formatContractCount(row.count)}`,
-    }));
-
-  renderHorizontalMetricChart(elements.valueModalidadeChart, rows, {
-    emptyMessage: chartEmptyMessage(items),
-  });
-}
-
-function renderCountByModalidadeChart(items) {
-  const rows = buildCountRows(items, (item) => item.modalidade || "Não informado")
-    .map((row, index) => ({
-      ...row,
-      valueLabel: formatContractCount(row.value),
-      detailLabel: `${percentOf(row.value, items.length)}% da base filtrada`,
-      color: chartColor(index),
-      title: `${row.label}: ${formatContractCount(row.value)}`,
-    }));
-
-  renderHorizontalMetricChart(elements.countModalidadeChart, rows, {
-    maxValue: items.length,
-    emptyMessage: chartEmptyMessage(items),
-  });
-}
-
-function renderValueByCategoriaChart(items) {
-  const rows = buildValueRows(items, (item) => item.categoria || "Outros/Pendente")
-    .map((row, index) => ({
-      ...row,
-      valueLabel: formatCurrency.format(row.value),
-      detailLabel: formatContractCount(row.count),
-      color: chartColor(index),
-      title: `${row.label}: ${formatCurrency.format(row.value)} · ${formatContractCount(row.count)}`,
-    }));
-
-  renderHorizontalMetricChart(elements.valueCategoriaChart, rows, {
-    emptyMessage: chartEmptyMessage(items),
-  });
-}
-
-function renderMonthlyDueChart(items) {
-  const grouped = items.reduce((map, item) => {
-    const key = monthKey(item.dataVencimento);
-    if (!key) {
-      return map;
-    }
-
-    const current = map.get(key) || {
-      label: formatMonthLabel(key),
-      value: 0,
-      totalValue: 0,
-    };
-
-    current.value += 1;
-    if (typeof item.valor === "number") {
-      current.totalValue += item.valor;
-    }
-    map.set(key, current);
-    return map;
-  }, new Map());
-
-  const rows = [...grouped.entries()]
-    .sort(([keyA], [keyB]) => keyA.localeCompare(keyB))
-    .map(([, row], index) => ({
-      ...row,
-      valueLabel: String(row.value),
-      detailLabel: formatCurrency.format(row.totalValue),
-      color: chartColor(index),
-      title: `${row.label}: ${formatContractCount(row.value)} · ${formatCurrency.format(row.totalValue)}`,
-    }));
-
-  renderVerticalMetricChart(elements.monthlyDueChart, rows, {
-    emptyMessage: chartEmptyMessage(items),
-  });
-}
-
-function renderTopCompaniesChart(items) {
-  const rows = buildValueRows(items, (item) => item.empresa)
-    .slice(0, 10)
-    .map((row, index) => ({
-      ...row,
-      valueLabel: formatCurrency.format(row.value),
-      detailLabel: formatContractCount(row.count),
-      color: chartColor(index),
-      title: `${row.label}: ${formatCurrency.format(row.value)} · ${formatContractCount(row.count)}`,
-    }));
-
-  renderHorizontalMetricChart(elements.topCompaniesChart, rows, {
-    emptyMessage: chartEmptyMessage(items),
-  });
-}
-
-function renderTopManagersChart(items) {
-  const rows = buildValueRows(items, (item) => item.gestor)
-    .slice(0, 10)
-    .map((row, index) => ({
-      ...row,
-      valueLabel: formatCurrency.format(row.value),
-      detailLabel: formatContractCount(row.count),
-      color: chartColor(index),
-      title: `${row.label}: ${formatCurrency.format(row.value)} · ${formatContractCount(row.count)}`,
-    }));
-
-  renderHorizontalMetricChart(elements.topManagersChart, rows, {
-    emptyMessage: chartEmptyMessage(items),
-  });
-}
-
-function renderPendenciasChart(items) {
-  const rows = [
-    {
-      label: "Sem fiscal",
-      value: items.filter((item) => !item.fiscal).length,
-      color: "var(--color-orange-700)",
-    },
-    {
-      label: "Sem gestor",
-      value: items.filter((item) => !item.gestor).length,
-      color: "var(--color-orange-700)",
-    },
-    {
-      label: "Sem valor",
-      value: items.filter((item) => typeof item.valor !== "number").length,
-      color: "var(--color-slate-500)",
-    },
-    {
-      label: "Sem vencimento",
-      value: items.filter((item) => !item.dataVencimento).length,
-      color: "var(--color-slate-500)",
-    },
-    {
-      label: "Sem contrato",
-      value: items.filter((item) => !item.contrato).length,
-      color: "var(--color-red-700)",
-    },
-    {
-      label: "Sem empresa",
-      value: items.filter((item) => !item.empresa).length,
-      color: "var(--color-red-700)",
-    },
-  ].filter((row) => row.value > 0)
-    .map((row) => ({
-      ...row,
-      valueLabel: formatContractCount(row.value),
-      detailLabel: `${percentOf(row.value, items.length)}% da base filtrada`,
-      title: `${row.label}: ${formatContractCount(row.value)}`,
-    }));
-
-  renderHorizontalMetricChart(elements.pendenciasChart, rows, {
-    maxValue: items.length,
-    emptyMessage: chartEmptyMessage(items),
-  });
-}
-
-function renderHorizontalMetricChart(container, rows, options = {}) {
-  if (!container) {
-    return;
-  }
-
-  if (!rows.length) {
-    renderChartEmpty(container, options.emptyMessage || "Sem dados suficientes para este gráfico");
-    return;
-  }
-
-  const maxValue = options.maxValue || Math.max(...rows.map((row) => row.value), 1);
-
-  container.innerHTML = rows.map((row) => {
-    const percent = Math.max(2, Math.round((row.value / maxValue) * 100));
-    return `
-      <div class="metric-row" title="${escapeHtml(row.title || row.label)}">
-        <div class="metric-row__header">
-          <span class="metric-label">${escapeHtml(row.label)}</span>
-          <strong>${escapeHtml(row.valueLabel || String(row.value))}</strong>
-        </div>
-        <div class="bar-track metric-track" aria-hidden="true">
-          <span class="bar-fill metric-fill" style="width: ${percent}%; background: ${row.color || "var(--color-blue-700)"}"></span>
-        </div>
-        ${row.detailLabel ? `<small>${escapeHtml(row.detailLabel)}</small>` : ""}
-      </div>
-    `;
-  }).join("");
-}
-
-function renderVerticalMetricChart(container, rows, options = {}) {
-  if (!container) {
-    return;
-  }
-
-  if (!rows.length) {
-    renderChartEmpty(container, options.emptyMessage || "Sem dados suficientes para este gráfico");
-    return;
-  }
-
-  const maxValue = Math.max(...rows.map((row) => row.value), 1);
-
-  container.innerHTML = `
-    <div class="vertical-bars" role="list">
-      ${rows.map((row) => {
-        const percent = Math.max(4, Math.round((row.value / maxValue) * 100));
-        return `
-          <div class="vertical-bar" role="listitem" title="${escapeHtml(row.title || row.label)}">
-            <strong>${escapeHtml(row.valueLabel || String(row.value))}</strong>
-            <div class="vertical-bar__track" aria-hidden="true">
-              <span class="vertical-bar__fill" style="height: ${percent}%; background: ${row.color || "var(--color-blue-700)"}"></span>
-            </div>
-            <small>${escapeHtml(row.label)}</small>
-          </div>
-        `;
-      }).join("")}
-    </div>
-  `;
-}
-
-function renderChartEmpty(container, message) {
-  container.innerHTML = `<p class="empty-state">${escapeHtml(message)}</p>`;
 }
 
 function renderActiveContracts(items) {
@@ -1367,25 +1093,6 @@ function statusBadgeClass(status) {
   return "badge--neutral";
 }
 
-function statusColor(status) {
-  if (status === "Vencido" || status === "Vence hoje") {
-    return "var(--color-red-700)";
-  }
-  if (status === "Vence em até 30 dias") {
-    return "var(--color-orange-700)";
-  }
-  if (status === "Atenção 31 a 60 dias") {
-    return "var(--color-yellow-700)";
-  }
-  if (status === "Monitorar 61 a 90 dias") {
-    return "var(--color-blue-700)";
-  }
-  if (status === "Vigente") {
-    return "var(--color-green-700)";
-  }
-  return "var(--color-slate-500)";
-}
-
 function healthColor(percent) {
   if (percent >= 85) {
     return "var(--color-green-700)";
@@ -1407,79 +1114,8 @@ function sumNumericValue(items) {
   return items.reduce((sum, item) => sum + (typeof item.valor === "number" ? item.valor : 0), 0);
 }
 
-function buildCountRows(items, keyResolver) {
-  const map = items.reduce((accumulator, item) => {
-    const key = keyResolver(item);
-    if (!key) {
-      return accumulator;
-    }
-    accumulator.set(key, (accumulator.get(key) || 0) + 1);
-    return accumulator;
-  }, new Map());
-
-  return [...map.entries()]
-    .map(([label, value]) => ({ label, value }))
-    .sort(sortMetricRows);
-}
-
-function buildValueRows(items, keyResolver) {
-  const map = items.reduce((accumulator, item) => {
-    const key = keyResolver(item);
-    if (!key || typeof item.valor !== "number") {
-      return accumulator;
-    }
-
-    const current = accumulator.get(key) || { label: key, value: 0, count: 0 };
-    current.value += item.valor;
-    current.count += 1;
-    accumulator.set(key, current);
-    return accumulator;
-  }, new Map());
-
-  return [...map.values()]
-    .filter((row) => row.value > 0)
-    .sort(sortMetricRows);
-}
-
-function sortMetricRows(a, b) {
-  if (b.value !== a.value) {
-    return b.value - a.value;
-  }
-  return a.label.localeCompare(b.label, "pt-BR");
-}
-
-function chartColor(index) {
-  return CHART_COLORS[index % CHART_COLORS.length];
-}
-
-function chartEmptyMessage(items) {
-  if (!items.length) {
-    return "Nenhum contrato encontrado para os filtros selecionados";
-  }
-
-  return "Sem dados suficientes para este gráfico";
-}
-
 function formatContractCount(value) {
   return value === 1 ? "1 contrato" : `${value} contratos`;
-}
-
-function monthKey(value) {
-  const date = ContractData.parseDateValue(value);
-  if (!date) {
-    return "";
-  }
-
-  const year = date.getFullYear();
-  const month = String(date.getMonth() + 1).padStart(2, "0");
-  return `${year}-${month}`;
-}
-
-function formatMonthLabel(key) {
-  const [year, month] = key.split("-").map(Number);
-  const date = new Date(year, month - 1, 1);
-  const monthLabel = date.toLocaleDateString("pt-BR", { month: "short" }).replace(".", "");
-  return `${monthLabel}/${String(year).slice(-2)}`;
 }
 
 function unique(values) {

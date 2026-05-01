@@ -158,7 +158,7 @@ Categorias usadas:
 - Busca geral sem diferenciar acentos ou maiúsculas/minúsculas.
 - Filtros combináveis por status, modalidade, categoria, empresa, gestor, fiscal, vencimento, pendências e valor.
 - Indicadores recalculados conforme filtros.
-- Gráficos recalculados conforme filtros.
+- Alertas, saúde da base e vencimentos recalculados conforme filtros.
 - Tabela ordenável e paginada.
 - Detalhe completo do contrato ao clicar em uma linha.
 - Estados de carregamento, erro e vazio.
@@ -186,7 +186,7 @@ Com o servidor ativo, abra `http://localhost:8000/` e confira:
 
 - indicadores no topo;
 - filtros e busca;
-- gráficos;
+- alertas, saúde da base e próximos vencimentos;
 - tabela;
 - modal lateral de detalhes;
 - layout em tela grande e celular;
