@@ -9,9 +9,9 @@
     <meta property="og:description" content="Acompanhamento administrativo dos contratos municipais de Iguape/SP.">
     <meta property="og:image" content="https://matheuhenriqu.github.io/painel-contratos-iguape-dashboard/assets/logo-iguape-og.png">
     <title>Painel de Contratos | Prefeitura Municipal de Iguape/SP</title>
-    <link rel="icon" href="assets/favicon-iguape.png?v=20260501-33" type="image/png">
-    <link rel="apple-touch-icon" href="assets/apple-touch-icon.png?v=20260501-33">
-    <link rel="stylesheet" href="css/styles.css?v=20260501-33">
+    <link rel="icon" href="assets/favicon-iguape.png?v=20260501-34" type="image/png">
+    <link rel="apple-touch-icon" href="assets/apple-touch-icon.png?v=20260501-34">
+    <link rel="stylesheet" href="css/styles.css?v=20260501-34">
   </head>
   <body>
     <a class="skip-link" href="#indicadores">Ir para os indicadores</a>
@@ -53,6 +53,12 @@
       <symbol id="icon-table" viewBox="0 0 24 24">
         <rect x="3" y="4" width="18" height="16" rx="2"></rect><path d="M3 10h18"></path><path d="M9 4v16"></path>
       </symbol>
+      <symbol id="icon-search" viewBox="0 0 24 24">
+        <circle cx="11" cy="11" r="7"></circle><path d="m20 20-3.5-3.5"></path>
+      </symbol>
+      <symbol id="icon-filter" viewBox="0 0 24 24">
+        <path d="M4 5h16"></path><path d="M7 12h10"></path><path d="M10 19h4"></path>
+      </symbol>
     </svg>
 
     <main id="topo">
@@ -64,7 +70,7 @@
         <div class="container hero__grid">
           <div class="hero__copy">
             <div class="hero-brand">
-              <img class="hero-logo" src="assets/brasao-iguape.png?v=20260501-33" alt="Brasão de Iguape">
+              <img class="hero-logo" src="assets/brasao-iguape.png?v=20260501-34" alt="Brasão de Iguape">
               <div>
                 <p class="hero-agency">Prefeitura Municipal de Iguape/SP</p>
                 <span class="hero-seal">Transparência Municipal</span>
@@ -238,6 +244,161 @@
         </div>
       </section>
 
+      <section id="consulta" class="section filters-section" aria-labelledby="filters-title">
+        <div class="container">
+          <div class="filters-shell">
+            <div class="filters-header">
+              <div>
+                <h2 id="filters-title"><svg class="heading-icon" aria-hidden="true"><use href="#icon-search"></use></svg>Consulta avançada</h2>
+                <p class="muted">Busque contratos e combine filtros administrativos.</p>
+              </div>
+              <button id="open-filters" class="button button--ghost filters-open-button" type="button" aria-controls="filters-panel" aria-expanded="false">
+                <svg class="icon" aria-hidden="true"><use href="#icon-filter"></use></svg>
+                Filtros
+              </button>
+            </div>
+
+            <div class="filters-search-card">
+              <label for="filter-search">Busca geral</label>
+              <div class="filters-search-row">
+                <div class="filters-search-input">
+                  <svg class="icon" aria-hidden="true"><use href="#icon-search"></use></svg>
+                  <input id="filter-search" data-filter="search" type="search" autocomplete="off" placeholder="Digite a busca">
+                </div>
+                <button id="apply-filters-desktop" class="button filters-search-button" type="button">Buscar</button>
+              </div>
+            </div>
+
+            <div id="active-filters" class="active-filter-chips" aria-live="polite">
+              <span class="active-filter-chips__empty">Nenhum filtro aplicado.</span>
+            </div>
+
+            <div id="filters-backdrop" class="filters-backdrop" hidden></div>
+            <aside id="filters-panel" class="filters-panel" aria-labelledby="filters-panel-title" aria-hidden="false">
+              <div class="filters-panel__header">
+                <div>
+                  <p class="eyebrow">Refinar consulta</p>
+                  <h3 id="filters-panel-title">Filtros</h3>
+                </div>
+                <button id="close-filters" class="button button--ghost button--compact filters-close-button" type="button">Fechar</button>
+              </div>
+
+              <div class="filters-panel__body">
+                <details class="filter-group" open>
+                  <summary>Situação e vencimento</summary>
+                  <div class="filter-grid">
+                    <label class="filter-field" for="filter-status-calculado">
+                      Status de vencimento
+                      <select id="filter-status-calculado" data-filter="statusCalculado">
+                        <option value="">Todos</option>
+                      </select>
+                    </label>
+                    <label class="filter-field" for="filter-vencimento">
+                      Faixa de vencimento
+                      <select id="filter-vencimento" data-filter="vencimento">
+                        <option value="">Todas</option>
+                        <option value="overdue">Vencidos</option>
+                        <option value="next7">Próximos 7 dias</option>
+                        <option value="next15">Próximos 15 dias</option>
+                        <option value="next30">Próximos 30 dias</option>
+                        <option value="next60">Próximos 60 dias</option>
+                        <option value="next90">Próximos 90 dias</option>
+                        <option value="above90">Acima de 90 dias</option>
+                        <option value="noDue">Sem vencimento</option>
+                      </select>
+                    </label>
+                    <label class="filter-field" for="filter-status-original">
+                      Status original
+                      <select id="filter-status-original" data-filter="statusOriginal">
+                        <option value="">Todos</option>
+                      </select>
+                    </label>
+                  </div>
+                </details>
+
+                <details class="filter-group">
+                  <summary>Dados contratuais</summary>
+                  <div class="filter-grid">
+                    <label class="filter-field" for="filter-modalidade">
+                      Modalidade
+                      <select id="filter-modalidade" data-filter="modalidade">
+                        <option value="">Todas</option>
+                      </select>
+                    </label>
+                    <label class="filter-field" for="filter-categoria">
+                      Categoria
+                      <select id="filter-categoria" data-filter="categoria">
+                        <option value="">Todas</option>
+                      </select>
+                    </label>
+                    <label class="filter-field" for="filter-empresa">
+                      Empresa
+                      <select id="filter-empresa" data-filter="empresa">
+                        <option value="">Todas</option>
+                      </select>
+                    </label>
+                  </div>
+                </details>
+
+                <details class="filter-group">
+                  <summary>Responsáveis</summary>
+                  <div class="filter-grid">
+                    <label class="filter-field" for="filter-gestor">
+                      Gestor
+                      <select id="filter-gestor" data-filter="gestor">
+                        <option value="">Todos</option>
+                      </select>
+                    </label>
+                    <label class="filter-field" for="filter-fiscal">
+                      Fiscal
+                      <select id="filter-fiscal" data-filter="fiscal">
+                        <option value="">Todos</option>
+                      </select>
+                    </label>
+                  </div>
+                </details>
+
+                <details class="filter-group">
+                  <summary>Valores</summary>
+                  <div class="filter-grid">
+                    <label class="filter-field" for="filter-valor">
+                      Faixa de valor
+                      <select id="filter-valor" data-filter="valor">
+                        <option value="">Todos</option>
+                        <option value="noValue">Sem valor</option>
+                        <option value="upTo10k">Até R$ 10 mil</option>
+                        <option value="10kTo100k">R$ 10 mil a R$ 100 mil</option>
+                        <option value="100kTo1m">R$ 100 mil a R$ 1 milhão</option>
+                        <option value="above1m">Acima de R$ 1 milhão</option>
+                      </select>
+                    </label>
+                  </div>
+                </details>
+
+                <details class="filter-group">
+                  <summary>Pendências</summary>
+                  <div class="filter-grid">
+                    <label class="filter-field" for="filter-pendencias">
+                      Situação cadastral
+                      <select id="filter-pendencias" data-filter="pendencias">
+                        <option value="all">Todos</option>
+                        <option value="with">Apenas com pendências</option>
+                        <option value="complete">Apenas completos</option>
+                      </select>
+                    </label>
+                  </div>
+                </details>
+              </div>
+
+              <div class="filters-panel__footer">
+                <button id="clear-filters" class="button button--ghost" type="button">Limpar filtros</button>
+                <button id="apply-filters" class="button" type="button">Aplicar filtros</button>
+              </div>
+            </aside>
+          </div>
+        </div>
+      </section>
+
       <section id="tabela" class="section table-section" aria-labelledby="table-title">
         <div class="container">
           <div class="section-heading section-heading--table">
@@ -312,7 +473,7 @@
       <div class="container footer-grid">
         <div class="footer-brand">
           <span class="footer-logo-wrap">
-            <img src="assets/brasao-iguape.png?v=20260501-33" alt="Brasão de Iguape">
+            <img src="assets/brasao-iguape.png?v=20260501-34" alt="Brasão de Iguape">
           </span>
           <div>
             <strong>Prefeitura Municipal de Iguape/SP</strong>
@@ -339,8 +500,8 @@
       <div id="detail-body" class="detail-drawer__body"></div>
     </aside>
 
-    <script src="data/contratos.js?v=20260501-33"></script>
-    <script src="js/data-normalizer.js?v=20260501-33"></script>
-    <script src="js/app.js?v=20260501-33"></script>
+    <script src="data/contratos.js?v=20260501-34"></script>
+    <script src="js/data-normalizer.js?v=20260501-34"></script>
+    <script src="js/app.js?v=20260501-34"></script>
   </body>
 </html>

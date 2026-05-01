@@ -58,13 +58,63 @@ const elements = {
   activeContractsList: document.querySelector("#active-contracts-list"),
   activeContractsSummary: document.querySelector("#active-contracts-summary"),
   upcomingList: document.querySelector("#upcoming-list"),
+  filterSearch: document.querySelector("#filter-search"),
+  filterStatusCalculado: document.querySelector("#filter-status-calculado"),
+  filterStatusOriginal: document.querySelector("#filter-status-original"),
+  filterModalidade: document.querySelector("#filter-modalidade"),
+  filterCategoria: document.querySelector("#filter-categoria"),
+  filterEmpresa: document.querySelector("#filter-empresa"),
+  filterGestor: document.querySelector("#filter-gestor"),
+  filterFiscal: document.querySelector("#filter-fiscal"),
+  filterVencimento: document.querySelector("#filter-vencimento"),
+  filterPendencias: document.querySelector("#filter-pendencias"),
+  filterValor: document.querySelector("#filter-valor"),
+  filterControls: document.querySelectorAll("[data-filter]"),
+  activeFilters: document.querySelector("#active-filters"),
+  openFilters: document.querySelector("#open-filters"),
+  closeFilters: document.querySelector("#close-filters"),
+  filtersPanel: document.querySelector("#filters-panel"),
+  filtersBackdrop: document.querySelector("#filters-backdrop"),
+  applyFilters: document.querySelector("#apply-filters"),
+  applyFiltersDesktop: document.querySelector("#apply-filters-desktop"),
+  clearFilters: document.querySelector("#clear-filters"),
   toggleButtons: document.querySelectorAll("[data-toggle-section]"),
+};
+
+const DEFAULT_FILTERS = {
+  search: "",
+  statusCalculado: "",
+  statusOriginal: "",
+  modalidade: "",
+  categoria: "",
+  empresa: "",
+  gestor: "",
+  fiscal: "",
+  vencimento: "",
+  pendencias: "all",
+  valor: "",
+};
+
+const FILTER_LABELS = {
+  search: "Busca",
+  statusCalculado: "Status",
+  statusOriginal: "Status original",
+  modalidade: "Modalidade",
+  categoria: "Categoria",
+  empresa: "Empresa",
+  gestor: "Gestor",
+  fiscal: "Fiscal",
+  vencimento: "Vencimento",
+  pendencias: "Pendências",
+  valor: "Valor",
 };
 
 let contracts = [];
 let filteredContracts = [];
 let metadata = {};
 let currentPage = 1;
+let filterState = { ...DEFAULT_FILTERS };
+let filterDebounceTimer = null;
 let sortState = {
   key: "dataVencimento",
   direction: "asc",
@@ -83,7 +133,8 @@ async function init() {
     contracts = ContractData.normalizeContracts(payload.contracts || payload);
 
     ContractData.logNormalizationSummary(contracts);
-    render(contracts);
+    populateFilterOptions(contracts);
+    applyCurrentFilters({ resetPage: true });
     setAppStatus("loading", "", true);
   } catch (error) {
     console.error("Erro ao carregar os dados de contratos.", error);
@@ -126,6 +177,7 @@ function renderErrorState() {
   renderActiveContracts([]);
   renderUpcoming([]);
   renderTable([]);
+  renderActiveFilterChips();
   elements.lastUpdate.textContent = "Dados indisponíveis";
   if (elements.footerUpdated) {
     elements.footerUpdated.textContent = "Última atualização dos dados: indisponível";
@@ -204,12 +256,27 @@ function bindEvents() {
     button.addEventListener("click", () => toggleDashboardSection(button));
   });
 
+  bindFilterEvents();
+
   elements.closeDetail.addEventListener("click", closeContractDetail);
   elements.detailBackdrop.addEventListener("click", closeContractDetail);
   document.addEventListener("keydown", (event) => {
+    if (event.key === "Escape" && document.body.classList.contains("filters-open")) {
+      closeFilterPanel();
+      return;
+    }
     if (event.key === "Escape" && elements.detailDrawer.classList.contains("is-open")) {
       closeContractDetail();
     }
+  });
+
+  window.addEventListener("resize", () => {
+    if (!isMobileFilterPanel()) {
+      elements.filtersBackdrop.hidden = true;
+      document.body.classList.remove("filters-open");
+      elements.openFilters?.setAttribute("aria-expanded", "false");
+    }
+    syncFilterPanelVisibility();
   });
 
   document.querySelectorAll("[data-quick-target]").forEach((button) => {
@@ -220,6 +287,68 @@ function bindEvents() {
       target?.scrollIntoView({ behavior: "smooth", block: "start" });
     });
   });
+}
+
+function bindFilterEvents() {
+  if (!elements.filterControls.length) {
+    return;
+  }
+
+  elements.filterControls.forEach((control) => {
+    control.addEventListener("change", () => {
+      syncFilterStateFromControls();
+      if (!isMobileFilterPanel()) {
+        applyCurrentFilters({ resetPage: true });
+      }
+    });
+  });
+
+  if (elements.filterSearch) {
+    elements.filterSearch.addEventListener("input", () => {
+      syncFilterStateFromControls();
+      window.clearTimeout(filterDebounceTimer);
+      filterDebounceTimer = window.setTimeout(() => {
+        applyCurrentFilters({ resetPage: true });
+      }, 180);
+    });
+
+    elements.filterSearch.addEventListener("keydown", (event) => {
+      if (event.key === "Enter") {
+        event.preventDefault();
+        syncFilterStateFromControls();
+        applyCurrentFilters({ resetPage: true });
+      }
+    });
+  }
+
+  elements.applyFilters?.addEventListener("click", () => {
+    syncFilterStateFromControls();
+    applyCurrentFilters({ resetPage: true });
+    closeFilterPanel();
+  });
+
+  elements.applyFiltersDesktop?.addEventListener("click", () => {
+    syncFilterStateFromControls();
+    applyCurrentFilters({ resetPage: true });
+  });
+
+  elements.clearFilters?.addEventListener("click", () => {
+    resetFilters();
+    closeFilterPanel();
+  });
+
+  elements.activeFilters?.addEventListener("click", (event) => {
+    const button = event.target.closest("[data-clear-filter]");
+    if (!button) {
+      return;
+    }
+    clearSingleFilter(button.dataset.clearFilter);
+  });
+
+  elements.openFilters?.addEventListener("click", openFilterPanel);
+  elements.closeFilters?.addEventListener("click", closeFilterPanel);
+  elements.filtersBackdrop?.addEventListener("click", closeFilterPanel);
+  syncFilterPanelVisibility();
 }
 
 function getQuickTargetSection(targetKey) {
@@ -255,14 +384,284 @@ function toggleDashboardSection(button, forceOpen = false) {
   button.setAttribute("aria-label", `${isExpanded ? "Ocultar" : "Mostrar"} ${label}`);
 }
 
+function populateFilterOptions(items) {
+  fillSelect(elements.filterStatusCalculado, ContractData.STATUS_LABELS, "Todos");
+  fillSelect(elements.filterStatusOriginal, uniqueValues(items, "statusOriginal"), "Todos");
+  fillSelect(elements.filterModalidade, uniqueValues(items, "modalidade"), "Todas");
+  fillSelect(elements.filterCategoria, uniqueValues(items, "categoria"), "Todas");
+  fillSelect(elements.filterEmpresa, uniqueValues(items, "empresa"), "Todas");
+  fillSelect(elements.filterGestor, uniqueValues(items, "gestor"), "Todos");
+  fillSelect(elements.filterFiscal, uniqueValues(items, "fiscal"), "Todos");
+  syncControlsFromFilterState();
+}
+
+function fillSelect(select, values, placeholder) {
+  if (!select) {
+    return;
+  }
+
+  const currentValue = select.value;
+  const options = [`<option value="">${escapeHtml(placeholder)}</option>`]
+    .concat(values
+      .filter(Boolean)
+      .map((value) => `<option value="${escapeAttribute(value)}">${escapeHtml(value)}</option>`));
+
+  select.innerHTML = options.join("");
+  if ([...select.options].some((option) => option.value === currentValue)) {
+    select.value = currentValue;
+  }
+}
+
+function uniqueValues(items, key) {
+  return [...new Set(items.map((item) => item[key]).filter(Boolean))]
+    .sort((a, b) => String(a).localeCompare(String(b), "pt-BR", { numeric: true, sensitivity: "base" }));
+}
+
+function syncFilterStateFromControls() {
+  elements.filterControls.forEach((control) => {
+    const filterKey = control.dataset.filter;
+    if (filterKey) {
+      filterState[filterKey] = control.value;
+    }
+  });
+}
+
+function syncControlsFromFilterState() {
+  elements.filterControls.forEach((control) => {
+    const filterKey = control.dataset.filter;
+    if (filterKey && Object.prototype.hasOwnProperty.call(filterState, filterKey)) {
+      control.value = filterState[filterKey] ?? "";
+    }
+  });
+}
+
+function applyCurrentFilters(options = {}) {
+  if (options.resetPage) {
+    currentPage = 1;
+  }
+
+  const filteredItems = contracts.filter(matchesFilters);
+  render(filteredItems);
+}
+
+function matchesFilters(item) {
+  const normalizedSearch = ContractData.normalizeSearchText(filterState.search);
+
+  if (normalizedSearch && !item._normalizado.busca.includes(normalizedSearch)) {
+    return false;
+  }
+
+  if (!matchesNormalizedOption(item, "statusCalculado")) {
+    return false;
+  }
+
+  if (!matchesNormalizedOption(item, "statusOriginal")) {
+    return false;
+  }
+
+  if (!matchesNormalizedOption(item, "modalidade")) {
+    return false;
+  }
+
+  if (!matchesNormalizedOption(item, "categoria")) {
+    return false;
+  }
+
+  if (!matchesNormalizedOption(item, "empresa")) {
+    return false;
+  }
+
+  if (!matchesNormalizedOption(item, "gestor")) {
+    return false;
+  }
+
+  if (!matchesNormalizedOption(item, "fiscal")) {
+    return false;
+  }
+
+  if (!matchesDueFilter(item)) {
+    return false;
+  }
+
+  if (!matchesPendingFilter(item)) {
+    return false;
+  }
+
+  return matchesValueFilter(item);
+}
+
+function matchesNormalizedOption(item, key) {
+  const selected = filterState[key];
+  if (!selected) {
+    return true;
+  }
+
+  return item._normalizado[key] === ContractData.normalizeKey(selected);
+}
+
+function matchesDueFilter(item) {
+  const filter = filterState.vencimento;
+  const days = item.diasParaVencimento;
+
+  if (!filter) {
+    return true;
+  }
+  if (filter === "noDue") {
+    return days === null;
+  }
+  if (days === null) {
+    return false;
+  }
+  if (filter === "overdue") {
+    return days < 0;
+  }
+  if (filter === "next7") {
+    return days >= 0 && days <= 7;
+  }
+  if (filter === "next15") {
+    return days >= 0 && days <= 15;
+  }
+  if (filter === "next30") {
+    return days >= 0 && days <= 30;
+  }
+  if (filter === "next60") {
+    return days >= 0 && days <= 60;
+  }
+  if (filter === "next90") {
+    return days >= 0 && days <= 90;
+  }
+  if (filter === "above90") {
+    return days > 90;
+  }
+  return true;
+}
+
+function matchesPendingFilter(item) {
+  if (filterState.pendencias === "with") {
+    return item.possuiPendencias;
+  }
+  if (filterState.pendencias === "complete") {
+    return !item.possuiPendencias;
+  }
+  return true;
+}
+
+function matchesValueFilter(item) {
+  const filter = filterState.valor;
+  const hasValue = typeof item.valor === "number";
+
+  if (!filter) {
+    return true;
+  }
+  if (filter === "noValue") {
+    return !hasValue;
+  }
+  if (!hasValue) {
+    return false;
+  }
+  if (filter === "upTo10k") {
+    return item.valor <= 10000;
+  }
+  if (filter === "10kTo100k") {
+    return item.valor > 10000 && item.valor <= 100000;
+  }
+  if (filter === "100kTo1m") {
+    return item.valor > 100000 && item.valor <= 1000000;
+  }
+  if (filter === "above1m") {
+    return item.valor > 1000000;
+  }
+  return true;
+}
+
+function renderActiveFilterChips() {
+  if (!elements.activeFilters) {
+    return;
+  }
+
+  const chips = Object.entries(filterState)
+    .filter(([key, value]) => isActiveFilter(key, value))
+    .map(([key, value]) => renderFilterChip(key, value));
+
+  const summary = `<span class="active-filter-chips__summary">${filteredContracts.length} ${filteredContracts.length === 1 ? "contrato encontrado" : "contratos encontrados"}</span>`;
+  const empty = '<span class="active-filter-chips__empty">Nenhum filtro aplicado.</span>';
+
+  elements.activeFilters.innerHTML = `${summary}${chips.length ? chips.join("") : empty}`;
+}
+
+function renderFilterChip(key, value) {
+  const readableValue = key === "search" ? value : getFilterOptionLabel(key, value);
+  return `
+    <button class="filter-chip" type="button" data-clear-filter="${escapeAttribute(key)}" aria-label="Remover filtro ${escapeAttribute(FILTER_LABELS[key] || key)}">
+      <span>${escapeHtml(FILTER_LABELS[key] || key)}: ${escapeHtml(readableValue)}</span>
+      <strong aria-hidden="true">×</strong>
+    </button>
+  `;
+}
+
+function getFilterOptionLabel(key, value) {
+  const control = document.querySelector(`[data-filter="${key}"]`);
+  const selected = [...(control?.options || [])].find((option) => option.value === value);
+  return selected?.textContent || value;
+}
+
+function isActiveFilter(key, value) {
+  if (key === "pendencias") {
+    return value && value !== "all";
+  }
+  return Boolean(value);
+}
+
+function resetFilters() {
+  filterState = { ...DEFAULT_FILTERS };
+  syncControlsFromFilterState();
+  applyCurrentFilters({ resetPage: true });
+}
+
+function clearSingleFilter(key) {
+  if (!Object.prototype.hasOwnProperty.call(filterState, key)) {
+    return;
+  }
+
+  filterState[key] = DEFAULT_FILTERS[key];
+  syncControlsFromFilterState();
+  applyCurrentFilters({ resetPage: true });
+}
+
+function openFilterPanel() {
+  document.body.classList.add("filters-open");
+  elements.filtersBackdrop.hidden = false;
+  elements.openFilters?.setAttribute("aria-expanded", "true");
+  syncFilterPanelVisibility();
+}
+
+function closeFilterPanel() {
+  document.body.classList.remove("filters-open");
+  if (elements.filtersBackdrop) {
+    elements.filtersBackdrop.hidden = true;
+  }
+  elements.openFilters?.setAttribute("aria-expanded", "false");
+  syncFilterPanelVisibility();
+}
+
+function syncFilterPanelVisibility() {
+  const shouldHidePanel = isMobileFilterPanel() && !document.body.classList.contains("filters-open");
+  elements.filtersPanel?.setAttribute("aria-hidden", String(shouldHidePanel));
+}
+
+function isMobileFilterPanel() {
+  return window.matchMedia("(max-width: 720px)").matches;
+}
+
 function render(items) {
   filteredContracts = items;
   renderLastUpdate();
-  renderQuickAccess(contracts);
+  renderQuickAccess(items);
   renderIndicators(items);
   renderActiveContracts(items);
   renderUpcoming(items);
   renderTable(items);
+  renderActiveFilterChips();
 }
 
 function renderLastUpdate() {
