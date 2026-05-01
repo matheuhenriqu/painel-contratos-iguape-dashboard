@@ -152,6 +152,7 @@ let sortState = {
   key: "dataVencimento",
   direction: "asc",
 };
+let lastDetailTrigger = null;
 
 document.addEventListener("DOMContentLoaded", init);
 
@@ -260,7 +261,7 @@ function bindEvents() {
   elements.table.addEventListener("click", (event) => {
     const row = event.target.closest("[data-contract-id]");
     if (row) {
-      openContractDetail(row.dataset.contractId);
+      openContractDetail(row.dataset.contractId, row);
     }
   });
 
@@ -271,7 +272,7 @@ function bindEvents() {
     const row = event.target.closest("[data-contract-id]");
     if (row) {
       event.preventDefault();
-      openContractDetail(row.dataset.contractId);
+      openContractDetail(row.dataset.contractId, row);
     }
   });
 
@@ -279,7 +280,7 @@ function bindEvents() {
     elements.mobileCards.addEventListener("click", (event) => {
       const card = event.target.closest("[data-contract-id]");
       if (card) {
-        openContractDetail(card.dataset.contractId);
+        openContractDetail(card.dataset.contractId, card);
       }
     });
 
@@ -290,7 +291,7 @@ function bindEvents() {
       const card = event.target.closest("[data-contract-id]");
       if (card) {
         event.preventDefault();
-        openContractDetail(card.dataset.contractId);
+        openContractDetail(card.dataset.contractId, card);
       }
     });
   }
@@ -299,7 +300,7 @@ function bindEvents() {
     elements.activeContractsList.addEventListener("click", (event) => {
       const card = event.target.closest("[data-contract-id]");
       if (card) {
-        openContractDetail(card.dataset.contractId);
+        openContractDetail(card.dataset.contractId, card);
       }
     });
 
@@ -310,7 +311,7 @@ function bindEvents() {
       const card = event.target.closest("[data-contract-id]");
       if (card) {
         event.preventDefault();
-        openContractDetail(card.dataset.contractId);
+        openContractDetail(card.dataset.contractId, card);
       }
     });
   }
@@ -323,6 +324,7 @@ function bindEvents() {
 
   elements.closeDetail.addEventListener("click", closeContractDetail);
   elements.detailBackdrop.addEventListener("click", closeContractDetail);
+  elements.detailDrawer.addEventListener("keydown", trapDetailFocus);
   document.addEventListener("keydown", (event) => {
     if (event.key === "Escape" && document.body.classList.contains("filters-open")) {
       closeFilterPanel();
@@ -1487,12 +1489,13 @@ function getPageSize(total) {
   return elements.pageSize.value === "all" ? Infinity : Number(elements.pageSize.value) || total || 25;
 }
 
-function openContractDetail(contractId) {
+function openContractDetail(contractId, trigger = document.activeElement) {
   const contract = contracts.find((item) => String(item.id) === String(contractId));
   if (!contract) {
     return;
   }
 
+  lastDetailTrigger = trigger instanceof HTMLElement ? trigger : null;
   elements.detailTitle.textContent = contract.contrato || `Registro ${contract.id}`;
   elements.detailBody.innerHTML = renderContractDetail(contract);
   elements.detailBackdrop.hidden = false;
@@ -1500,58 +1503,184 @@ function openContractDetail(contractId) {
   elements.detailDrawer.setAttribute("aria-hidden", "false");
   elements.detailDrawer.classList.add("is-open");
   document.body.classList.add("detail-open");
-  elements.detailDrawer.focus();
+  window.requestAnimationFrame(() => {
+    elements.closeDetail.focus({ preventScroll: true });
+  });
 }
 
 function closeContractDetail() {
+  const trigger = lastDetailTrigger;
   elements.detailDrawer.classList.remove("is-open");
   elements.detailDrawer.setAttribute("aria-hidden", "true");
   elements.detailDrawer.hidden = true;
   elements.detailBackdrop.hidden = true;
   document.body.classList.remove("detail-open");
+  lastDetailTrigger = null;
+
+  if (trigger && trigger.isConnected) {
+    trigger.focus({ preventScroll: true });
+  }
 }
 
 function renderContractDetail(item) {
-  const calculatedRows = [
-    ["Status calculado", `<span class="badge ${statusBadgeClass(item.statusCalculado)}">${escapeHtml(item.statusCalculado)}</span>`],
-    ["Status original", escapeHtml(item.statusOriginal || "Não informado")],
-    ["Dias para vencimento", item.diasParaVencimento === null ? "Não informado" : `${item.diasParaVencimento} (${escapeHtml(formatDays(item.diasParaVencimento))})`],
-    ["Categoria", escapeHtml(item.categoria || "Outros/Pendente")],
-    ["Pendências", item.possuiPendencias ? escapeHtml(item.pendencias.join("; ")) : "Sem pendências"],
-  ];
-
-  const mainRows = [
-    ["Contrato", escapeHtml(item.contrato || "Não informado")],
-    ["Processo", escapeHtml(item.processo || "Não informado")],
-    ["Modalidade", escapeHtml([item.modalidade, item.numeroModalidade].filter(Boolean).join(" · ") || "Não informado")],
-    ["Objeto", escapeHtml(item.objeto || "Objeto não informado")],
-    ["Empresa", escapeHtml(item.empresa || "Não informado")],
-    ["Valor", escapeHtml(formatValueText(item))],
-    ["Data de início", escapeHtml(formatDateISO(item.dataInicio))],
-    ["Data de vencimento", escapeHtml(formatDateISO(item.dataVencimento))],
-    ["Gestor", escapeHtml(item.gestor || "Não informado")],
-    ["Fiscal", escapeHtml(item.fiscal || "Não informado")],
-    ["Observações", escapeHtml(item.observacoes || "Sem observações")],
-  ];
-
   const rawRows = Object.entries(item._raw || {})
     .filter(([key]) => !key.startsWith("_"))
     .map(([key, value]) => [key, escapeHtml(formatRawValue(value))]);
+  const modality = [item.modalidade, item.numeroModalidade].filter(Boolean).join(" · ") || "Não informado";
+  const daysLabel = item.diasParaVencimento === null ? "Sem prazo informado" : formatDays(item.diasParaVencimento);
 
   return `
-    <section class="detail-section">
-      <h3>Resumo administrativo</h3>
-      ${renderDefinitionList(mainRows)}
+    <section class="detail-overview ${tableRowClass(item)}" aria-label="Resumo do contrato">
+      <div class="detail-overview__status">
+        <span class="badge ${statusBadgeClass(item.statusCalculado)}">${escapeHtml(item.statusCalculado)}</span>
+        <strong>${escapeHtml(daysLabel)}</strong>
+        <small>Status original: ${escapeHtml(item.statusOriginal || "Não informado")}</small>
+      </div>
+      <div class="detail-overview__facts">
+        <div>
+          <span>Contrato</span>
+          <strong>${escapeHtml(item.contrato || `Registro ${item.id}`)}</strong>
+        </div>
+        <div>
+          <span>Vencimento</span>
+          <strong>${escapeHtml(formatDateISO(item.dataVencimento))}</strong>
+        </div>
+      </div>
     </section>
+
     <section class="detail-section">
-      <h3>Campos calculados</h3>
-      ${renderDefinitionList(calculatedRows)}
+      <h3>Identificação</h3>
+      ${renderDetailFields([
+        { label: "Contrato", value: escapeHtml(item.contrato || "Não informado") },
+        { label: "Processo", value: escapeHtml(item.processo || "Não informado") },
+        { label: "Modalidade", value: escapeHtml(modality) },
+        { label: "Categoria", value: escapeHtml(item.categoria || "Outros/Pendente") },
+      ])}
     </section>
+
     <section class="detail-section">
-      <h3>Campos originais da planilha</h3>
+      <h3>Empresa</h3>
+      ${renderDetailFields([
+        { label: "Empresa contratada", value: escapeHtml(item.empresa || "Não informado"), wide: true },
+      ])}
+    </section>
+
+    <section class="detail-section detail-section--wide">
+      <h3>Objeto</h3>
+      <p class="detail-long-text">${escapeHtml(item.objeto || "Objeto não informado")}</p>
+    </section>
+
+    <section class="detail-section">
+      <h3>Valor</h3>
+      ${renderDetailFields([
+        { label: "Valor contratado", value: escapeHtml(formatValueText(item)) },
+        { label: "Valor numérico", value: typeof item.valor === "number" ? escapeHtml(formatCurrency.format(item.valor)) : "Não informado" },
+        { label: "Descrição do valor", value: escapeHtml(item.valorDescricao || "Não informado"), wide: true },
+      ])}
+    </section>
+
+    <section class="detail-section">
+      <h3>Vigência</h3>
+      ${renderDetailFields([
+        { label: "Data de início", value: escapeHtml(formatDateISO(item.dataInicio)) },
+        { label: "Data de vencimento", value: escapeHtml(formatDateISO(item.dataVencimento)) },
+        { label: "Dias para vencimento", value: escapeHtml(daysLabel), highlight: item.statusCalculado !== "Vigente" },
+      ])}
+    </section>
+
+    <section class="detail-section">
+      <h3>Status</h3>
+      ${renderDetailFields([
+        { label: "Status calculado", value: `<span class="badge ${statusBadgeClass(item.statusCalculado)}">${escapeHtml(item.statusCalculado)}</span>`, highlight: true },
+        { label: "Status original", value: escapeHtml(item.statusOriginal || "Não informado") },
+        { label: "Referência", value: "O painel usa o status calculado como referência principal.", wide: true },
+      ])}
+    </section>
+
+    <section class="detail-section">
+      <h3>Gestor e fiscal</h3>
+      ${renderDetailFields([
+        { label: "Gestor", value: escapeHtml(item.gestor || "Não informado"), highlight: !item.gestor },
+        { label: "Fiscal", value: escapeHtml(item.fiscal || "Não informado"), highlight: !item.fiscal },
+      ])}
+    </section>
+
+    <section class="detail-section">
+      <h3>Pendências</h3>
+      ${renderPendenciasDetail(item)}
+    </section>
+
+    <section class="detail-section detail-section--wide">
+      <h3>Observações</h3>
+      <p class="detail-long-text">${escapeHtml(item.observacoes || "Sem observações")}</p>
+    </section>
+
+    <details class="detail-section detail-section--raw">
+      <summary>Campos originais da planilha</summary>
       ${renderDefinitionList(rawRows)}
-    </section>
+    </details>
   `;
+}
+
+function renderDetailFields(rows) {
+  return `
+    <dl class="detail-grid">
+      ${rows.map((row) => `
+        <div class="detail-field ${row.wide ? "detail-field--wide" : ""} ${row.highlight ? "detail-field--highlight" : ""}">
+          <dt>${escapeHtml(row.label)}</dt>
+          <dd>${row.value || "Não informado"}</dd>
+        </div>
+      `).join("")}
+    </dl>
+  `;
+}
+
+function renderPendenciasDetail(item) {
+  if (!item.possuiPendencias) {
+    return `
+      <div class="detail-pendencies detail-pendencies--ok">
+        <span class="badge badge--success">Sem pendências cadastrais</span>
+        <p>Os campos críticos deste contrato estão preenchidos.</p>
+      </div>
+    `;
+  }
+
+  return `
+    <div class="detail-pendencies">
+      <span class="badge badge--warning">${item.pendencias.length} ${item.pendencias.length === 1 ? "pendência" : "pendências"}</span>
+      <ul>
+        ${item.pendencias.map((pendencia) => `<li>${escapeHtml(pendencia)}</li>`).join("")}
+      </ul>
+    </div>
+  `;
+}
+
+function trapDetailFocus(event) {
+  if (event.key !== "Tab" || !elements.detailDrawer.classList.contains("is-open")) {
+    return;
+  }
+
+  const focusable = [...elements.detailDrawer.querySelectorAll(
+    'a[href], button:not([disabled]), details summary, input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])'
+  )].filter((item) => item.offsetParent !== null || item === elements.detailDrawer);
+
+  if (!focusable.length) {
+    event.preventDefault();
+    elements.detailDrawer.focus({ preventScroll: true });
+    return;
+  }
+
+  const first = focusable[0];
+  const last = focusable[focusable.length - 1];
+  if (event.shiftKey && document.activeElement === first) {
+    event.preventDefault();
+    last.focus({ preventScroll: true });
+    return;
+  }
+  if (!event.shiftKey && document.activeElement === last) {
+    event.preventDefault();
+    first.focus({ preventScroll: true });
+  }
 }
 
 function renderDefinitionList(rows) {
