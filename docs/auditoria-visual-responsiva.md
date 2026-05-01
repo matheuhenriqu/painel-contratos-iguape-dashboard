@@ -369,6 +369,29 @@ Resumo de dados validado com referência em `2026-05-01`:
 - Contratos vigentes renderizados na página publicada: 113.
 - Linhas exibidas na primeira página da tabela publicada: 25.
 
+## Atualização: design system institucional
+
+Etapa implementada em 01/05/2026.
+
+Mudanças feitas:
+
+- Reorganização dos tokens em `:root`, separando cores de marca, apoio institucional, feedback, neutros, bordas, sombras, raios, espaçamentos, largura do container e altura mínima de controles.
+- Inclusão de aliases para preservar compatibilidade com as classes existentes, sem alterar a lógica do JavaScript.
+- Adoção de uma paleta mais sóbria, com azul escuro como base, azul médio para ações, teal como apoio institucional e cores de alerta restritas a status.
+- Redução do peso visual dos gradientes do cabeçalho e rodapé.
+- Padronização de botões com altura mínima de `44px`, foco visível, hover mais discreto e estado secundário mais limpo.
+- Padronização de campos e selects com borda, raio, altura mínima e contraste adequados.
+- Refinamento de cards, painéis, toolbar, tabela, drawer e badges com bordas mais consistentes, sombras mais leves e superfícies brancas.
+- Preservação da estrutura atual: indicadores, alertas, saúde da base, contratos vigentes, tabela, paginação, ordenação, modal de detalhe e contratos vencidos.
+
+Validações desta etapa:
+
+```bash
+node --check js/app.js
+node --check js/data-normalizer.js
+node scripts/validate-dashboard.mjs --reference-date=2026-05-01
+```
+
 ## Observações finais
 
 Esta auditoria não recomenda refazer o projeto do zero. A base atual é aproveitável e o caminho mais seguro é uma melhoria incremental de template e CSS, preservando a camada de dados, os cálculos e a publicação estática. A próxima etapa deve focar em desenho responsivo e acabamento visual, com validação constante no GitHub Pages.

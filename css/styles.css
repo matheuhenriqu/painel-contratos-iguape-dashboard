@@ -1,34 +1,76 @@
 :root {
-  --color-blue-950: #03233f;
-  --color-blue-900: #053b66;
-  --color-blue-800: #0a5d8f;
-  --color-blue-700: #1277ad;
+  /* Core brand colors */
+  --color-primary-950: #03233f;
+  --color-primary-900: #05365f;
+  --color-primary-800: #0a5d8f;
+  --color-primary-700: #1277ad;
+  --color-action: #0a5d8f;
+  --color-action-hover: #05365f;
   --color-teal-800: #07545d;
   --color-teal-700: #087276;
   --color-teal-600: #0a8c8f;
-  --color-green-700: #207b49;
-  --color-green-100: #e7f6ed;
-  --color-orange-700: #b75c00;
-  --color-orange-100: #fff2dd;
-  --color-yellow-700: #8c6c00;
-  --color-yellow-100: #fff7d6;
-  --color-red-700: #b3261e;
-  --color-red-100: #fdebea;
-  --color-slate-900: #172235;
-  --color-slate-800: #2f3f55;
-  --color-slate-700: #4a5a70;
-  --color-slate-500: #68778d;
-  --color-slate-200: #dde5ee;
-  --color-slate-100: #edf2f7;
-  --color-slate-50: #f6f9fc;
-  --color-cyan-50: #eef8f8;
   --color-gold-500: #d9ae3d;
+
+  /* Feedback colors */
+  --color-success-700: #207b49;
+  --color-success-100: #e7f6ed;
+  --color-warning-700: #b75c00;
+  --color-warning-100: #fff2dd;
+  --color-attention-700: #8c6c00;
+  --color-attention-100: #fff7d6;
+  --color-danger-700: #b3261e;
+  --color-danger-100: #fdebea;
+
+  /* Neutral colors */
+  --color-neutral-950: #0e1b2d;
+  --color-neutral-900: #172235;
+  --color-neutral-800: #2f3f55;
+  --color-neutral-700: #4a5a70;
+  --color-neutral-600: #526176;
+  --color-neutral-500: #68778d;
+  --color-neutral-300: #c8d4df;
+  --color-neutral-200: #dde5ee;
+  --color-neutral-100: #edf2f7;
+  --color-neutral-50: #f6f9fc;
+  --color-surface: #ffffff;
+  --color-page: #f4f8fb;
+  --color-cyan-50: #eef8f8;
   --color-white: #ffffff;
-  --shadow-soft: 0 18px 38px rgba(15, 35, 56, 0.08);
-  --shadow-subtle: 0 8px 22px rgba(15, 35, 56, 0.055);
-  --shadow-card: 0 12px 26px rgba(15, 35, 56, 0.07);
-  --shadow-header: 0 16px 34px rgba(2, 25, 48, 0.18);
+
+  /* Existing aliases */
+  --color-blue-950: var(--color-primary-950);
+  --color-blue-900: var(--color-primary-900);
+  --color-blue-800: var(--color-primary-800);
+  --color-blue-700: var(--color-primary-700);
+  --color-green-700: var(--color-success-700);
+  --color-green-100: var(--color-success-100);
+  --color-orange-700: var(--color-warning-700);
+  --color-orange-100: var(--color-warning-100);
+  --color-yellow-700: var(--color-attention-700);
+  --color-yellow-100: var(--color-attention-100);
+  --color-red-700: var(--color-danger-700);
+  --color-red-100: var(--color-danger-100);
+  --color-slate-900: var(--color-neutral-900);
+  --color-slate-800: var(--color-neutral-800);
+  --color-slate-700: var(--color-neutral-700);
+  --color-slate-500: var(--color-neutral-500);
+  --color-slate-200: var(--color-neutral-200);
+  --color-slate-100: var(--color-neutral-100);
+  --color-slate-50: var(--color-neutral-50);
+
+  /* Borders, shadows and radii */
+  --border-subtle: 1px solid var(--color-neutral-200);
+  --border-strong: 1px solid var(--color-neutral-300);
+  --focus-ring: 0 0 0 4px rgba(18, 119, 173, 0.18);
+  --shadow-soft: 0 18px 34px rgba(15, 35, 56, 0.08);
+  --shadow-subtle: 0 6px 16px rgba(15, 35, 56, 0.055);
+  --shadow-card: 0 10px 24px rgba(15, 35, 56, 0.065);
+  --shadow-header: 0 14px 30px rgba(2, 25, 48, 0.16);
+  --radius-sm: 6px;
   --radius: 8px;
+  --radius-pill: 999px;
+
+  /* Spacing and sizing */
   --space-1: 0.25rem;
   --space-2: 0.5rem;
   --space-3: 0.75rem;
@@ -39,6 +81,7 @@
   --space-10: 2.5rem;
   --space-12: 3rem;
   --container: 1240px;
+  --control-height: 44px;
 }
 
 * {
@@ -60,7 +103,7 @@ html {
 
 body {
   margin: 0;
-  background: linear-gradient(180deg, #eef6fb 0, var(--color-slate-50) 28rem, #ffffff 100%);
+  background: var(--color-page);
   color: var(--color-slate-900);
   font-family: Inter, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
   font-size: 16px;
@@ -110,9 +153,21 @@ img {
 
 button,
 input,
-select {
+select,
+textarea {
   font: inherit;
   min-width: 0;
+}
+
+input,
+select,
+textarea {
+  min-height: var(--control-height);
+  border: var(--border-subtle);
+  border-radius: var(--radius);
+  background: var(--color-surface);
+  color: var(--color-slate-900);
+  padding: 0 var(--space-3);
 }
 
 button {
@@ -125,7 +180,7 @@ input:focus-visible,
 select:focus-visible,
 a:focus-visible,
 tbody tr:focus-visible {
-  outline: 3px solid rgba(20, 104, 168, 0.38);
+  outline: 3px solid rgba(18, 119, 173, 0.42);
   outline-offset: 3px;
 }
 
@@ -137,7 +192,7 @@ tbody tr:focus-visible {
   transform: translateY(-160%);
   border-radius: var(--radius);
   padding: var(--space-2) var(--space-4);
-  background: var(--color-blue-900);
+  background: var(--color-primary-900);
   color: var(--color-white);
   font-weight: 800;
 }
@@ -166,32 +221,28 @@ tbody tr:focus-visible {
 
 .table-toolbar select {
   width: 100%;
-  border: 1px solid var(--color-slate-200);
-  border-radius: var(--radius);
-  background: var(--color-white);
-  color: var(--color-slate-900);
 }
 
 .button {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  min-height: 44px;
+  min-height: var(--control-height);
   border: 1px solid transparent;
   border-radius: var(--radius);
   padding: 0 var(--space-5);
-  background: var(--color-blue-800);
+  background: var(--color-action);
   color: var(--color-white);
-  font-weight: 700;
+  font-weight: 800;
   text-align: center;
   white-space: normal;
-  box-shadow: 0 8px 18px rgba(10, 93, 143, 0.14);
+  box-shadow: 0 8px 18px rgba(10, 93, 143, 0.12);
   transition: background 160ms ease, border-color 160ms ease, box-shadow 160ms ease, transform 160ms ease;
 }
 
 .button:hover {
-  background: var(--color-blue-900);
-  box-shadow: 0 10px 22px rgba(5, 59, 102, 0.18);
+  background: var(--color-action-hover);
+  box-shadow: 0 10px 22px rgba(5, 54, 95, 0.16);
 }
 
 .button:active,
@@ -200,29 +251,29 @@ tbody tr:focus-visible {
 }
 
 .button--ghost {
-  border: 1px solid var(--color-slate-200);
-  background: var(--color-white);
-  color: var(--color-blue-800);
+  border: var(--border-subtle);
+  background: var(--color-surface);
+  color: var(--color-action);
   box-shadow: none;
 }
 
 .button--ghost:hover {
-  border-color: rgba(20, 104, 168, 0.35);
-  background: #f4faff;
+  border-color: rgba(18, 119, 173, 0.38);
+  background: #eef7fd;
 }
 
 .button--compact {
   flex: 0 0 auto;
-  min-height: 38px;
+  min-height: var(--control-height);
   padding-inline: var(--space-4);
   font-size: 0.9rem;
   white-space: nowrap;
 }
 
 .app-status {
-  border-bottom: 1px solid var(--color-slate-200);
+  border-bottom: var(--border-subtle);
   padding: var(--space-3) var(--space-4);
-  background: #f4faff;
+  background: #eef7fd;
   color: var(--color-blue-900);
   font-weight: 800;
   text-align: center;
@@ -240,8 +291,8 @@ tbody tr:focus-visible {
 
 .hero {
   background:
-    linear-gradient(135deg, rgba(3, 35, 63, 0.99), rgba(5, 59, 102, 0.97) 54%, rgba(7, 84, 93, 0.95)),
-    var(--color-blue-950);
+    linear-gradient(135deg, rgba(5, 54, 95, 0.98), rgba(6, 73, 112, 0.96) 58%, rgba(7, 84, 93, 0.92)),
+    var(--color-primary-900);
   color: var(--color-white);
   border-bottom: 4px solid var(--color-gold-500);
   box-shadow: var(--shadow-header);
@@ -332,14 +383,14 @@ tbody tr:focus-visible {
   gap: var(--space-2) var(--space-3);
   align-items: center;
   min-height: 104px;
-  border: 1px solid rgba(255, 255, 255, 0.25);
+  border: 1px solid rgba(255, 255, 255, 0.24);
   border-radius: var(--radius);
   padding: var(--space-4) var(--space-4) var(--space-4) var(--space-5);
-  background: rgba(255, 255, 255, 0.13);
+  background: rgba(255, 255, 255, 0.12);
   color: var(--color-white);
   text-align: left;
   overflow: visible;
-  box-shadow: 0 14px 28px rgba(0, 0, 0, 0.14);
+  box-shadow: 0 12px 24px rgba(0, 0, 0, 0.12);
   transition: transform 160ms ease, background 160ms ease, border-color 160ms ease;
 }
 
@@ -460,10 +511,10 @@ tbody tr:focus-visible {
   align-items: center;
   justify-content: center;
   min-height: 34px;
-  border: 1px solid rgba(18, 119, 173, 0.22);
+  border: 1px solid rgba(18, 119, 173, 0.2);
   border-radius: 999px;
   padding: 0 var(--space-4);
-  background: #f4faff;
+  background: #eef7fd;
   color: var(--color-blue-900);
   font-size: 0.9rem;
   font-weight: 850;
@@ -481,12 +532,12 @@ tbody tr:focus-visible {
 }
 
 .table-toolbar select:hover {
-  border-color: rgba(20, 104, 168, 0.35);
+  border-color: rgba(18, 119, 173, 0.35);
 }
 
 .table-toolbar select:focus-visible {
   border-color: var(--color-blue-700);
-  box-shadow: 0 0 0 4px rgba(18, 119, 173, 0.12);
+  box-shadow: var(--focus-ring);
 }
 
 .table-toolbar {
@@ -496,9 +547,9 @@ tbody tr:focus-visible {
   gap: var(--space-4);
   margin-bottom: var(--space-4);
   padding: var(--space-4);
-  border: 1px solid var(--color-slate-200);
+  border: var(--border-subtle);
   border-radius: var(--radius);
-  background: var(--color-white);
+  background: var(--color-surface);
   box-shadow: var(--shadow-subtle);
   min-width: 0;
 }
@@ -532,14 +583,14 @@ tbody tr:focus-visible {
 .table-toolbar__buttons .button {
   width: 100%;
   min-width: 0;
-  min-height: 40px;
+  min-height: var(--control-height);
   padding-inline: var(--space-3);
   white-space: nowrap;
 }
 
 .table-toolbar select {
   min-width: 112px;
-  min-height: 40px;
+  min-height: var(--control-height);
   padding: 0 var(--space-3);
 }
 
@@ -556,9 +607,9 @@ tbody tr:focus-visible {
 
 .kpi-card,
 .info-panel {
-  border: 1px solid var(--color-slate-200);
+  border: var(--border-subtle);
   border-radius: var(--radius);
-  background: var(--color-white);
+  background: var(--color-surface);
   box-shadow: var(--shadow-card);
 }
 
@@ -570,7 +621,7 @@ tbody tr:focus-visible {
   padding: var(--space-5);
   border-left: 4px solid var(--color-blue-700);
   overflow: visible;
-  background: linear-gradient(180deg, #ffffff, #fbfdff);
+  background: var(--color-surface);
   transition: transform 160ms ease, border-color 160ms ease, box-shadow 160ms ease;
 }
 
@@ -674,8 +725,8 @@ tbody tr:focus-visible {
 .info-panel {
   padding: var(--space-5);
   min-width: 0;
-  border-top: 4px solid rgba(18, 119, 173, 0.18);
-  background: linear-gradient(180deg, #ffffff, #fbfdff);
+  border-top: 4px solid rgba(18, 119, 173, 0.16);
+  background: var(--color-surface);
 }
 
 .panel-title {
@@ -702,7 +753,7 @@ tbody tr:focus-visible {
   height: 10px;
   overflow: hidden;
   border-radius: 999px;
-  background: var(--color-slate-100);
+  background: #e8eef5;
 }
 
 .bar-fill {
@@ -724,10 +775,10 @@ tbody tr:focus-visible {
   align-items: flex-start;
   gap: var(--space-3);
   min-width: 0;
-  border: 1px solid var(--color-slate-200);
+  border: var(--border-subtle);
   border-radius: var(--radius);
   padding: var(--space-3);
-  background: #ffffff;
+  background: var(--color-surface);
   border-left: 4px solid var(--color-blue-700);
   box-shadow: 0 6px 14px rgba(15, 35, 56, 0.04);
 }
@@ -771,7 +822,7 @@ tbody tr:focus-visible {
 }
 
 .active-section {
-  background: linear-gradient(180deg, #ffffff, #f2faf9);
+  background: linear-gradient(180deg, #ffffff, #f5fbfa);
   border-block: 1px solid rgba(8, 114, 118, 0.14);
 }
 
@@ -807,11 +858,11 @@ tbody tr:focus-visible {
   gap: var(--space-4);
   width: 100%;
   min-width: 0;
-  border: 1px solid var(--color-slate-200);
+  border: var(--border-subtle);
   border-left: 5px solid var(--color-green-700);
   border-radius: var(--radius);
   padding: var(--space-4);
-  background: linear-gradient(180deg, #ffffff, #fbfefd);
+  background: var(--color-surface);
   box-shadow: var(--shadow-subtle);
   cursor: pointer;
   transition: transform 160ms ease, border-color 160ms ease, box-shadow 160ms ease;
@@ -820,11 +871,11 @@ tbody tr:focus-visible {
 .active-contract-card:hover {
   transform: translateY(-2px);
   border-color: rgba(8, 117, 121, 0.38);
-  box-shadow: 0 14px 30px rgba(16, 24, 40, 0.1);
+  box-shadow: var(--shadow-card);
 }
 
 .active-contract-card:focus-visible {
-  outline: 3px solid rgba(20, 104, 168, 0.3);
+  outline: 3px solid rgba(18, 119, 173, 0.36);
   outline-offset: 3px;
 }
 
@@ -905,7 +956,7 @@ tbody tr:focus-visible {
   min-width: 0;
   border-radius: var(--radius);
   padding: var(--space-3);
-  background: #f3f7fa;
+  background: #f3f7fb;
 }
 
 .active-contract-meta dt {
@@ -932,10 +983,10 @@ tbody tr:focus-visible {
   gap: var(--space-3);
   width: 100%;
   min-width: 0;
-  border: 1px solid var(--color-slate-200);
+  border: var(--border-subtle);
   border-radius: var(--radius);
   padding: var(--space-4);
-  background: #ffffff;
+  background: var(--color-surface);
   border-left: 4px solid var(--color-blue-700);
   box-shadow: var(--shadow-subtle);
 }
@@ -989,15 +1040,15 @@ tbody tr:focus-visible {
 
 .table-section {
   padding-top: var(--space-8);
-  background: #ffffff;
+  background: var(--color-surface);
 }
 
 .table-wrap {
   overflow: visible;
   max-width: 100%;
-  border: 1px solid var(--color-slate-200);
+  border: var(--border-subtle);
   border-radius: var(--radius);
-  background: var(--color-white);
+  background: var(--color-surface);
   box-shadow: var(--shadow-card);
 }
 
@@ -1010,7 +1061,7 @@ table {
 th,
 td {
   padding: 0.7rem;
-  border-bottom: 1px solid var(--color-slate-200);
+  border-bottom: var(--border-subtle);
   text-align: left;
   vertical-align: top;
   min-width: 0;
@@ -1021,7 +1072,7 @@ th {
   top: 0;
   z-index: 1;
   padding: 0;
-  background: #e8f2f6;
+  background: #eaf3f8;
   color: var(--color-blue-900);
   font-size: 0.8125rem;
   text-transform: uppercase;
@@ -1033,7 +1084,7 @@ td {
 }
 
 tbody tr:hover {
-  background: #f9fcff;
+  background: #f8fbfe;
 }
 
 tbody tr {
@@ -1097,7 +1148,7 @@ tbody tr.row--attention:hover {
 }
 
 .sort-button:hover {
-  background: rgba(20, 104, 168, 0.08);
+  background: rgba(18, 119, 173, 0.08);
 }
 
 .status-cell {
@@ -1183,7 +1234,7 @@ td:nth-child(9) .badge {
   max-width: 100%;
   min-height: 28px;
   border: 1px solid currentColor;
-  border-radius: 999px;
+  border-radius: var(--radius-pill);
   padding: 0 var(--space-3);
   font-size: 0.78rem;
   font-weight: 800;
@@ -1287,7 +1338,7 @@ td:nth-child(9) .badge {
   position: fixed;
   inset: 0;
   z-index: 80;
-  background: rgba(13, 24, 38, 0.42);
+  background: rgba(13, 24, 38, 0.46);
 }
 
 .detail-drawer {
@@ -1299,9 +1350,9 @@ td:nth-child(9) .badge {
   grid-template-rows: auto minmax(0, 1fr);
   width: min(100%, 680px);
   height: 100dvh;
-  border-left: 1px solid var(--color-slate-200);
-  background: var(--color-white);
-  box-shadow: -24px 0 48px rgba(16, 24, 40, 0.18);
+  border-left: var(--border-subtle);
+  background: var(--color-surface);
+  box-shadow: -24px 0 48px rgba(16, 24, 40, 0.16);
   transform: translateX(100%);
   transition: transform 180ms ease;
 }
@@ -1316,7 +1367,7 @@ td:nth-child(9) .badge {
   justify-content: space-between;
   gap: var(--space-4);
   padding: var(--space-5);
-  border-bottom: 1px solid var(--color-slate-200);
+  border-bottom: var(--border-subtle);
   background: var(--color-slate-50);
 }
 
@@ -1353,7 +1404,7 @@ td:nth-child(9) .badge {
 
 .detail-list div {
   min-width: 0;
-  border: 1px solid var(--color-slate-200);
+  border: var(--border-subtle);
   border-radius: var(--radius);
   padding: var(--space-3);
   background: var(--color-slate-50);
@@ -1389,7 +1440,7 @@ body.detail-open {
 .site-footer {
   margin-top: var(--space-10);
   background:
-    linear-gradient(90deg, rgba(3, 35, 63, 0.98), rgba(7, 84, 93, 0.94)),
+    linear-gradient(90deg, rgba(5, 54, 95, 0.98), rgba(7, 84, 93, 0.94)),
     var(--color-blue-900);
   color: var(--color-white);
   border-top: 4px solid var(--color-gold-500);
@@ -1486,7 +1537,7 @@ body.detail-open {
     display: grid;
     min-width: 0;
     max-width: 100%;
-    border: 1px solid var(--color-slate-200);
+    border: var(--border-subtle);
     border-left: 5px solid var(--color-blue-700);
     border-radius: var(--radius);
     padding: var(--space-2) var(--space-4);
@@ -1514,7 +1565,7 @@ body.detail-open {
     align-items: start;
     min-width: 0;
     max-width: 100%;
-    border-bottom: 1px solid var(--color-slate-200);
+    border-bottom: var(--border-subtle);
     padding: var(--space-3) 0;
   }
 
@@ -1535,7 +1586,7 @@ body.detail-open {
   }
 
   tbody tr.table-empty-row {
-    border-left: 1px solid var(--color-slate-200);
+    border-left: var(--border-subtle);
     padding: 0;
   }
 
@@ -1744,7 +1795,7 @@ body.detail-open {
   }
 
   .button--compact {
-    min-height: 36px;
+    min-height: var(--control-height);
     padding-inline: var(--space-3);
   }
 
