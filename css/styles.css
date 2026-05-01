@@ -197,6 +197,12 @@ tbody tr:focus-visible {
   background: #f4faff;
 }
 
+.button--compact {
+  min-height: 38px;
+  padding-inline: var(--space-4);
+  font-size: 0.9rem;
+}
+
 .app-status {
   border-bottom: 1px solid var(--color-slate-200);
   padding: var(--space-3) var(--space-4);
@@ -366,6 +372,14 @@ tbody tr:focus-visible {
 
 .heading-icon {
   color: var(--color-teal-700);
+}
+
+.heading-with-action {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  flex-wrap: wrap;
+  min-width: 0;
 }
 
 .muted {
@@ -663,6 +677,14 @@ tbody tr:focus-visible {
   gap: var(--space-4);
   overflow: visible;
   padding: var(--space-1) var(--space-1) var(--space-2);
+}
+
+.active-contracts-summary {
+  margin-bottom: var(--space-4);
+}
+
+.collapsible-region[hidden] {
+  display: none;
 }
 
 .active-contract-card {

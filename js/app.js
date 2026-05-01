@@ -56,6 +56,8 @@ const elements = {
   footerUpdated: document.querySelector("#footer-updated"),
   activeContractsList: document.querySelector("#active-contracts-list"),
   activeContractsSummary: document.querySelector("#active-contracts-summary"),
+  activeContractsContent: document.querySelector("#active-contracts-content"),
+  toggleActiveContracts: document.querySelector("#toggle-active-contracts"),
   upcomingList: document.querySelector("#upcoming-list"),
 };
 
@@ -198,6 +200,10 @@ function bindEvents() {
     });
   }
 
+  if (elements.toggleActiveContracts && elements.activeContractsContent) {
+    elements.toggleActiveContracts.addEventListener("click", toggleActiveContractsSection);
+  }
+
   elements.closeDetail.addEventListener("click", closeContractDetail);
   elements.detailBackdrop.addEventListener("click", closeContractDetail);
   document.addEventListener("keydown", (event) => {
@@ -213,6 +219,13 @@ function bindEvents() {
       document.querySelector(target)?.scrollIntoView({ behavior: "smooth", block: "start" });
     });
   });
+}
+
+function toggleActiveContractsSection() {
+  const isHidden = elements.activeContractsContent.hidden;
+  elements.activeContractsContent.hidden = !isHidden;
+  elements.toggleActiveContracts.setAttribute("aria-expanded", String(isHidden));
+  elements.toggleActiveContracts.textContent = isHidden ? "Ocultar" : "Mostrar";
 }
 
 function render(items) {
