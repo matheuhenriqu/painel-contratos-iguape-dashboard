@@ -9,9 +9,9 @@
     <meta property="og:description" content="Acompanhamento administrativo dos contratos municipais de Iguape/SP.">
     <meta property="og:image" content="https://matheuhenriqu.github.io/painel-contratos-iguape-dashboard/assets/logo-iguape-og.png">
     <title>Painel de Contratos | Prefeitura Municipal de Iguape/SP</title>
-    <link rel="icon" href="assets/favicon-iguape.png?v=20260501-34" type="image/png">
-    <link rel="apple-touch-icon" href="assets/apple-touch-icon.png?v=20260501-34">
-    <link rel="stylesheet" href="css/styles.css?v=20260501-34">
+    <link rel="icon" href="assets/favicon-iguape.png?v=20260501-35" type="image/png">
+    <link rel="apple-touch-icon" href="assets/apple-touch-icon.png?v=20260501-35">
+    <link rel="stylesheet" href="css/styles.css?v=20260501-35">
   </head>
   <body>
     <a class="skip-link" href="#indicadores">Ir para os indicadores</a>
@@ -70,7 +70,7 @@
         <div class="container hero__grid">
           <div class="hero__copy">
             <div class="hero-brand">
-              <img class="hero-logo" src="assets/brasao-iguape.png?v=20260501-34" alt="Brasão de Iguape">
+              <img class="hero-logo" src="assets/brasao-iguape.png?v=20260501-35" alt="Brasão de Iguape">
               <div>
                 <p class="hero-agency">Prefeitura Municipal de Iguape/SP</p>
                 <span class="hero-seal">Transparência Municipal</span>
@@ -399,6 +399,108 @@
         </div>
       </section>
 
+      <section id="graficos" class="section charts-section" aria-labelledby="charts-title">
+        <div class="container">
+          <div class="section-heading">
+            <div>
+              <h2 id="charts-title"><svg class="heading-icon" aria-hidden="true"><use href="#icon-chart"></use></svg>Análises gráficas</h2>
+              <p class="muted">Resumo visual da base filtrada.</p>
+            </div>
+            <div class="section-actions">
+              <button class="button button--ghost button--compact" type="button" data-toggle-section="charts-content" data-toggle-label="gráficos" aria-expanded="true" aria-controls="charts-content" aria-label="Ocultar gráficos">Ocultar</button>
+            </div>
+          </div>
+
+          <div id="charts-content" class="collapsible-region">
+            <div class="charts-grid charts-grid--priority" aria-live="polite">
+              <article class="chart-card chart-card--wide">
+                <div class="chart-card__header">
+                  <div>
+                    <h3>Contratos por status</h3>
+                    <p>Status calculado com base na data atual.</p>
+                  </div>
+                </div>
+                <div id="chart-status" class="chart-area"></div>
+              </article>
+
+              <article class="chart-card">
+                <div class="chart-card__header">
+                  <div>
+                    <h3>Valor por modalidade</h3>
+                    <p>Somente valores numéricos válidos.</p>
+                  </div>
+                </div>
+                <div id="chart-value-modalidade" class="chart-area"></div>
+              </article>
+            </div>
+
+            <div class="charts-grid">
+              <article class="chart-card">
+                <div class="chart-card__header">
+                  <div>
+                    <h3>Contratos por modalidade</h3>
+                    <p>Quantidade de registros por tipo de contratação.</p>
+                  </div>
+                </div>
+                <div id="chart-count-modalidade" class="chart-area"></div>
+              </article>
+
+              <article class="chart-card">
+                <div class="chart-card__header">
+                  <div>
+                    <h3>Valor por categoria</h3>
+                    <p>Categorias calculadas a partir do objeto.</p>
+                  </div>
+                </div>
+                <div id="chart-value-categoria" class="chart-area"></div>
+              </article>
+
+              <article class="chart-card">
+                <div class="chart-card__header">
+                  <div>
+                    <h3>Vencimentos por mês</h3>
+                    <p>Contratos agrupados por data de vencimento.</p>
+                  </div>
+                </div>
+                <div id="chart-due-month" class="chart-area"></div>
+              </article>
+
+              <article class="chart-card">
+                <div class="chart-card__header">
+                  <div>
+                    <h3>Pendências cadastrais</h3>
+                    <p>Campos críticos ausentes na base filtrada.</p>
+                  </div>
+                </div>
+                <div id="chart-pendencias" class="chart-area"></div>
+              </article>
+            </div>
+
+            <div class="charts-grid charts-grid--rankings">
+              <article class="chart-card">
+                <div class="chart-card__header">
+                  <div>
+                    <h3>Top 10 empresas</h3>
+                    <p>Maior valor contratado acumulado.</p>
+                  </div>
+                </div>
+                <div id="chart-top-empresas" class="chart-area"></div>
+              </article>
+
+              <article class="chart-card">
+                <div class="chart-card__header">
+                  <div>
+                    <h3>Top 10 gestores</h3>
+                    <p>Maior valor sob responsabilidade.</p>
+                  </div>
+                </div>
+                <div id="chart-top-gestores" class="chart-area"></div>
+              </article>
+            </div>
+          </div>
+        </div>
+      </section>
+
       <section id="tabela" class="section table-section" aria-labelledby="table-title">
         <div class="container">
           <div class="section-heading section-heading--table">
@@ -473,7 +575,7 @@
       <div class="container footer-grid">
         <div class="footer-brand">
           <span class="footer-logo-wrap">
-            <img src="assets/brasao-iguape.png?v=20260501-34" alt="Brasão de Iguape">
+            <img src="assets/brasao-iguape.png?v=20260501-35" alt="Brasão de Iguape">
           </span>
           <div>
             <strong>Prefeitura Municipal de Iguape/SP</strong>
@@ -500,8 +602,8 @@
       <div id="detail-body" class="detail-drawer__body"></div>
     </aside>
 
-    <script src="data/contratos.js?v=20260501-34"></script>
-    <script src="js/data-normalizer.js?v=20260501-34"></script>
-    <script src="js/app.js?v=20260501-34"></script>
+    <script src="data/contratos.js?v=20260501-35"></script>
+    <script src="js/data-normalizer.js?v=20260501-35"></script>
+    <script src="js/app.js?v=20260501-35"></script>
   </body>
 </html>

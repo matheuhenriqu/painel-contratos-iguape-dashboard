@@ -58,6 +58,14 @@ const elements = {
   activeContractsList: document.querySelector("#active-contracts-list"),
   activeContractsSummary: document.querySelector("#active-contracts-summary"),
   upcomingList: document.querySelector("#upcoming-list"),
+  chartStatus: document.querySelector("#chart-status"),
+  chartValueModalidade: document.querySelector("#chart-value-modalidade"),
+  chartCountModalidade: document.querySelector("#chart-count-modalidade"),
+  chartValueCategoria: document.querySelector("#chart-value-categoria"),
+  chartDueMonth: document.querySelector("#chart-due-month"),
+  chartTopEmpresas: document.querySelector("#chart-top-empresas"),
+  chartTopGestores: document.querySelector("#chart-top-gestores"),
+  chartPendencias: document.querySelector("#chart-pendencias"),
   filterSearch: document.querySelector("#filter-search"),
   filterStatusCalculado: document.querySelector("#filter-status-calculado"),
   filterStatusOriginal: document.querySelector("#filter-status-original"),
@@ -108,6 +116,29 @@ const FILTER_LABELS = {
   pendencias: "Pendências",
   valor: "Valor",
 };
+
+const STATUS_CHART_COLORS = {
+  Vencido: "var(--color-red-700)",
+  "Vence hoje": "var(--color-red-700)",
+  "Vence em até 30 dias": "var(--color-orange-700)",
+  "Atenção 31 a 60 dias": "var(--color-yellow-700)",
+  "Monitorar 61 a 90 dias": "var(--color-blue-700)",
+  Vigente: "var(--color-green-700)",
+  "Sem vencimento": "var(--color-slate-500)",
+};
+
+const CHART_PALETTE = [
+  "var(--color-blue-700)",
+  "var(--color-teal-700)",
+  "var(--color-green-700)",
+  "var(--color-orange-700)",
+  "var(--color-yellow-700)",
+  "#6f7f95",
+  "#4b6b8a",
+  "#007b83",
+  "#3d7f5a",
+  "#9a6b13",
+];
 
 let contracts = [];
 let filteredContracts = [];
@@ -176,6 +207,7 @@ function renderErrorState() {
   renderIndicators([]);
   renderActiveContracts([]);
   renderUpcoming([]);
+  renderCharts([]);
   renderTable([]);
   renderActiveFilterChips();
   elements.lastUpdate.textContent = "Dados indisponíveis";
@@ -660,6 +692,7 @@ function render(items) {
   renderIndicators(items);
   renderActiveContracts(items);
   renderUpcoming(items);
+  renderCharts(items);
   renderTable(items);
   renderActiveFilterChips();
 }
@@ -944,6 +977,237 @@ function renderUpcoming(items) {
       </dl>
     </article>
   `).join("");
+}
+
+function renderCharts(items) {
+  renderStatusChart(items);
+  renderValueByModalidadeChart(items);
+  renderCountByModalidadeChart(items);
+  renderValueByCategoriaChart(items);
+  renderDueMonthChart(items);
+  renderTopEmpresasChart(items);
+  renderTopGestoresChart(items);
+  renderPendenciasChart(items);
+}
+
+function renderStatusChart(items) {
+  if (!elements.chartStatus) {
+    return;
+  }
+
+  const statusValues = aggregateBy(items, "statusCalculado");
+  const rows = ContractData.STATUS_LABELS.map((status) => {
+    const aggregate = statusValues.find((row) => row.label === status) || { count: 0, value: 0 };
+    return {
+      label: status,
+      value: aggregate.count,
+      valueText: formatChartCount(aggregate.count),
+      detailText: `${formatCurrency.format(aggregate.value)} em valores numéricos`,
+      color: STATUS_CHART_COLORS[status] || "var(--color-slate-500)",
+    };
+  }).filter((row) => row.value > 0);
+
+  renderHorizontalBars(elements.chartStatus, rows, {
+    emptyMessage: "Nenhum contrato encontrado para os filtros selecionados.",
+  });
+}
+
+function renderValueByModalidadeChart(items) {
+  renderValueChart(elements.chartValueModalidade, aggregateBy(items, "modalidade")
+    .filter((row) => row.value > 0)
+    .sort(sortByValueDesc), {
+    emptyMessage: "Sem valores numéricos suficientes por modalidade.",
+    maxRows: 10,
+  });
+}
+
+function renderCountByModalidadeChart(items) {
+  renderCountChart(elements.chartCountModalidade, aggregateBy(items, "modalidade")
+    .filter((row) => row.count > 0)
+    .sort(sortByCountDesc), {
+    emptyMessage: "Sem contratos suficientes para agrupar por modalidade.",
+  });
+}
+
+function renderValueByCategoriaChart(items) {
+  renderValueChart(elements.chartValueCategoria, aggregateBy(items, "categoria")
+    .filter((row) => row.value > 0)
+    .sort(sortByValueDesc), {
+    emptyMessage: "Sem valores numéricos suficientes por categoria.",
+    maxRows: 12,
+  });
+}
+
+function renderDueMonthChart(items) {
+  if (!elements.chartDueMonth) {
+    return;
+  }
+
+  const rows = aggregateDueMonths(items)
+    .sort((a, b) => a.sortValue - b.sortValue)
+    .map((row) => ({
+      label: row.label,
+      value: row.count,
+      valueText: formatChartCount(row.count),
+      detailText: formatCurrency.format(row.value),
+      color: "var(--color-blue-700)",
+    }));
+
+  renderHorizontalBars(elements.chartDueMonth, rows, {
+    emptyMessage: "Sem datas de vencimento para os filtros selecionados.",
+  });
+}
+
+function renderTopEmpresasChart(items) {
+  renderValueChart(elements.chartTopEmpresas, aggregateBy(items, "empresa", { excludeBlank: true })
+    .filter((row) => row.value > 0)
+    .sort(sortByValueDesc)
+    .slice(0, 10), {
+    emptyMessage: "Sem valores numéricos suficientes para ranking de empresas.",
+    ranked: true,
+  });
+}
+
+function renderTopGestoresChart(items) {
+  renderValueChart(elements.chartTopGestores, aggregateBy(items, "gestor", { excludeBlank: true })
+    .filter((row) => row.value > 0)
+    .sort(sortByValueDesc)
+    .slice(0, 10), {
+    emptyMessage: "Sem valores numéricos suficientes para ranking de gestores.",
+    ranked: true,
+  });
+}
+
+function renderPendenciasChart(items) {
+  const rows = [
+    ["Sem fiscal", (item) => !item.fiscal, "var(--color-orange-700)"],
+    ["Sem gestor", (item) => !item.gestor, "var(--color-orange-700)"],
+    ["Sem valor", (item) => typeof item.valor !== "number", "var(--color-slate-500)"],
+    ["Sem vencimento", (item) => !item.dataVencimento, "var(--color-slate-500)"],
+    ["Sem contrato", (item) => !item.contrato, "var(--color-red-700)"],
+    ["Sem empresa", (item) => !item.empresa, "var(--color-red-700)"],
+  ].map(([label, predicate, color]) => {
+    const count = items.filter(predicate).length;
+    return {
+      label,
+      value: count,
+      valueText: formatChartCount(count),
+      detailText: "campo crítico ausente",
+      color,
+    };
+  }).filter((row) => row.value > 0);
+
+  renderHorizontalBars(elements.chartPendencias, rows, {
+    emptyMessage: items.length
+      ? "Nenhuma pendência cadastral crítica para os filtros selecionados."
+      : "Nenhum contrato encontrado para os filtros selecionados.",
+  });
+}
+
+function renderValueChart(target, rows, options = {}) {
+  renderHorizontalBars(target, rows.map((row, index) => ({
+    label: row.label,
+    value: row.value,
+    valueText: formatCurrency.format(row.value),
+    detailText: `${formatChartCount(row.count)} com valor numérico`,
+    color: chartPaletteColor(index),
+  })), options);
+}
+
+function renderCountChart(target, rows, options = {}) {
+  renderHorizontalBars(target, rows.map((row, index) => ({
+    label: row.label,
+    value: row.count,
+    valueText: formatChartCount(row.count),
+    detailText: row.value > 0 ? formatCurrency.format(row.value) : "sem valor numérico",
+    color: chartPaletteColor(index),
+  })), options);
+}
+
+function renderHorizontalBars(target, rows, options = {}) {
+  if (!target) {
+    return;
+  }
+
+  const visibleRows = rows
+    .filter((row) => Number(row.value) > 0)
+    .slice(0, options.maxRows || rows.length);
+
+  if (!visibleRows.length) {
+    target.innerHTML = `<p class="chart-empty">${escapeHtml(options.emptyMessage || "Sem dados suficientes para este gráfico.")}</p>`;
+    return;
+  }
+
+  const maxValue = Math.max(...visibleRows.map((row) => Number(row.value) || 0), 1);
+  target.innerHTML = `
+    <div class="chart-bars">
+      ${visibleRows.map((row, index) => {
+        const percent = Math.max(3, Math.round((Number(row.value) / maxValue) * 100));
+        const rank = options.ranked ? `<span class="chart-rank">${index + 1}</span>` : "";
+        return `
+          <div class="chart-bar" style="--bar-size: ${percent}%; --bar-color: ${row.color || chartPaletteColor(index)};">
+            <div class="chart-bar__meta">
+              <span>${rank}<strong>${escapeHtml(row.label)}</strong></span>
+              <em>${escapeHtml(row.valueText)}</em>
+            </div>
+            <div class="chart-bar__track" aria-hidden="true">
+              <span class="chart-bar__fill"></span>
+            </div>
+            ${row.detailText ? `<small>${escapeHtml(row.detailText)}</small>` : ""}
+          </div>
+        `;
+      }).join("")}
+    </div>
+  `;
+}
+
+function aggregateBy(items, key, options = {}) {
+  const groups = new Map();
+
+  items.forEach((item) => {
+    const rawLabel = item[key];
+    if (options.excludeBlank && !rawLabel) {
+      return;
+    }
+
+    const label = rawLabel || "Não informado";
+    const current = groups.get(label) || { label, count: 0, value: 0 };
+    current.count += 1;
+    if (typeof item.valor === "number") {
+      current.value += item.valor;
+    }
+    groups.set(label, current);
+  });
+
+  return [...groups.values()];
+}
+
+function aggregateDueMonths(items) {
+  const groups = new Map();
+
+  items.forEach((item) => {
+    const date = ContractData.parseDateValue(item.dataVencimento);
+    if (!date) {
+      return;
+    }
+
+    const year = date.getFullYear();
+    const month = date.getMonth();
+    const key = `${year}-${String(month + 1).padStart(2, "0")}`;
+    const current = groups.get(key) || {
+      label: formatMonthYear(date),
+      count: 0,
+      value: 0,
+      sortValue: new Date(year, month, 1).getTime(),
+    };
+    current.count += 1;
+    if (typeof item.valor === "number") {
+      current.value += item.valor;
+    }
+    groups.set(key, current);
+  });
+
+  return [...groups.values()];
 }
 
 function renderTableHead() {
@@ -1462,6 +1726,35 @@ function countCurrentContracts(items) {
 
 function formatContractCount(value) {
   return value === 1 ? "1 contrato" : `${value} contratos`;
+}
+
+function formatChartCount(value) {
+  return value === 1 ? "1 contrato" : `${value} contratos`;
+}
+
+function formatMonthYear(date) {
+  return new Intl.DateTimeFormat("pt-BR", {
+    month: "short",
+    year: "numeric",
+  }).format(date).replace(".", "");
+}
+
+function sortByValueDesc(a, b) {
+  if (b.value !== a.value) {
+    return b.value - a.value;
+  }
+  return String(a.label).localeCompare(String(b.label), "pt-BR", { sensitivity: "base" });
+}
+
+function sortByCountDesc(a, b) {
+  if (b.count !== a.count) {
+    return b.count - a.count;
+  }
+  return String(a.label).localeCompare(String(b.label), "pt-BR", { sensitivity: "base" });
+}
+
+function chartPaletteColor(index) {
+  return CHART_PALETTE[index % CHART_PALETTE.length];
 }
 
 function formatDateISO(value) {

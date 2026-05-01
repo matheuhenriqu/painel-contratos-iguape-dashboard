@@ -978,6 +978,168 @@ tbody tr:focus-visible {
   box-shadow: var(--focus-ring);
 }
 
+.charts-section {
+  background: linear-gradient(180deg, #ffffff, #f6fbfd);
+  border-bottom: 1px solid rgba(18, 119, 173, 0.1);
+}
+
+.charts-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--space-4);
+  min-width: 0;
+}
+
+.charts-grid + .charts-grid {
+  margin-top: var(--space-4);
+}
+
+.charts-grid--priority {
+  grid-template-columns: minmax(0, 1.18fr) minmax(0, 0.82fr);
+}
+
+.charts-grid--rankings {
+  align-items: start;
+}
+
+.chart-card {
+  display: grid;
+  align-content: start;
+  gap: var(--space-4);
+  min-width: 0;
+  border: var(--border-subtle);
+  border-radius: var(--radius);
+  padding: var(--space-5);
+  background: var(--color-surface);
+  box-shadow: var(--shadow-card);
+}
+
+.chart-card--wide {
+  min-height: 100%;
+}
+
+.chart-card__header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--space-3);
+  min-width: 0;
+  padding-bottom: var(--space-3);
+  border-bottom: var(--border-subtle);
+}
+
+.chart-card__header h3 {
+  margin: 0;
+  color: var(--color-slate-900);
+  font-size: 1.02rem;
+  line-height: 1.2;
+}
+
+.chart-card__header p {
+  margin: var(--space-1) 0 0;
+  color: var(--color-slate-500);
+  font-size: 0.86rem;
+  line-height: 1.35;
+}
+
+.chart-area {
+  min-width: 0;
+}
+
+.chart-bars {
+  display: grid;
+  gap: var(--space-3);
+  min-width: 0;
+}
+
+.chart-bar {
+  display: grid;
+  gap: var(--space-2);
+  min-width: 0;
+}
+
+.chart-bar__meta {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--space-3);
+  min-width: 0;
+}
+
+.chart-bar__meta span {
+  display: inline-flex;
+  align-items: flex-start;
+  gap: var(--space-2);
+  min-width: 0;
+  color: var(--color-slate-800);
+  font-size: 0.88rem;
+  line-height: 1.25;
+}
+
+.chart-bar__meta strong {
+  min-width: 0;
+  font-weight: 850;
+}
+
+.chart-bar__meta em {
+  flex: 0 0 auto;
+  max-width: 45%;
+  color: var(--color-slate-900);
+  font-size: 0.82rem;
+  font-style: normal;
+  font-weight: 850;
+  line-height: 1.25;
+  text-align: right;
+}
+
+.chart-rank {
+  display: inline-grid;
+  place-items: center;
+  flex: 0 0 auto;
+  width: 1.45rem;
+  height: 1.45rem;
+  border-radius: var(--radius-pill);
+  background: #e8f3fb;
+  color: var(--color-blue-900);
+  font-size: 0.72rem;
+  font-weight: 900;
+  line-height: 1;
+}
+
+.chart-bar__track {
+  position: relative;
+  height: 12px;
+  overflow: hidden;
+  border-radius: var(--radius-pill);
+  background: #edf3f8;
+}
+
+.chart-bar__fill {
+  display: block;
+  width: var(--bar-size);
+  min-width: 8px;
+  height: 100%;
+  border-radius: inherit;
+  background: var(--bar-color);
+}
+
+.chart-bar small {
+  color: var(--color-slate-500);
+  font-size: 0.78rem;
+  line-height: 1.25;
+}
+
+.chart-empty {
+  margin: 0;
+  border: 1px dashed rgba(104, 119, 141, 0.36);
+  border-radius: var(--radius);
+  padding: var(--space-5);
+  background: var(--color-slate-50);
+  color: var(--color-slate-600);
+  font-weight: 750;
+  text-align: center;
+}
+
 .kpi-groups {
   display: grid;
   gap: var(--space-6);
@@ -2049,6 +2211,11 @@ body.detail-open {
 }
 
 @media (max-width: 1180px) {
+  .charts-grid,
+  .charts-grid--priority {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
   .filter-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
@@ -2386,6 +2553,9 @@ body.detail-open {
 
   .alert-list,
   .active-contract-meta,
+  .charts-grid,
+  .charts-grid--priority,
+  .charts-grid--rankings,
   .deadline-meta,
   .kpi-grid,
   .kpi-group--overview .kpi-grid,
@@ -2503,6 +2673,20 @@ body.detail-open {
   .health-critical {
     padding: var(--space-3);
   }
+
+  .chart-card {
+    padding: var(--space-4);
+  }
+
+  .chart-bar__meta {
+    gap: var(--space-2);
+    flex-wrap: wrap;
+  }
+
+  .chart-bar__meta em {
+    max-width: 100%;
+    text-align: left;
+  }
 }
 
 @media (max-width: 430px) {
@@ -2512,6 +2696,7 @@ body.detail-open {
 
   .kpi-card,
   .info-panel,
+  .chart-card,
   .active-contract-card,
   .deadline-item,
   tbody tr {
