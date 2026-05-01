@@ -152,7 +152,7 @@ test("ignora acentos e caixa na busca", () => {
   assertEqual(result.length, accentResult.length, "busca com e sem acento deve retornar a mesma quantidade");
 });
 
-test("aplica cada filtro individual sem erro", () => {
+test("valida recortes individuais da base sem erro", () => {
   for (const status of Object.keys(statusCounts)) assert(filterItems(contracts, { status }).length > 0, `status sem retorno: ${status}`);
   for (const statusOriginal of Object.keys(countBy(contracts, (item) => item.statusOriginal))) assert(filterItems(contracts, { statusOriginal }).length > 0, `status original sem retorno: ${statusOriginal}`);
   for (const modalidade of Object.keys(modalidadeCounts)) assert(filterItems(contracts, { modalidade }).length > 0, `modalidade sem retorno: ${modalidade}`);
@@ -161,21 +161,21 @@ test("aplica cada filtro individual sem erro", () => {
   const empresa = contracts.find((item) => item.empresa)?.empresa;
   const gestor = contracts.find((item) => item.gestor)?.gestor;
   const fiscal = contracts.find((item) => item.fiscal)?.fiscal;
-  assert(filterItems(contracts, { empresa }).length > 0, "filtro por empresa deve retornar dados");
-  assert(filterItems(contracts, { gestor }).length > 0, "filtro por gestor deve retornar dados");
-  assert(filterItems(contracts, { fiscal }).length > 0, "filtro por fiscal deve retornar dados");
+  assert(filterItems(contracts, { empresa }).length > 0, "recorte por empresa deve retornar dados");
+  assert(filterItems(contracts, { gestor }).length > 0, "recorte por gestor deve retornar dados");
+  assert(filterItems(contracts, { fiscal }).length > 0, "recorte por fiscal deve retornar dados");
 });
 
-test("combina múltiplos filtros", () => {
+test("combina múltiplos recortes administrativos", () => {
   const base = contracts.find((item) => item.statusCalculado === "Vencido" && item.modalidade && item.categoria);
-  assert(base, "deve existir contrato para combinação de filtros");
+  assert(base, "deve existir contrato para combinação de recortes");
   const result = filterItems(contracts, {
     status: base.statusCalculado,
     modalidade: base.modalidade,
     categoria: base.categoria,
     pendencias: base.possuiPendencias ? "with" : "complete",
   });
-  assert(result.length > 0, "combinação de filtros deve retornar pelo menos um contrato");
+  assert(result.length > 0, "combinação de recortes deve retornar pelo menos um contrato");
 });
 
 test("ordena lista por dias e por valor", () => {

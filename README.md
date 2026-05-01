@@ -29,7 +29,7 @@ Execute:
 node scripts/validate-dashboard.mjs --reference-date=2026-05-01
 ```
 
-O script valida carregamento dos dados, normalização, status calculado, busca sem acento, filtros, combinações de filtros, ordenação, totais, rankings, estados vazios, dados sem valor, dados sem vencimento, pendências e cenários de robustez com campos inválidos ou ausentes.
+O script valida carregamento dos dados, normalização, status calculado, ordenação, totais, rankings, estados vazios, dados sem valor, dados sem vencimento, pendências e cenários de robustez com campos inválidos ou ausentes.
 
 Para testar com a data atual da máquina:
 
@@ -157,10 +157,9 @@ Categorias usadas:
 
 ## Funcionalidades principais
 
-- Busca geral sem diferenciar acentos ou maiúsculas/minúsculas.
-- Filtros combináveis por status, modalidade, categoria, empresa, gestor, fiscal, vencimento, pendências e valor.
-- Indicadores recalculados conforme filtros.
-- Alertas, saúde da base e vencimentos recalculados conforme filtros.
+- Indicadores administrativos no topo, calculados com base na data atual.
+- Alertas prioritários, saúde da base e contratos vigentes ordenados por vencimento.
+- Lista final de vencidos e próximos vencimentos, com vencidos primeiro.
 - Tabela ordenável e paginada.
 - Detalhe completo do contrato ao clicar em uma linha.
 - Estados de carregamento, erro e vazio.
@@ -187,8 +186,8 @@ python3 -m http.server 8000
 Com o servidor ativo, abra `http://localhost:8000/` e confira:
 
 - indicadores no topo;
-- filtros e busca;
-- alertas, saúde da base e próximos vencimentos;
+- alertas, saúde da base e contratos vigentes;
+- vencidos e próximos vencimentos ao final;
 - tabela;
 - modal lateral de detalhes;
 - layout em tela grande e celular;

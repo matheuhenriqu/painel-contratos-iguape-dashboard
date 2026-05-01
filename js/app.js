@@ -242,7 +242,7 @@ function renderLastUpdate() {
 
 function renderQuickAccess(items) {
   const summary = buildDashboardSummary(items);
-  elements.quickActive.textContent = summary.statusCounts.Vigente || 0;
+  elements.quickActive.textContent = countCurrentContracts(items);
   elements.quickSoon.textContent = (summary.statusCounts["Vence hoje"] || 0) + (summary.statusCounts["Vence em até 30 dias"] || 0);
   elements.quickOverdue.textContent = summary.statusCounts.Vencido || 0;
 }
@@ -255,7 +255,7 @@ function renderIndicators(items) {
   elements.kpiOverdue.textContent = summary.statusCounts.Vencido || 0;
   elements.kpiSoon.textContent = (summary.statusCounts["Vence hoje"] || 0) + (summary.statusCounts["Vence em até 30 dias"] || 0);
   elements.kpiAttention.textContent = summary.statusCounts["Atenção 31 a 60 dias"] || 0;
-  elements.kpiActive.textContent = summary.statusCounts.Vigente || 0;
+  elements.kpiActive.textContent = countCurrentContracts(items);
   elements.kpiNoDue.textContent = summary.statusCounts["Sem vencimento"] || 0;
   elements.kpiQuality.textContent = summary.withPendencias;
   elements.kpiNoManager.textContent = summary.noManager;
@@ -481,11 +481,11 @@ function renderTable(items) {
   const pageEnd = pageSize === Infinity ? total : Math.min(total, pageStart + pageSize);
   const pageItems = sortedItems.slice(pageStart, pageEnd);
 
-  elements.resultCount.textContent = `${total} ${total === 1 ? "registro filtrado" : "registros filtrados"}`;
+  elements.resultCount.textContent = `${total} ${total === 1 ? "contrato" : "contratos"}`;
   elements.pageStatus.textContent = `Página ${total ? currentPage : 0} de ${total ? totalPages : 0}`;
   elements.pageRange.textContent = total
-    ? `${pageStart + 1}-${pageEnd} de ${total} registros exibidos`
-    : "0 registros exibidos";
+    ? `${pageStart + 1}-${pageEnd} de ${total} contratos exibidos`
+    : "0 contratos exibidos";
   elements.prevPage.disabled = !total || currentPage <= 1;
   elements.nextPage.disabled = !total || currentPage >= totalPages;
 
@@ -959,6 +959,10 @@ function percentOf(value, total) {
 
 function sumNumericValue(items) {
   return items.reduce((sum, item) => sum + (typeof item.valor === "number" ? item.valor : 0), 0);
+}
+
+function countCurrentContracts(items) {
+  return items.filter(isActiveContract).length;
 }
 
 function formatContractCount(value) {
