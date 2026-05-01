@@ -9,9 +9,9 @@
     <meta property="og:description" content="Acompanhamento administrativo dos contratos municipais de Iguape/SP.">
     <meta property="og:image" content="https://matheuhenriqu.github.io/painel-contratos-iguape-dashboard/assets/logo-iguape-og.png">
     <title>Painel de Contratos | Prefeitura Municipal de Iguape/SP</title>
-    <link rel="icon" href="assets/favicon-iguape.png?v=20260501-32" type="image/png">
-    <link rel="apple-touch-icon" href="assets/apple-touch-icon.png?v=20260501-32">
-    <link rel="stylesheet" href="css/styles.css?v=20260501-32">
+    <link rel="icon" href="assets/favicon-iguape.png?v=20260501-33" type="image/png">
+    <link rel="apple-touch-icon" href="assets/apple-touch-icon.png?v=20260501-33">
+    <link rel="stylesheet" href="css/styles.css?v=20260501-33">
   </head>
   <body>
     <a class="skip-link" href="#indicadores">Ir para os indicadores</a>
@@ -64,7 +64,7 @@
         <div class="container hero__grid">
           <div class="hero__copy">
             <div class="hero-brand">
-              <img class="hero-logo" src="assets/brasao-iguape.png?v=20260501-32" alt="Brasão de Iguape">
+              <img class="hero-logo" src="assets/brasao-iguape.png?v=20260501-33" alt="Brasão de Iguape">
               <div>
                 <p class="hero-agency">Prefeitura Municipal de Iguape/SP</p>
                 <span class="hero-seal">Transparência Municipal</span>
@@ -120,64 +120,90 @@
           </div>
 
           <div id="indicators-content" class="collapsible-region">
-            <div class="kpi-grid kpi-grid--primary" aria-live="polite">
-              <article class="kpi-card">
-                <div class="kpi-card__top"><span>Total de contratos</span><svg class="icon" aria-hidden="true"><use href="#icon-file"></use></svg></div>
-                <strong id="kpi-total">0</strong>
-                <small>contratos encontrados</small>
-              </article>
-              <article class="kpi-card kpi-card--value">
-                <div class="kpi-card__top"><span>Valor total contratado</span><svg class="icon" aria-hidden="true"><use href="#icon-wallet"></use></svg></div>
-                <strong id="kpi-value">R$ 0,00</strong>
-                <small>somente registros com valor</small>
-              </article>
-              <article class="kpi-card kpi-card--success">
-                <div class="kpi-card__top"><span>Contratos ativos/vigentes</span><svg class="icon" aria-hidden="true"><use href="#icon-check"></use></svg></div>
-                <strong id="kpi-active">0</strong>
-                <small>não vencidos com data de vencimento</small>
-              </article>
-              <article class="kpi-card kpi-card--danger">
-                <div class="kpi-card__top"><span>Vencidos</span><svg class="icon" aria-hidden="true"><use href="#icon-alert"></use></svg></div>
-                <strong id="kpi-overdue">0</strong>
-                <small>com base na data atual</small>
-              </article>
-              <article class="kpi-card kpi-card--warning">
-                <div class="kpi-card__top"><span>Até 30 dias</span><svg class="icon" aria-hidden="true"><use href="#icon-clock"></use></svg></div>
-                <strong id="kpi-soon">0</strong>
-                <small>vencimentos próximos</small>
-              </article>
-              <article class="kpi-card kpi-card--attention">
-                <div class="kpi-card__top"><span>Atenção 31 a 60 dias</span><svg class="icon" aria-hidden="true"><use href="#icon-calendar"></use></svg></div>
-                <strong id="kpi-attention">0</strong>
-                <small>exigem acompanhamento</small>
-              </article>
-              <article class="kpi-card">
-                <div class="kpi-card__top"><span>Sem data de vencimento</span><svg class="icon" aria-hidden="true"><use href="#icon-calendar"></use></svg></div>
-                <strong id="kpi-no-due">0</strong>
-                <small>data não informada</small>
-              </article>
-              <article class="kpi-card">
-                <div class="kpi-card__top"><span>Pendências cadastrais</span><svg class="icon" aria-hidden="true"><use href="#icon-clipboard"></use></svg></div>
-                <strong id="kpi-quality">0</strong>
-                <small>campos ausentes ou datas inconsistentes</small>
-              </article>
-              <article class="kpi-card">
-                <div class="kpi-card__top"><span>Total sem gestor</span><svg class="icon" aria-hidden="true"><use href="#icon-user"></use></svg></div>
-                <strong id="kpi-no-manager">0</strong>
-                <small>responsável não informado</small>
-              </article>
-              <article class="kpi-card">
-                <div class="kpi-card__top"><span>Total sem fiscal</span><svg class="icon" aria-hidden="true"><use href="#icon-shield"></use></svg></div>
-                <strong id="kpi-no-fiscal">0</strong>
-                <small>fiscal não informado</small>
-              </article>
+            <div class="kpi-groups" aria-live="polite">
+              <section class="kpi-group kpi-group--overview" aria-labelledby="kpi-overview-title">
+                <div class="kpi-group__header">
+                  <h3 id="kpi-overview-title">Visão geral</h3>
+                  <span>Grupo 1</span>
+                </div>
+                <div class="kpi-grid">
+                  <article class="kpi-card">
+                    <div class="kpi-card__top"><span>Total de contratos</span><svg class="icon" aria-hidden="true"><use href="#icon-file"></use></svg></div>
+                    <strong id="kpi-total">0</strong>
+                    <small>contratos na base filtrada</small>
+                  </article>
+                  <article class="kpi-card kpi-card--value">
+                    <div class="kpi-card__top"><span>Valor total contratado</span><svg class="icon" aria-hidden="true"><use href="#icon-wallet"></use></svg></div>
+                    <strong id="kpi-value">R$ 0,00</strong>
+                    <small>soma dos valores numéricos</small>
+                  </article>
+                  <article class="kpi-card kpi-card--success">
+                    <div class="kpi-card__top"><span>Contratos vigentes</span><svg class="icon" aria-hidden="true"><use href="#icon-check"></use></svg></div>
+                    <strong id="kpi-active">0</strong>
+                    <small>não vencidos com vencimento</small>
+                  </article>
+                </div>
+              </section>
+
+              <section class="kpi-group kpi-group--risk" aria-labelledby="kpi-risk-title">
+                <div class="kpi-group__header">
+                  <h3 id="kpi-risk-title">Risco de vencimento</h3>
+                  <span>Grupo 2</span>
+                </div>
+                <div class="kpi-grid">
+                  <article class="kpi-card kpi-card--danger">
+                    <div class="kpi-card__top"><span>Vencidos</span><svg class="icon" aria-hidden="true"><use href="#icon-alert"></use></svg></div>
+                    <strong id="kpi-overdue">0</strong>
+                    <small>fora do prazo calculado</small>
+                  </article>
+                  <article class="kpi-card kpi-card--warning">
+                    <div class="kpi-card__top"><span>Até 30 dias</span><svg class="icon" aria-hidden="true"><use href="#icon-clock"></use></svg></div>
+                    <strong id="kpi-soon">0</strong>
+                    <small>renovação ou encerramento próximo</small>
+                  </article>
+                  <article class="kpi-card kpi-card--attention">
+                    <div class="kpi-card__top"><span>Atenção 31 a 60 dias</span><svg class="icon" aria-hidden="true"><use href="#icon-calendar"></use></svg></div>
+                    <strong id="kpi-attention">0</strong>
+                    <small>acompanhar providências</small>
+                  </article>
+                </div>
+              </section>
+
+              <section class="kpi-group kpi-group--quality" aria-labelledby="kpi-quality-title">
+                <div class="kpi-group__header">
+                  <h3 id="kpi-quality-title">Qualidade cadastral</h3>
+                  <span>Grupo 3</span>
+                </div>
+                <div class="kpi-grid kpi-grid--quality">
+                  <article class="kpi-card kpi-card--neutral">
+                    <div class="kpi-card__top"><span>Sem data de vencimento</span><svg class="icon" aria-hidden="true"><use href="#icon-calendar"></use></svg></div>
+                    <strong id="kpi-no-due">0</strong>
+                    <small>data não informada</small>
+                  </article>
+                  <article class="kpi-card kpi-card--quality">
+                    <div class="kpi-card__top"><span>Pendências cadastrais</span><svg class="icon" aria-hidden="true"><use href="#icon-clipboard"></use></svg></div>
+                    <strong id="kpi-quality">0</strong>
+                    <small>campos críticos ausentes</small>
+                  </article>
+                  <article class="kpi-card kpi-card--quality">
+                    <div class="kpi-card__top"><span>Sem gestor</span><svg class="icon" aria-hidden="true"><use href="#icon-user"></use></svg></div>
+                    <strong id="kpi-no-manager">0</strong>
+                    <small>responsável não informado</small>
+                  </article>
+                  <article class="kpi-card kpi-card--quality">
+                    <div class="kpi-card__top"><span>Sem fiscal</span><svg class="icon" aria-hidden="true"><use href="#icon-shield"></use></svg></div>
+                    <strong id="kpi-no-fiscal">0</strong>
+                    <small>fiscal não informado</small>
+                  </article>
+                </div>
+              </section>
             </div>
 
             <div class="ops-grid">
               <article class="info-panel">
                 <div class="panel-title">
                   <h3>Alertas Prioritários</h3>
-                  <span>Base completa</span>
+                  <span>Ocorrências ativas</span>
                 </div>
                 <div id="priority-alerts" class="alert-list"></div>
               </article>
@@ -185,7 +211,7 @@
               <article class="info-panel">
                 <div class="panel-title">
                   <h3>Saúde da base</h3>
-                  <span>Completude cadastral</span>
+                  <span>Campos críticos</span>
                 </div>
                 <div id="base-health" class="health-list"></div>
               </article>
@@ -286,7 +312,7 @@
       <div class="container footer-grid">
         <div class="footer-brand">
           <span class="footer-logo-wrap">
-            <img src="assets/brasao-iguape.png?v=20260501-32" alt="Brasão de Iguape">
+            <img src="assets/brasao-iguape.png?v=20260501-33" alt="Brasão de Iguape">
           </span>
           <div>
             <strong>Prefeitura Municipal de Iguape/SP</strong>
@@ -313,8 +339,8 @@
       <div id="detail-body" class="detail-drawer__body"></div>
     </aside>
 
-    <script src="data/contratos.js?v=20260501-32"></script>
-    <script src="js/data-normalizer.js?v=20260501-32"></script>
-    <script src="js/app.js?v=20260501-32"></script>
+    <script src="data/contratos.js?v=20260501-33"></script>
+    <script src="js/data-normalizer.js?v=20260501-33"></script>
+    <script src="js/app.js?v=20260501-33"></script>
   </body>
 </html>

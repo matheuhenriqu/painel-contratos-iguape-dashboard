@@ -314,49 +314,67 @@ function renderPriorityAlerts(summary) {
     {
       label: "Vencidos",
       value: summary.statusCounts.Vencido || 0,
-      detail: "contratos fora do prazo",
+      detail: "Regularizar encerramento, renovação ou registro.",
       badge: "badge--danger",
+      tone: "danger",
     },
     {
       label: "Vencem hoje",
       value: summary.statusCounts["Vence hoje"] || 0,
-      detail: "exigem ação imediata",
+      detail: "Verificar providência imediata.",
       badge: "badge--danger",
+      tone: "danger",
     },
     {
       label: "Até 30 dias",
       value: summary.statusCounts["Vence em até 30 dias"] || 0,
-      detail: "renovação ou encerramento próximo",
+      detail: "Planejar renovação ou encerramento.",
       badge: "badge--warning",
+      tone: "warning",
     },
     {
       label: "Sem fiscal",
       value: summary.noFiscal,
-      detail: "fiscal não informado",
+      detail: "Completar responsável pela fiscalização.",
       badge: "badge--warning",
+      tone: "attention",
     },
     {
       label: "Sem gestor",
       value: summary.noManager,
-      detail: "gestor não informado",
+      detail: "Completar responsável pela gestão.",
       badge: "badge--warning",
+      tone: "attention",
     },
     {
       label: "Sem vencimento",
       value: summary.noDueDate,
-      detail: "data de vencimento ausente",
+      detail: "Informar prazo para acompanhamento.",
       badge: "badge--neutral",
+      tone: "neutral",
     },
     {
       label: "Valores ausentes",
       value: summary.noValue,
-      detail: "sem valor numérico válido",
+      detail: "Revisar valor numérico do contrato.",
       badge: "badge--neutral",
+      tone: "neutral",
     },
   ];
 
-  elements.priorityAlerts.innerHTML = alerts.map((alert) => `
-    <div class="alert-item">
+  const activeAlerts = alerts.filter((alert) => alert.value > 0);
+  if (!activeAlerts.length) {
+    elements.priorityAlerts.innerHTML = `
+      <div class="alert-empty">
+        <strong>Nenhum alerta prioritário para os filtros selecionados.</strong>
+        <small>A base filtrada não possui vencimentos críticos ou campos prioritários ausentes.</small>
+      </div>
+    `;
+    return;
+  }
+
+  elements.priorityAlerts.innerHTML = activeAlerts.map((alert) => `
+    <div class="alert-item alert-item--${alert.tone}">
       <span class="badge ${alert.badge}">${alert.value}</span>
       <div>
         <strong>${escapeHtml(alert.label)}</strong>
@@ -368,15 +386,22 @@ function renderPriorityAlerts(summary) {
 
 function renderBaseHealth(summary) {
   const total = summary.total || 0;
-  const rows = [
-    ["Registros completos", total - summary.withPendencias],
-    ["Com fiscal preenchido", summary.withFiscal],
-    ["Com gestor preenchido", summary.withManager],
-    ["Com valor preenchido", summary.withValue],
-    ["Com vencimento preenchido", summary.withDueDate],
+  const completeRecords = Math.max(total - summary.withPendencias, 0);
+  const completePercent = percentOf(completeRecords, total);
+  const metrics = [
+    ["Fiscal preenchido", summary.withFiscal],
+    ["Gestor preenchido", summary.withManager],
+    ["Valor preenchido", summary.withValue],
+    ["Vencimento preenchido", summary.withDueDate],
+  ];
+  const missingFields = [
+    ["Sem vencimento", summary.noDueDate],
+    ["Sem fiscal", summary.noFiscal],
+    ["Sem gestor", summary.noManager],
+    ["Sem valor", summary.noValue],
   ];
 
-  elements.baseHealth.innerHTML = rows.map(([label, value]) => {
+  const metricRows = metrics.map(([label, value]) => {
     const percent = percentOf(value, total);
     return `
       <div class="health-row">
@@ -391,6 +416,32 @@ function renderBaseHealth(summary) {
       </div>
     `;
   }).join("");
+
+  const missingRows = missingFields.map(([label, value]) => `
+    <div class="health-critical">
+      <span>${escapeHtml(label)}</span>
+      <strong>${value}</strong>
+    </div>
+  `).join("");
+
+  elements.baseHealth.innerHTML = `
+    <div class="health-overview">
+      <div class="health-overview__meta">
+        <span>Registros completos</span>
+        <strong>${completePercent}%</strong>
+        <small>${completeRecords} de ${total} registros sem pendências críticas</small>
+      </div>
+      <div class="bar-track bar-track--large" aria-hidden="true">
+        <span class="bar-fill" style="width: ${completePercent}%; background: ${healthColor(completePercent)}"></span>
+      </div>
+    </div>
+    <div class="health-critical-list" aria-label="Campos críticos ausentes">
+      ${missingRows}
+    </div>
+    <div class="health-metrics">
+      ${metricRows}
+    </div>
+  `;
 }
 
 function renderActiveContracts(items) {
