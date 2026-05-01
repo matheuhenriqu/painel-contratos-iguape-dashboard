@@ -712,6 +712,10 @@ tbody tr:focus-visible {
   white-space: nowrap;
 }
 
+.filters-mobile-controls {
+  display: none;
+}
+
 .filters-search-card,
 .filters-panel {
   border: var(--border-subtle);
@@ -2632,6 +2636,15 @@ body.detail-open {
   .filters-open-button {
     display: inline-flex;
     flex: 0 0 auto;
+  }
+
+  .filters-mobile-controls {
+    display: flex;
+    justify-content: stretch;
+  }
+
+  .filters-mobile-controls .filters-open-button {
+    width: 100%;
   }
 
   .filters-search-row {

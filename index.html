@@ -9,9 +9,9 @@
     <meta property="og:description" content="Acompanhamento administrativo dos contratos municipais de Iguape/SP.">
     <meta property="og:image" content="https://matheuhenriqu.github.io/painel-contratos-iguape-dashboard/assets/logo-iguape-og.png">
     <title>Painel de Contratos | Prefeitura Municipal de Iguape/SP</title>
-    <link rel="icon" href="assets/favicon-iguape.png?v=20260501-39" type="image/png">
-    <link rel="apple-touch-icon" href="assets/apple-touch-icon.png?v=20260501-39">
-    <link rel="stylesheet" href="css/styles.css?v=20260501-39">
+    <link rel="icon" href="assets/favicon-iguape.png?v=20260501-42" type="image/png">
+    <link rel="apple-touch-icon" href="assets/apple-touch-icon.png?v=20260501-42">
+    <link rel="stylesheet" href="css/styles.css?v=20260501-42">
   </head>
   <body>
     <a class="skip-link" href="#indicadores">Ir para os indicadores</a>
@@ -70,7 +70,7 @@
         <div class="container hero__grid">
           <div class="hero__copy">
             <div class="hero-brand">
-              <img class="hero-logo" src="assets/brasao-iguape.png?v=20260501-39" alt="Brasão de Iguape">
+              <img class="hero-logo" src="assets/brasao-iguape.png?v=20260501-42" alt="Brasão de Iguape">
               <div>
                 <p class="hero-agency">Prefeitura Municipal de Iguape/SP</p>
                 <span class="hero-seal">Transparência Municipal</span>
@@ -121,11 +121,11 @@
             </div>
             <div class="section-actions">
               <p id="last-update" class="muted">Carregando dados...</p>
-              <button class="button button--ghost button--compact" type="button" data-toggle-section="indicators-content" data-toggle-label="indicadores" aria-expanded="true" aria-controls="indicators-content" aria-label="Ocultar indicadores">Ocultar</button>
+              <button class="button button--ghost button--compact" type="button" data-toggle-section="indicators-content" data-toggle-label="indicadores" aria-expanded="false" aria-controls="indicators-content" aria-label="Mostrar indicadores">Mostrar</button>
             </div>
           </div>
 
-          <div id="indicators-content" class="collapsible-region">
+          <div id="indicators-content" class="collapsible-region" hidden>
             <div class="kpi-groups" aria-live="polite">
               <section class="kpi-group kpi-group--overview" aria-labelledby="kpi-overview-title">
                 <div class="kpi-group__header">
@@ -232,12 +232,12 @@
             <div>
               <div class="heading-with-action">
                 <h2 id="active-contracts-title"><svg class="heading-icon" aria-hidden="true"><use href="#icon-calendar"></use></svg>Contratos vigentes</h2>
-                <button id="toggle-active-contracts" class="button button--ghost button--compact" type="button" data-toggle-section="active-contracts-content" data-toggle-label="contratos vigentes" aria-expanded="true" aria-controls="active-contracts-content" aria-label="Ocultar contratos vigentes">Ocultar</button>
+                <button id="toggle-active-contracts" class="button button--ghost button--compact" type="button" data-toggle-section="active-contracts-content" data-toggle-label="contratos vigentes" aria-expanded="false" aria-controls="active-contracts-content" aria-label="Mostrar contratos vigentes">Mostrar</button>
               </div>
             </div>
           </div>
 
-          <div id="active-contracts-content" class="collapsible-region">
+          <div id="active-contracts-content" class="collapsible-region" hidden>
             <p id="active-contracts-summary" class="muted active-contracts-summary">Carregando contratos vigentes...</p>
             <div id="active-contracts-list" class="active-contracts-list" aria-live="polite"></div>
           </div>
@@ -252,149 +252,157 @@
                 <h2 id="filters-title"><svg class="heading-icon" aria-hidden="true"><use href="#icon-search"></use></svg>Consulta avançada</h2>
                 <p class="muted">Busque contratos e combine filtros administrativos.</p>
               </div>
-              <button id="open-filters" class="button button--ghost filters-open-button" type="button" aria-controls="filters-panel" aria-expanded="false">
-                <svg class="icon" aria-hidden="true"><use href="#icon-filter"></use></svg>
-                Filtros
-              </button>
+              <div class="section-actions">
+                <button class="button button--ghost button--compact" type="button" data-toggle-section="filters-content" data-toggle-label="consulta avançada" aria-expanded="false" aria-controls="filters-content" aria-label="Mostrar consulta avançada">Mostrar</button>
+              </div>
             </div>
 
-            <div class="filters-search-card">
-              <label for="filter-search">Busca geral</label>
-              <div class="filters-search-row">
-                <div class="filters-search-input">
-                  <svg class="icon" aria-hidden="true"><use href="#icon-search"></use></svg>
-                  <input id="filter-search" data-filter="search" type="search" autocomplete="off" placeholder="Digite a busca">
+            <div id="filters-content" class="collapsible-region" hidden>
+              <div class="filters-mobile-controls">
+                <button id="open-filters" class="button button--ghost filters-open-button" type="button" aria-controls="filters-panel" aria-expanded="false">
+                  <svg class="icon" aria-hidden="true"><use href="#icon-filter"></use></svg>
+                  Filtros
+                </button>
+              </div>
+
+              <div class="filters-search-card">
+                <label for="filter-search">Busca geral</label>
+                <div class="filters-search-row">
+                  <div class="filters-search-input">
+                    <svg class="icon" aria-hidden="true"><use href="#icon-search"></use></svg>
+                    <input id="filter-search" data-filter="search" type="search" autocomplete="off" placeholder="Digite a busca">
+                  </div>
+                  <button id="apply-filters-desktop" class="button filters-search-button" type="button">Buscar</button>
                 </div>
-                <button id="apply-filters-desktop" class="button filters-search-button" type="button">Buscar</button>
               </div>
-            </div>
 
-            <div id="active-filters" class="active-filter-chips" aria-live="polite">
-              <span class="active-filter-chips__empty">Nenhum filtro aplicado.</span>
-            </div>
+              <div id="active-filters" class="active-filter-chips" aria-live="polite">
+                <span class="active-filter-chips__empty">Nenhum filtro aplicado.</span>
+              </div>
 
-            <div id="filters-backdrop" class="filters-backdrop" hidden></div>
-            <aside id="filters-panel" class="filters-panel" aria-labelledby="filters-panel-title" aria-hidden="false">
-              <div class="filters-panel__header">
-                <div>
-                  <p class="eyebrow">Refinar consulta</p>
-                  <h3 id="filters-panel-title">Filtros</h3>
+              <div id="filters-backdrop" class="filters-backdrop" hidden></div>
+              <aside id="filters-panel" class="filters-panel" aria-labelledby="filters-panel-title" aria-hidden="false">
+                <div class="filters-panel__header">
+                  <div>
+                    <p class="eyebrow">Refinar consulta</p>
+                    <h3 id="filters-panel-title">Filtros</h3>
+                  </div>
+                  <button id="close-filters" class="button button--ghost button--compact filters-close-button" type="button">Fechar</button>
                 </div>
-                <button id="close-filters" class="button button--ghost button--compact filters-close-button" type="button">Fechar</button>
-              </div>
 
-              <div class="filters-panel__body">
-                <details class="filter-group" open>
-                  <summary>Situação e vencimento</summary>
-                  <div class="filter-grid">
-                    <label class="filter-field" for="filter-status-calculado">
-                      Status de vencimento
-                      <select id="filter-status-calculado" data-filter="statusCalculado">
-                        <option value="">Todos</option>
-                      </select>
-                    </label>
-                    <label class="filter-field" for="filter-vencimento">
-                      Faixa de vencimento
-                      <select id="filter-vencimento" data-filter="vencimento">
-                        <option value="">Todas</option>
-                        <option value="overdue">Vencidos</option>
-                        <option value="next7">Próximos 7 dias</option>
-                        <option value="next15">Próximos 15 dias</option>
-                        <option value="next30">Próximos 30 dias</option>
-                        <option value="next60">Próximos 60 dias</option>
-                        <option value="next90">Próximos 90 dias</option>
-                        <option value="above90">Acima de 90 dias</option>
-                        <option value="noDue">Sem vencimento</option>
-                      </select>
-                    </label>
-                    <label class="filter-field" for="filter-status-original">
-                      Status original
-                      <select id="filter-status-original" data-filter="statusOriginal">
-                        <option value="">Todos</option>
-                      </select>
-                    </label>
-                  </div>
-                </details>
+                <div class="filters-panel__body">
+                  <details class="filter-group" open>
+                    <summary>Situação e vencimento</summary>
+                    <div class="filter-grid">
+                      <label class="filter-field" for="filter-status-calculado">
+                        Status de vencimento
+                        <select id="filter-status-calculado" data-filter="statusCalculado">
+                          <option value="">Todos</option>
+                        </select>
+                      </label>
+                      <label class="filter-field" for="filter-vencimento">
+                        Faixa de vencimento
+                        <select id="filter-vencimento" data-filter="vencimento">
+                          <option value="">Todas</option>
+                          <option value="overdue">Vencidos</option>
+                          <option value="next7">Próximos 7 dias</option>
+                          <option value="next15">Próximos 15 dias</option>
+                          <option value="next30">Próximos 30 dias</option>
+                          <option value="next60">Próximos 60 dias</option>
+                          <option value="next90">Próximos 90 dias</option>
+                          <option value="above90">Acima de 90 dias</option>
+                          <option value="noDue">Sem vencimento</option>
+                        </select>
+                      </label>
+                      <label class="filter-field" for="filter-status-original">
+                        Status original
+                        <select id="filter-status-original" data-filter="statusOriginal">
+                          <option value="">Todos</option>
+                        </select>
+                      </label>
+                    </div>
+                  </details>
 
-                <details class="filter-group">
-                  <summary>Dados contratuais</summary>
-                  <div class="filter-grid">
-                    <label class="filter-field" for="filter-modalidade">
-                      Modalidade
-                      <select id="filter-modalidade" data-filter="modalidade">
-                        <option value="">Todas</option>
-                      </select>
-                    </label>
-                    <label class="filter-field" for="filter-categoria">
-                      Categoria
-                      <select id="filter-categoria" data-filter="categoria">
-                        <option value="">Todas</option>
-                      </select>
-                    </label>
-                    <label class="filter-field" for="filter-empresa">
-                      Empresa
-                      <select id="filter-empresa" data-filter="empresa">
-                        <option value="">Todas</option>
-                      </select>
-                    </label>
-                  </div>
-                </details>
+                  <details class="filter-group">
+                    <summary>Dados contratuais</summary>
+                    <div class="filter-grid">
+                      <label class="filter-field" for="filter-modalidade">
+                        Modalidade
+                        <select id="filter-modalidade" data-filter="modalidade">
+                          <option value="">Todas</option>
+                        </select>
+                      </label>
+                      <label class="filter-field" for="filter-categoria">
+                        Categoria
+                        <select id="filter-categoria" data-filter="categoria">
+                          <option value="">Todas</option>
+                        </select>
+                      </label>
+                      <label class="filter-field" for="filter-empresa">
+                        Empresa
+                        <select id="filter-empresa" data-filter="empresa">
+                          <option value="">Todas</option>
+                        </select>
+                      </label>
+                    </div>
+                  </details>
 
-                <details class="filter-group">
-                  <summary>Responsáveis</summary>
-                  <div class="filter-grid">
-                    <label class="filter-field" for="filter-gestor">
-                      Gestor
-                      <select id="filter-gestor" data-filter="gestor">
-                        <option value="">Todos</option>
-                      </select>
-                    </label>
-                    <label class="filter-field" for="filter-fiscal">
-                      Fiscal
-                      <select id="filter-fiscal" data-filter="fiscal">
-                        <option value="">Todos</option>
-                      </select>
-                    </label>
-                  </div>
-                </details>
+                  <details class="filter-group">
+                    <summary>Responsáveis</summary>
+                    <div class="filter-grid">
+                      <label class="filter-field" for="filter-gestor">
+                        Gestor
+                        <select id="filter-gestor" data-filter="gestor">
+                          <option value="">Todos</option>
+                        </select>
+                      </label>
+                      <label class="filter-field" for="filter-fiscal">
+                        Fiscal
+                        <select id="filter-fiscal" data-filter="fiscal">
+                          <option value="">Todos</option>
+                        </select>
+                      </label>
+                    </div>
+                  </details>
 
-                <details class="filter-group">
-                  <summary>Valores</summary>
-                  <div class="filter-grid">
-                    <label class="filter-field" for="filter-valor">
-                      Faixa de valor
-                      <select id="filter-valor" data-filter="valor">
-                        <option value="">Todos</option>
-                        <option value="noValue">Sem valor</option>
-                        <option value="upTo10k">Até R$ 10 mil</option>
-                        <option value="10kTo100k">R$ 10 mil a R$ 100 mil</option>
-                        <option value="100kTo1m">R$ 100 mil a R$ 1 milhão</option>
-                        <option value="above1m">Acima de R$ 1 milhão</option>
-                      </select>
-                    </label>
-                  </div>
-                </details>
+                  <details class="filter-group">
+                    <summary>Valores</summary>
+                    <div class="filter-grid">
+                      <label class="filter-field" for="filter-valor">
+                        Faixa de valor
+                        <select id="filter-valor" data-filter="valor">
+                          <option value="">Todos</option>
+                          <option value="noValue">Sem valor</option>
+                          <option value="upTo10k">Até R$ 10 mil</option>
+                          <option value="10kTo100k">R$ 10 mil a R$ 100 mil</option>
+                          <option value="100kTo1m">R$ 100 mil a R$ 1 milhão</option>
+                          <option value="above1m">Acima de R$ 1 milhão</option>
+                        </select>
+                      </label>
+                    </div>
+                  </details>
 
-                <details class="filter-group">
-                  <summary>Pendências</summary>
-                  <div class="filter-grid">
-                    <label class="filter-field" for="filter-pendencias">
-                      Situação cadastral
-                      <select id="filter-pendencias" data-filter="pendencias">
-                        <option value="all">Todos</option>
-                        <option value="with">Apenas com pendências</option>
-                        <option value="complete">Apenas completos</option>
-                      </select>
-                    </label>
-                  </div>
-                </details>
-              </div>
+                  <details class="filter-group">
+                    <summary>Pendências</summary>
+                    <div class="filter-grid">
+                      <label class="filter-field" for="filter-pendencias">
+                        Situação cadastral
+                        <select id="filter-pendencias" data-filter="pendencias">
+                          <option value="all">Todos</option>
+                          <option value="with">Apenas com pendências</option>
+                          <option value="complete">Apenas completos</option>
+                        </select>
+                      </label>
+                    </div>
+                  </details>
+                </div>
 
-              <div class="filters-panel__footer">
-                <button id="clear-filters" class="button button--ghost" type="button">Limpar filtros</button>
-                <button id="apply-filters" class="button" type="button">Aplicar filtros</button>
-              </div>
-            </aside>
+                <div class="filters-panel__footer">
+                  <button id="clear-filters" class="button button--ghost" type="button">Limpar filtros</button>
+                  <button id="apply-filters" class="button" type="button">Aplicar filtros</button>
+                </div>
+              </aside>
+            </div>
           </div>
         </div>
       </section>
@@ -407,11 +415,11 @@
               <p class="muted">Resumo visual da base filtrada.</p>
             </div>
             <div class="section-actions">
-              <button class="button button--ghost button--compact" type="button" data-toggle-section="charts-content" data-toggle-label="gráficos" aria-expanded="true" aria-controls="charts-content" aria-label="Ocultar gráficos">Ocultar</button>
+              <button class="button button--ghost button--compact" type="button" data-toggle-section="charts-content" data-toggle-label="gráficos" aria-expanded="false" aria-controls="charts-content" aria-label="Mostrar gráficos">Mostrar</button>
             </div>
           </div>
 
-          <div id="charts-content" class="collapsible-region">
+          <div id="charts-content" class="collapsible-region" hidden>
             <div class="charts-grid charts-grid--priority" aria-live="polite">
               <article class="chart-card chart-card--wide">
                 <div class="chart-card__header">
@@ -509,11 +517,11 @@
             </div>
             <div class="section-actions">
               <p id="result-count" class="result-pill">0 contratos</p>
-              <button class="button button--ghost button--compact" type="button" data-toggle-section="table-content" data-toggle-label="contratos" aria-expanded="true" aria-controls="table-content" aria-label="Ocultar contratos">Ocultar</button>
+              <button class="button button--ghost button--compact" type="button" data-toggle-section="table-content" data-toggle-label="contratos" aria-expanded="false" aria-controls="table-content" aria-label="Mostrar contratos">Mostrar</button>
             </div>
           </div>
 
-          <div id="table-content" class="collapsible-region">
+          <div id="table-content" class="collapsible-region" hidden>
             <div class="table-toolbar" aria-label="Controles da tabela de contratos">
               <div class="table-toolbar__meta">
                 <strong id="page-status">Página 1 de 1</strong>
@@ -574,11 +582,11 @@
               <h2 id="overdue-title"><svg class="heading-icon" aria-hidden="true"><use href="#icon-clock"></use></svg>Contratos vencidos</h2>
             </div>
             <div class="section-actions">
-              <button class="button button--ghost button--compact" type="button" data-toggle-section="upcoming-content" data-toggle-label="contratos vencidos" aria-expanded="true" aria-controls="upcoming-content" aria-label="Ocultar contratos vencidos">Ocultar</button>
+              <button class="button button--ghost button--compact" type="button" data-toggle-section="upcoming-content" data-toggle-label="contratos vencidos" aria-expanded="false" aria-controls="upcoming-content" aria-label="Mostrar contratos vencidos">Mostrar</button>
             </div>
           </div>
 
-          <div id="upcoming-content" class="collapsible-region">
+          <div id="upcoming-content" class="collapsible-region" hidden>
             <div id="upcoming-list" class="deadline-list"></div>
           </div>
         </div>
@@ -589,7 +597,7 @@
       <div class="container footer-grid">
         <div class="footer-brand">
           <span class="footer-logo-wrap">
-            <img src="assets/brasao-iguape.png?v=20260501-39" alt="Brasão de Iguape">
+            <img src="assets/brasao-iguape.png?v=20260501-42" alt="Brasão de Iguape">
           </span>
           <div>
             <strong>Prefeitura Municipal de Iguape/SP</strong>
@@ -616,8 +624,8 @@
       <div id="detail-body" class="detail-drawer__body"></div>
     </aside>
 
-    <script src="data/contratos.js?v=20260501-39"></script>
-    <script src="js/data-normalizer.js?v=20260501-39"></script>
-    <script src="js/app.js?v=20260501-39"></script>
+    <script src="data/contratos.js?v=20260501-42"></script>
+    <script src="js/data-normalizer.js?v=20260501-42"></script>
+    <script src="js/app.js?v=20260501-42"></script>
   </body>
 </html>

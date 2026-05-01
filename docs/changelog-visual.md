@@ -28,6 +28,8 @@ O painel passou por uma revisao visual completa para parecer mais institucional,
 - Sombras suavizadas para reduzir aparencia de template generico.
 - Correcao global de `[hidden]` para evitar que componentes fechados participem do layout.
 - Ajustes de breakpoints para iPhone e telas estreitas.
+- Consulta avancada recebeu botao de mostrar/ocultar como as demais secoes.
+- Secoes colapsaveis passam a iniciar ocultas por padrao, deixando a primeira visualizacao mais limpa.
 
 ## Arquivos Alterados
 

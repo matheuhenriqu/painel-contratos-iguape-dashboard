@@ -316,8 +316,13 @@ function bindEvents() {
     });
   }
 
-  elements.toggleButtons.forEach((button) => {
-    button.addEventListener("click", () => toggleDashboardSection(button));
+  syncDashboardSectionToggles();
+  document.addEventListener("click", (event) => {
+    const target = event.target instanceof Element ? event.target : event.target?.parentElement;
+    const button = target?.closest("[data-toggle-section]");
+    if (button) {
+      toggleDashboardSection(button);
+    }
   });
 
   bindFilterEvents();
@@ -447,6 +452,21 @@ function toggleDashboardSection(button, forceOpen = false) {
   button.setAttribute("aria-expanded", String(isExpanded));
   button.textContent = isExpanded ? "Ocultar" : "Mostrar";
   button.setAttribute("aria-label", `${isExpanded ? "Ocultar" : "Mostrar"} ${label}`);
+}
+
+function syncDashboardSectionToggles() {
+  elements.toggleButtons.forEach((button) => {
+    const content = document.getElementById(button.dataset.toggleSection);
+    if (!content) {
+      return;
+    }
+
+    const isExpanded = !content.hidden;
+    const label = button.dataset.toggleLabel || "seção";
+    button.setAttribute("aria-expanded", String(isExpanded));
+    button.textContent = isExpanded ? "Ocultar" : "Mostrar";
+    button.setAttribute("aria-label", `${isExpanded ? "Ocultar" : "Mostrar"} ${label}`);
+  });
 }
 
 function populateFilterOptions(items) {
