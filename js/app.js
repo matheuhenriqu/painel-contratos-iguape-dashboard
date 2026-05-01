@@ -82,6 +82,8 @@ const elements = {
   baseHealth: document.querySelector("#base-health"),
   appStatus: document.querySelector("#app-status"),
   footerUpdated: document.querySelector("#footer-updated"),
+  activeContractsList: document.querySelector("#active-contracts-list"),
+  activeContractsSummary: document.querySelector("#active-contracts-summary"),
   statusChart: document.querySelector("#status-chart"),
   valueModalidadeChart: document.querySelector("#value-modalidade-chart"),
   countModalidadeChart: document.querySelector("#count-modalidade-chart"),
@@ -157,6 +159,7 @@ function renderErrorState() {
   populateFilters([]);
   renderQuickAccess([]);
   renderIndicators([]);
+  renderActiveContracts([]);
   renderCharts([]);
   renderTable([]);
   elements.lastUpdate.textContent = "Dados indisponíveis";
@@ -240,6 +243,26 @@ function bindEvents() {
     }
   });
 
+  if (elements.activeContractsList) {
+    elements.activeContractsList.addEventListener("click", (event) => {
+      const card = event.target.closest("[data-contract-id]");
+      if (card) {
+        openContractDetail(card.dataset.contractId);
+      }
+    });
+
+    elements.activeContractsList.addEventListener("keydown", (event) => {
+      if (event.key !== "Enter" && event.key !== " ") {
+        return;
+      }
+      const card = event.target.closest("[data-contract-id]");
+      if (card) {
+        event.preventDefault();
+        openContractDetail(card.dataset.contractId);
+      }
+    });
+  }
+
   elements.closeDetail.addEventListener("click", closeContractDetail);
   elements.detailBackdrop.addEventListener("click", closeContractDetail);
   document.addEventListener("keydown", (event) => {
@@ -260,7 +283,7 @@ function bindEvents() {
         elements.status.value = "Vigente";
       }
       renderFiltered();
-      document.querySelector("#tabela").scrollIntoView({ behavior: "smooth", block: "start" });
+      document.querySelector(filter === "vigentes" ? "#vigentes" : "#tabela").scrollIntoView({ behavior: "smooth", block: "start" });
     });
   });
 }
@@ -414,6 +437,7 @@ function render(items) {
   renderLastUpdate();
   renderQuickAccess(contracts);
   renderIndicators(items);
+  renderActiveContracts(items);
   renderCharts(items);
   renderTable(items);
 }
@@ -795,6 +819,64 @@ function renderVerticalMetricChart(container, rows, options = {}) {
 
 function renderChartEmpty(container, message) {
   container.innerHTML = `<p class="empty-state">${escapeHtml(message)}</p>`;
+}
+
+function renderActiveContracts(items) {
+  if (!elements.activeContractsList) {
+    return;
+  }
+
+  const activeContracts = items
+    .filter(isActiveContract)
+    .sort(sortActiveContracts);
+
+  const totalValue = sumNumericValue(activeContracts);
+  const summary = activeContracts.length
+    ? `${formatContractCount(activeContracts.length)} vigentes · ${formatCurrency.format(totalValue)} · ordenados por vencimento`
+    : "Nenhum contrato vigente encontrado nos filtros atuais";
+
+  if (elements.activeContractsSummary) {
+    elements.activeContractsSummary.textContent = summary;
+  }
+
+  if (!activeContracts.length) {
+    elements.activeContractsList.innerHTML = '<p class="empty-state">Nenhum contrato vigente encontrado para os filtros selecionados.</p>';
+    return;
+  }
+
+  elements.activeContractsList.innerHTML = activeContracts.map((item) => `
+    <article class="active-contract-card ${activeContractClass(item)}" data-contract-id="${escapeAttribute(item.id)}" tabindex="0" aria-label="Abrir detalhes do contrato vigente ${escapeAttribute(item.contrato || item.id)}">
+      <div class="active-contract-card__top">
+        <span class="active-contract-card__date">
+          <svg class="icon" aria-hidden="true"><use href="#icon-calendar"></use></svg>
+          ${escapeHtml(formatDateISO(item.dataVencimento))}
+        </span>
+        <span class="badge ${statusBadgeClass(item.statusCalculado)}">${escapeHtml(item.statusCalculado)}</span>
+      </div>
+      <div class="active-contract-card__body">
+        <strong>${escapeHtml(item.contrato || "Sem contrato")}</strong>
+        <p>${escapeHtml(item.objeto || "Objeto não informado")}</p>
+      </div>
+      <dl class="active-contract-meta">
+        <div>
+          <dt>Dias</dt>
+          <dd>${escapeHtml(formatDays(item.diasParaVencimento))}</dd>
+        </div>
+        <div>
+          <dt>Empresa</dt>
+          <dd>${escapeHtml(item.empresa || "Não informada")}</dd>
+        </div>
+        <div>
+          <dt>Valor</dt>
+          <dd>${escapeHtml(formatValueText(item))}</dd>
+        </div>
+        <div>
+          <dt>Gestor</dt>
+          <dd>${escapeHtml(item.gestor || "Não informado")}</dd>
+        </div>
+      </dl>
+    </article>
+  `).join("");
 }
 
 function renderUpcoming(items) {
@@ -1214,6 +1296,39 @@ function formatResponsiblePair(item) {
   const gestor = item.gestor || "Gestor não informado";
   const fiscal = item.fiscal || "Fiscal não informado";
   return `${gestor} / ${fiscal}`;
+}
+
+function isActiveContract(item) {
+  return item.diasParaVencimento !== null && item.diasParaVencimento >= 0;
+}
+
+function sortActiveContracts(a, b) {
+  if (a.diasParaVencimento !== b.diasParaVencimento) {
+    return a.diasParaVencimento - b.diasParaVencimento;
+  }
+
+  const dateComparison = compareValues(a.dataVencimento, b.dataVencimento, "date");
+  if (dateComparison !== 0) {
+    return dateComparison;
+  }
+
+  return (b.valor || 0) - (a.valor || 0);
+}
+
+function activeContractClass(item) {
+  if (item.statusCalculado === "Vence hoje") {
+    return "active-contract-card--today";
+  }
+  if (item.statusCalculado === "Vence em até 30 dias") {
+    return "active-contract-card--soon";
+  }
+  if (item.statusCalculado === "Atenção 31 a 60 dias") {
+    return "active-contract-card--attention";
+  }
+  if (item.statusCalculado === "Monitorar 61 a 90 dias") {
+    return "active-contract-card--monitor";
+  }
+  return "";
 }
 
 function sortPriorityDeadlines(a, b) {

@@ -4,12 +4,59 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="description" content="Painel de acompanhamento de contratos municipais da Prefeitura Municipal de Iguape/SP.">
+    <meta name="theme-color" content="#06406f">
+    <meta property="og:title" content="Painel de Contratos | Prefeitura Municipal de Iguape/SP">
+    <meta property="og:description" content="Consulta, análise e acompanhamento administrativo dos contratos municipais de Iguape/SP.">
+    <meta property="og:image" content="https://matheuhenriqu.github.io/painel-contratos-iguape-dashboard/assets/logo-iguape-og.png">
     <title>Painel de Contratos | Prefeitura Municipal de Iguape/SP</title>
-    <link rel="icon" href="assets/favicon.svg?v=20260501-2" type="image/svg+xml">
-    <link rel="stylesheet" href="css/styles.css?v=20260501-2">
+    <link rel="icon" href="assets/favicon-iguape.png?v=20260501-3" type="image/png">
+    <link rel="apple-touch-icon" href="assets/apple-touch-icon.png?v=20260501-3">
+    <link rel="stylesheet" href="css/styles.css?v=20260501-3">
   </head>
   <body>
     <a class="skip-link" href="#indicadores">Ir para os indicadores</a>
+
+    <svg class="svg-sprite" aria-hidden="true" focusable="false">
+      <symbol id="icon-building" viewBox="0 0 24 24">
+        <path d="M3 21h18"></path><path d="M5 21V9l7-4 7 4v12"></path><path d="M9 21v-6h6v6"></path><path d="M9 10h.01"></path><path d="M12 10h.01"></path><path d="M15 10h.01"></path>
+      </symbol>
+      <symbol id="icon-file" viewBox="0 0 24 24">
+        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><path d="M14 2v6h6"></path><path d="M8 13h8"></path><path d="M8 17h5"></path>
+      </symbol>
+      <symbol id="icon-wallet" viewBox="0 0 24 24">
+        <path d="M3 7a2 2 0 0 1 2-2h14v14H5a2 2 0 0 1-2-2z"></path><path d="M3 7v10"></path><path d="M16 12h.01"></path>
+      </symbol>
+      <symbol id="icon-check" viewBox="0 0 24 24">
+        <path d="M20 6 9 17l-5-5"></path>
+      </symbol>
+      <symbol id="icon-alert" viewBox="0 0 24 24">
+        <path d="m12 3 10 18H2z"></path><path d="M12 9v5"></path><path d="M12 17h.01"></path>
+      </symbol>
+      <symbol id="icon-clock" viewBox="0 0 24 24">
+        <circle cx="12" cy="12" r="9"></circle><path d="M12 7v5l3 2"></path>
+      </symbol>
+      <symbol id="icon-calendar" viewBox="0 0 24 24">
+        <path d="M8 2v4"></path><path d="M16 2v4"></path><rect x="3" y="4" width="18" height="18" rx="2"></rect><path d="M3 10h18"></path>
+      </symbol>
+      <symbol id="icon-clipboard" viewBox="0 0 24 24">
+        <path d="M9 3h6l1 2h3v16H5V5h3z"></path><path d="M9 12h6"></path><path d="M9 16h4"></path>
+      </symbol>
+      <symbol id="icon-user" viewBox="0 0 24 24">
+        <circle cx="12" cy="8" r="4"></circle><path d="M4 21a8 8 0 0 1 16 0"></path>
+      </symbol>
+      <symbol id="icon-shield" viewBox="0 0 24 24">
+        <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path><path d="m9 12 2 2 4-4"></path>
+      </symbol>
+      <symbol id="icon-chart" viewBox="0 0 24 24">
+        <path d="M4 19V5"></path><path d="M4 19h16"></path><rect x="7" y="10" width="3" height="6"></rect><rect x="12" y="7" width="3" height="9"></rect><rect x="17" y="12" width="3" height="4"></rect>
+      </symbol>
+      <symbol id="icon-filter" viewBox="0 0 24 24">
+        <path d="M4 5h16l-6 7v5l-4 2v-7z"></path>
+      </symbol>
+      <symbol id="icon-table" viewBox="0 0 24 24">
+        <rect x="3" y="4" width="18" height="16" rx="2"></rect><path d="M3 10h18"></path><path d="M9 4v16"></path>
+      </symbol>
+    </svg>
 
     <main id="topo">
       <div id="app-status" class="app-status app-status--loading" role="status" aria-live="polite">
@@ -19,6 +66,10 @@
       <section class="hero">
         <div class="container hero__grid">
           <div class="hero__copy">
+            <div class="hero-brand">
+              <img class="hero-logo" src="assets/logo-iguape-branca.png?v=20260501-3" alt="Prefeitura Municipal de Iguape">
+              <span><svg class="icon" aria-hidden="true"><use href="#icon-building"></use></svg> Gestão municipal</span>
+            </div>
             <p class="eyebrow">Transparência municipal</p>
             <h1>Painel de Contratos</h1>
             <p>Consulta, análise e acompanhamento administrativo dos contratos da Prefeitura Municipal de Iguape/SP.</p>
@@ -26,14 +77,17 @@
 
           <div class="quick-access" aria-label="Acesso rápido">
             <button class="quick-access__item" type="button" data-quick-filter="vigentes" aria-label="Filtrar contratos vigentes">
+              <span class="quick-access__icon"><svg class="icon" aria-hidden="true"><use href="#icon-check"></use></svg></span>
               <span>Contratos vigentes</span>
               <strong id="quick-active">0</strong>
             </button>
             <button class="quick-access__item" type="button" data-quick-filter="vencendo" aria-label="Filtrar vencimentos próximos">
+              <span class="quick-access__icon"><svg class="icon" aria-hidden="true"><use href="#icon-clock"></use></svg></span>
               <span>Vencimentos próximos</span>
               <strong id="quick-soon">0</strong>
             </button>
             <button class="quick-access__item" type="button" data-quick-filter="vencidos" aria-label="Filtrar contratos vencidos">
+              <span class="quick-access__icon"><svg class="icon" aria-hidden="true"><use href="#icon-alert"></use></svg></span>
               <span>Vencidos</span>
               <strong id="quick-overdue">0</strong>
             </button>
@@ -46,59 +100,59 @@
           <div class="section-heading">
             <div>
               <p class="eyebrow">Resumo</p>
-              <h2 id="indicators-title">Indicadores</h2>
+              <h2 id="indicators-title"><svg class="heading-icon" aria-hidden="true"><use href="#icon-chart"></use></svg>Indicadores</h2>
             </div>
             <p id="last-update" class="muted">Carregando dados...</p>
           </div>
 
           <div class="kpi-grid kpi-grid--primary" aria-live="polite">
             <article class="kpi-card">
-              <span>Total de contratos</span>
+              <div class="kpi-card__top"><span>Total de contratos</span><svg class="icon" aria-hidden="true"><use href="#icon-file"></use></svg></div>
               <strong id="kpi-total">0</strong>
               <small>contratos encontrados</small>
             </article>
             <article class="kpi-card kpi-card--value">
-              <span>Valor total contratado</span>
+              <div class="kpi-card__top"><span>Valor total contratado</span><svg class="icon" aria-hidden="true"><use href="#icon-wallet"></use></svg></div>
               <strong id="kpi-value">R$ 0,00</strong>
               <small>somente registros com valor</small>
             </article>
             <article class="kpi-card kpi-card--success">
-              <span>Contratos ativos/vigentes</span>
+              <div class="kpi-card__top"><span>Contratos ativos/vigentes</span><svg class="icon" aria-hidden="true"><use href="#icon-check"></use></svg></div>
               <strong id="kpi-active">0</strong>
               <small>status calculado vigente</small>
             </article>
             <article class="kpi-card kpi-card--danger">
-              <span>Vencidos</span>
+              <div class="kpi-card__top"><span>Vencidos</span><svg class="icon" aria-hidden="true"><use href="#icon-alert"></use></svg></div>
               <strong id="kpi-overdue">0</strong>
               <small>com base na data atual</small>
             </article>
             <article class="kpi-card kpi-card--warning">
-              <span>Até 30 dias</span>
+              <div class="kpi-card__top"><span>Até 30 dias</span><svg class="icon" aria-hidden="true"><use href="#icon-clock"></use></svg></div>
               <strong id="kpi-soon">0</strong>
               <small>vencimentos próximos</small>
             </article>
             <article class="kpi-card kpi-card--attention">
-              <span>Atenção 31 a 60 dias</span>
+              <div class="kpi-card__top"><span>Atenção 31 a 60 dias</span><svg class="icon" aria-hidden="true"><use href="#icon-calendar"></use></svg></div>
               <strong id="kpi-attention">0</strong>
               <small>exigem acompanhamento</small>
             </article>
             <article class="kpi-card">
-              <span>Sem data de vencimento</span>
+              <div class="kpi-card__top"><span>Sem data de vencimento</span><svg class="icon" aria-hidden="true"><use href="#icon-calendar"></use></svg></div>
               <strong id="kpi-no-due">0</strong>
               <small>data não informada</small>
             </article>
             <article class="kpi-card">
-              <span>Pendências cadastrais</span>
+              <div class="kpi-card__top"><span>Pendências cadastrais</span><svg class="icon" aria-hidden="true"><use href="#icon-clipboard"></use></svg></div>
               <strong id="kpi-quality">0</strong>
               <small>campos ausentes ou datas inconsistentes</small>
             </article>
             <article class="kpi-card">
-              <span>Total sem gestor</span>
+              <div class="kpi-card__top"><span>Total sem gestor</span><svg class="icon" aria-hidden="true"><use href="#icon-user"></use></svg></div>
               <strong id="kpi-no-manager">0</strong>
               <small>responsável não informado</small>
             </article>
             <article class="kpi-card">
-              <span>Total sem fiscal</span>
+              <div class="kpi-card__top"><span>Total sem fiscal</span><svg class="icon" aria-hidden="true"><use href="#icon-shield"></use></svg></div>
               <strong id="kpi-no-fiscal">0</strong>
               <small>fiscal não informado</small>
             </article>
@@ -124,12 +178,26 @@
         </div>
       </section>
 
+      <section id="vigentes" class="section active-section" aria-labelledby="active-contracts-title">
+        <div class="container">
+          <div class="section-heading">
+            <div>
+              <p class="eyebrow">Vigência</p>
+              <h2 id="active-contracts-title"><svg class="heading-icon" aria-hidden="true"><use href="#icon-calendar"></use></svg>Contratos vigentes por vencimento</h2>
+            </div>
+            <p id="active-contracts-summary" class="muted">Carregando contratos vigentes...</p>
+          </div>
+
+          <div id="active-contracts-list" class="active-contracts-list" aria-live="polite"></div>
+        </div>
+      </section>
+
       <section id="filtros" class="section filters-section" aria-labelledby="filters-title">
         <div class="container filters-panel">
           <div class="section-heading">
             <div>
               <p class="eyebrow">Consulta avançada</p>
-              <h2 id="filters-title">Filtros</h2>
+              <h2 id="filters-title"><svg class="heading-icon" aria-hidden="true"><use href="#icon-filter"></use></svg>Filtros</h2>
             </div>
             <button id="clear-filters" class="button button--ghost" type="button" aria-label="Limpar todos os filtros">Limpar filtros</button>
           </div>
@@ -233,7 +301,7 @@
           <div class="section-heading">
             <div>
               <p class="eyebrow">Análise</p>
-              <h2 id="charts-title">Gráficos</h2>
+              <h2 id="charts-title"><svg class="heading-icon" aria-hidden="true"><use href="#icon-chart"></use></svg>Gráficos</h2>
             </div>
           </div>
 
@@ -318,7 +386,7 @@
           <div class="section-heading">
             <div>
               <p class="eyebrow">Detalhamento</p>
-              <h2 id="table-title">Contratos</h2>
+              <h2 id="table-title"><svg class="heading-icon" aria-hidden="true"><use href="#icon-table"></use></svg>Contratos</h2>
             </div>
             <p id="result-count" class="muted">0 registros</p>
           </div>
@@ -362,9 +430,14 @@
 
     <footer class="site-footer">
       <div class="container footer-grid">
-        <div>
-          <strong>Prefeitura Municipal de Iguape/SP</strong>
-          <p>Avenida Adhemar de Barros, 1070 · CEP 11920-000</p>
+        <div class="footer-brand">
+          <span class="footer-logo-wrap">
+            <img src="assets/logo-iguape-rodape.png?v=20260501-3" alt="Prefeitura Municipal de Iguape">
+          </span>
+          <div>
+            <strong>Prefeitura Municipal de Iguape/SP</strong>
+            <p>Avenida Adhemar de Barros, 1070 · CEP 11920-000</p>
+          </div>
         </div>
         <div>
           <strong>Painel de Contratos</strong>
@@ -386,8 +459,8 @@
       <div id="detail-body" class="detail-drawer__body"></div>
     </aside>
 
-    <script src="data/contratos.js?v=20260501-2"></script>
-    <script src="js/data-normalizer.js?v=20260501-2"></script>
-    <script src="js/app.js?v=20260501-2"></script>
+    <script src="data/contratos.js?v=20260501-3"></script>
+    <script src="js/data-normalizer.js?v=20260501-3"></script>
+    <script src="js/app.js?v=20260501-3"></script>
   </body>
 </html>
