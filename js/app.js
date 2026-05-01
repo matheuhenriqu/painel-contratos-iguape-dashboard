@@ -12,7 +12,6 @@ const formatDate = new Intl.DateTimeFormat("pt-BR", {
 
 const TABLE_COLUMNS = [
   { key: "statusCalculado", label: "Status", type: "text" },
-  { key: "diasParaVencimento", label: "Dias", type: "number" },
   { key: "dataVencimento", label: "Vencimento", type: "date" },
   { key: "contrato", label: "Contrato", type: "text" },
   { key: "processo", label: "Processo", type: "text" },
@@ -20,10 +19,7 @@ const TABLE_COLUMNS = [
   { key: "objeto", label: "Objeto", type: "text" },
   { key: "empresa", label: "Empresa", type: "text" },
   { key: "valor", label: "Valor", type: "number" },
-  { key: "gestor", label: "Gestor", type: "text" },
-  { key: "fiscal", label: "Fiscal", type: "text" },
   { key: "pendencias", label: "Pendências", type: "number", value: (item) => item.pendencias.length },
-  { key: "observacoes", label: "Observações", type: "text" },
 ];
 
 const elements = {
@@ -81,7 +77,7 @@ let filteredContracts = [];
 let metadata = {};
 let currentPage = 1;
 let sortState = {
-  key: "diasParaVencimento",
+  key: "dataVencimento",
   direction: "asc",
 };
 
@@ -719,10 +715,6 @@ function renderTableCell(item, column) {
     `;
   }
 
-  if (column.key === "diasParaVencimento") {
-    return `<td ${cellLabel} class="numeric-cell">${item.diasParaVencimento === null ? "—" : item.diasParaVencimento}</td>`;
-  }
-
   if (column.key === "dataVencimento") {
     return `<td ${cellLabel}>${formatDateISO(item.dataVencimento)}</td>`;
   }
@@ -756,20 +748,8 @@ function renderTableCell(item, column) {
     return `<td ${cellLabel} class="numeric-cell">${formatValue(item)}</td>`;
   }
 
-  if (column.key === "gestor") {
-    return `<td ${cellLabel} class="wrap-cell">${escapeHtml(item.gestor || "Não informado")}</td>`;
-  }
-
-  if (column.key === "fiscal") {
-    return `<td ${cellLabel} class="wrap-cell">${escapeHtml(item.fiscal || "Não informado")}</td>`;
-  }
-
   if (column.key === "pendencias") {
     return `<td ${cellLabel}>${formatPendencias(item)}</td>`;
-  }
-
-  if (column.key === "observacoes") {
-    return `<td ${cellLabel} class="notes-cell">${escapeHtml(item.observacoes || "Sem observações")}</td>`;
   }
 
   return `<td ${cellLabel}>${escapeHtml(item[column.key] || "Não informado")}</td>`;
