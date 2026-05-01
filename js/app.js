@@ -23,19 +23,6 @@ const TABLE_COLUMNS = [
 ];
 
 const elements = {
-  search: document.querySelector("#global-search"),
-  searchForm: document.querySelector(".top-search"),
-  modalidade: document.querySelector("#filter-modalidade"),
-  status: document.querySelector("#filter-status"),
-  statusOriginal: document.querySelector("#filter-status-original"),
-  categoria: document.querySelector("#filter-categoria"),
-  empresa: document.querySelector("#filter-empresa"),
-  gestor: document.querySelector("#filter-gestor"),
-  fiscal: document.querySelector("#filter-fiscal"),
-  prazo: document.querySelector("#filter-prazo"),
-  pendencias: document.querySelector("#filter-pendencias"),
-  valor: document.querySelector("#filter-valor"),
-  clearFilters: document.querySelector("#clear-filters"),
   tableHead: document.querySelector("#contracts-head"),
   table: document.querySelector("#contracts-table"),
   resultCount: document.querySelector("#result-count"),
@@ -94,7 +81,6 @@ async function init() {
     contracts = ContractData.normalizeContracts(payload.contracts || payload);
 
     ContractData.logNormalizationSummary(contracts);
-    populateFilters(contracts);
     render(contracts);
     setAppStatus("loading", "", true);
   } catch (error) {
@@ -133,7 +119,6 @@ function renderErrorState() {
   metadata = {};
   contracts = [];
   filteredContracts = [];
-  populateFilters([]);
   renderQuickAccess([]);
   renderIndicators([]);
   renderActiveContracts([]);
@@ -150,33 +135,6 @@ function renderErrorState() {
 }
 
 function bindEvents() {
-  if (elements.searchForm) {
-    elements.searchForm.addEventListener("submit", (event) => {
-      event.preventDefault();
-      currentPage = 1;
-      renderFiltered();
-    });
-  }
-
-  if (elements.search) {
-    elements.search.addEventListener("input", () => {
-      currentPage = 1;
-      renderFiltered();
-    });
-  }
-
-  filterControls().forEach((select) => {
-    select.addEventListener("change", () => {
-      currentPage = 1;
-      renderFiltered();
-    });
-  });
-
-  elements.clearFilters.addEventListener("click", () => {
-    clearAllFilters();
-    renderFiltered();
-  });
-
   elements.pageSize.addEventListener("change", () => {
     currentPage = 1;
     renderTable(filteredContracts);
@@ -248,165 +206,13 @@ function bindEvents() {
     }
   });
 
-  document.querySelectorAll("[data-quick-filter]").forEach((button) => {
+  document.querySelectorAll("[data-quick-target]").forEach((button) => {
     button.addEventListener("click", () => {
-      clearAllFilters();
-      const filter = button.dataset.quickFilter;
-      if (filter === "vencidos") {
-        elements.prazo.value = "overdue";
-      } else if (filter === "vencendo") {
-        elements.prazo.value = "30";
-      } else {
-        elements.status.value = "Vigente";
-      }
-      renderFiltered();
-      document.querySelector(filter === "vigentes" ? "#vigentes" : "#tabela").scrollIntoView({ behavior: "smooth", block: "start" });
+      const targetKey = button.dataset.quickTarget;
+      const target = targetKey === "vigentes" ? "#vigentes" : "#upcoming-title";
+      document.querySelector(target)?.scrollIntoView({ behavior: "smooth", block: "start" });
     });
   });
-}
-
-function filterControls() {
-  return [
-    elements.modalidade,
-    elements.status,
-    elements.statusOriginal,
-    elements.categoria,
-    elements.empresa,
-    elements.gestor,
-    elements.fiscal,
-    elements.prazo,
-    elements.pendencias,
-    elements.valor,
-  ].filter(Boolean);
-}
-
-function clearAllFilters() {
-  if (elements.search) {
-    elements.search.value = "";
-  }
-  filterControls().forEach((control) => {
-    control.value = "";
-  });
-  currentPage = 1;
-}
-
-function populateFilters(items) {
-  fillSelect(elements.status, ContractData.STATUS_LABELS, "Todos");
-  fillSelect(elements.statusOriginal, unique(items.map((item) => item.statusOriginal)), "Todos");
-  fillSelect(elements.modalidade, unique(items.map((item) => item.modalidade)), "Todas");
-  fillSelect(elements.categoria, unique(items.map((item) => item.categoria)), "Todas");
-  fillSelect(elements.empresa, unique(items.map((item) => item.empresa)), "Todas");
-  fillSelect(elements.gestor, unique(items.map((item) => item.gestor)), "Todos");
-  fillSelect(elements.fiscal, unique(items.map((item) => item.fiscal)), "Todos");
-}
-
-function fillSelect(select, values, firstLabel) {
-  select.innerHTML = "";
-  select.append(new Option(firstLabel, ""));
-  values.forEach((value) => {
-    select.append(new Option(value, value));
-  });
-}
-
-function renderFiltered() {
-  render(applyFilters(contracts));
-}
-
-function applyFilters(items) {
-  const query = ContractData.normalizeSearchText(elements.search ? elements.search.value : "");
-  const filters = {
-    modalidade: elements.modalidade.value,
-    status: elements.status.value,
-    statusOriginal: elements.statusOriginal.value,
-    categoria: elements.categoria.value,
-    empresa: elements.empresa.value,
-    gestor: elements.gestor.value,
-    fiscal: elements.fiscal.value,
-    prazo: elements.prazo.value,
-    pendencias: elements.pendencias.value,
-    valor: elements.valor.value,
-  };
-
-  return items.filter((item) => {
-    if (query && !item._normalizado.busca.includes(query)) {
-      return false;
-    }
-    if (filters.status && item.statusCalculado !== filters.status) {
-      return false;
-    }
-    if (filters.statusOriginal && item.statusOriginal !== filters.statusOriginal) {
-      return false;
-    }
-    if (filters.modalidade && item.modalidade !== filters.modalidade) {
-      return false;
-    }
-    if (filters.categoria && item.categoria !== filters.categoria) {
-      return false;
-    }
-    if (filters.empresa && item.empresa !== filters.empresa) {
-      return false;
-    }
-    if (filters.gestor && item.gestor !== filters.gestor) {
-      return false;
-    }
-    if (filters.fiscal && item.fiscal !== filters.fiscal) {
-      return false;
-    }
-    if (filters.prazo && !matchesDeadlineRange(item, filters.prazo)) {
-      return false;
-    }
-    if (filters.pendencias === "with" && !item.possuiPendencias) {
-      return false;
-    }
-    if (filters.pendencias === "complete" && item.possuiPendencias) {
-      return false;
-    }
-    if (filters.valor && !matchesValueRange(item, filters.valor)) {
-      return false;
-    }
-    return true;
-  });
-}
-
-function matchesDeadlineRange(item, range) {
-  const days = item.diasParaVencimento;
-  if (range === "nodue") {
-    return days === null;
-  }
-  if (days === null) {
-    return false;
-  }
-  if (range === "overdue") {
-    return days < 0;
-  }
-  if (range === "above90") {
-    return days > 90;
-  }
-  const limit = Number(range);
-  return Number.isFinite(limit) && days >= 0 && days <= limit;
-}
-
-function matchesValueRange(item, range) {
-  const value = item.valor;
-  if (range === "none") {
-    return typeof value !== "number";
-  }
-  if (typeof value !== "number") {
-    return false;
-  }
-  if (range === "upto10k") {
-    return value <= 10000;
-  }
-  if (range === "10k100k") {
-    return value > 10000 && value <= 100000;
-  }
-  if (range === "100k1m") {
-    return value > 100000 && value <= 1000000;
-  }
-  if (range === "above1m") {
-    return value > 1000000;
-  }
-  return true;
 }
 
 function render(items) {
@@ -554,14 +360,14 @@ function renderActiveContracts(items) {
   const totalValue = sumNumericValue(activeContracts);
   const summary = activeContracts.length
     ? buildActiveContractsSummary(activeContracts, totalValue)
-    : "Nenhum contrato vigente encontrado nos filtros atuais";
+    : "Nenhum contrato vigente encontrado";
 
   if (elements.activeContractsSummary) {
     elements.activeContractsSummary.textContent = summary;
   }
 
   if (!activeContracts.length) {
-    elements.activeContractsList.innerHTML = '<p class="empty-state">Nenhum contrato vigente encontrado para os filtros selecionados.</p>';
+    elements.activeContractsList.innerHTML = '<p class="empty-state">Nenhum contrato vigente encontrado.</p>';
     return;
   }
 
@@ -612,7 +418,7 @@ function renderUpcoming(items) {
     .slice(0, 12);
 
   if (!upcoming.length) {
-    elements.upcomingList.innerHTML = '<p class="empty-state">Nenhum vencimento encontrado nos filtros atuais.</p>';
+    elements.upcomingList.innerHTML = '<p class="empty-state">Nenhum vencimento encontrado.</p>';
     return;
   }
 
@@ -684,7 +490,7 @@ function renderTable(items) {
   elements.nextPage.disabled = !total || currentPage >= totalPages;
 
   if (!pageItems.length) {
-    elements.table.innerHTML = `<tr class="table-empty-row"><td colspan="${TABLE_COLUMNS.length}" class="empty-state">Nenhum contrato encontrado para os filtros selecionados.</td></tr>`;
+    elements.table.innerHTML = `<tr class="table-empty-row"><td colspan="${TABLE_COLUMNS.length}" class="empty-state">Nenhum contrato encontrado.</td></tr>`;
     return;
   }
 
@@ -1157,11 +963,6 @@ function sumNumericValue(items) {
 
 function formatContractCount(value) {
   return value === 1 ? "1 contrato" : `${value} contratos`;
-}
-
-function unique(values) {
-  return [...new Set(values.filter(Boolean))]
-    .sort((a, b) => a.localeCompare(b, "pt-BR"));
 }
 
 function formatDateISO(value) {

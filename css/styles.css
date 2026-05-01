@@ -151,8 +151,6 @@ tbody tr:focus-visible {
   border: 0;
 }
 
-.filters-grid input,
-.filters-grid select,
 .table-toolbar select {
   width: 100%;
   border: 1px solid var(--color-slate-200);
@@ -337,20 +335,6 @@ tbody tr:focus-visible {
   padding-block: 2.75rem;
 }
 
-.filters-section {
-  padding-block: var(--space-10);
-  background: linear-gradient(180deg, #ffffff, #f4f8fb);
-}
-
-.filters-panel {
-  border: 1px solid var(--color-slate-200);
-  border-top: 4px solid var(--color-teal-600);
-  border-radius: var(--radius);
-  padding: var(--space-6);
-  background: var(--color-white);
-  box-shadow: var(--shadow-card);
-}
-
 .section-heading {
   display: flex;
   align-items: end;
@@ -380,13 +364,6 @@ tbody tr:focus-visible {
   font-size: 0.925rem;
 }
 
-.filters-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
-  gap: var(--space-4);
-}
-
-.filters-grid label,
 .table-toolbar label {
   display: grid;
   gap: var(--space-2);
@@ -395,25 +372,10 @@ tbody tr:focus-visible {
   font-weight: 700;
 }
 
-.filter-search {
-  grid-column: 1 / -1;
-}
-
-.filters-grid input,
-.filters-grid select {
-  min-height: 44px;
-  padding: 0 var(--space-3);
-  box-shadow: inset 0 1px 0 rgba(15, 35, 56, 0.02);
-}
-
-.filters-grid input:hover,
-.filters-grid select:hover,
 .table-toolbar select:hover {
   border-color: rgba(20, 104, 168, 0.35);
 }
 
-.filters-grid input:focus-visible,
-.filters-grid select:focus-visible,
 .table-toolbar select:focus-visible {
   border-color: var(--color-blue-700);
   box-shadow: 0 0 0 4px rgba(18, 119, 173, 0.12);
@@ -1341,9 +1303,6 @@ body.detail-open {
     grid-template-columns: repeat(3, minmax(0, 1fr));
   }
 
-  .filters-grid {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
 }
 
 @media (max-width: 640px) {
@@ -1381,7 +1340,6 @@ body.detail-open {
   .alert-list,
   .active-contract-meta,
   .deadline-meta,
-  .filters-grid,
   .kpi-grid,
   .deadline-list {
     grid-template-columns: 1fr;
@@ -1411,10 +1369,6 @@ body.detail-open {
 
   .footer-brand {
     align-items: flex-start;
-  }
-
-  .filters-panel {
-    padding: var(--space-4);
   }
 
   .detail-drawer {
@@ -1461,7 +1415,6 @@ body.detail-open {
     width: min(100% - 0.75rem, var(--container));
   }
 
-  .filters-panel,
   .kpi-card,
   .info-panel,
   .active-contract-card,
@@ -1508,7 +1461,6 @@ body.detail-open {
   }
 
   .skip-link,
-  .filters-section,
   .table-toolbar,
   .button,
   .detail-backdrop,
