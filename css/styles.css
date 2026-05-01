@@ -851,10 +851,6 @@ tbody tr:focus-visible {
   background: rgba(13, 24, 38, 0.46);
 }
 
-.filters-backdrop[hidden] {
-  display: none;
-}
-
 .filters-panel {
   display: grid;
   grid-template-rows: auto minmax(0, 1fr) auto;
@@ -2846,7 +2842,6 @@ body.detail-open {
   .table-toolbar,
   .table-toolbar__actions,
   .table-toolbar__buttons,
-  .detail-drawer__header,
   .detail-list {
     grid-template-columns: 1fr;
   }
@@ -2898,20 +2893,12 @@ body.detail-open {
     padding: var(--space-4);
   }
 
-  .table-toolbar__buttons {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
-
   .heading-with-action {
     align-items: flex-start;
   }
 
   .footer-brand {
     align-items: flex-start;
-  }
-
-  .detail-drawer {
-    width: 100%;
   }
 
   .quick-access__item {

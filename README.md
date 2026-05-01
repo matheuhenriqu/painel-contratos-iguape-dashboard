@@ -1,47 +1,113 @@
 # Painel de Contratos - Prefeitura Municipal de Iguape/SP
 
-Dashboard web estático para consulta, análise e acompanhamento administrativo dos contratos municipais da Prefeitura Municipal de Iguape/SP.
+Painel web estatico para consulta, analise e acompanhamento administrativo dos contratos municipais da Prefeitura Municipal de Iguape/SP.
 
-O painel foi pensado para publicação simples no GitHub Pages, sem etapa de build, sem banco de dados e sem dependências JavaScript externas. Os dados exibidos são derivados da planilha de origem e tratados no navegador.
+O projeto foi preparado para GitHub Pages: nao exige build, banco de dados, servidor de aplicacao ou framework pesado. A base de contratos vem de uma camada derivada em `data/contratos.json` e `data/contratos.js`, preservando a planilha original fora do fluxo de exibicao.
 
-## Como rodar localmente no macOS
+## Resumo do Painel
 
-Opção recomendada:
+O painel entrega uma experiencia institucional e responsiva para uso administrativo diario:
+
+- cabecalho institucional com brasao, titulo, ultima atualizacao e atalhos;
+- indicadores de contratos, valores, vigencia, vencidos e pendencias;
+- alertas prioritarios e saude cadastral da base;
+- contratos vigentes ordenados por vencimento;
+- consulta avancada com busca, filtros combinaveis e chips ativos;
+- graficos gerenciais leves em HTML/CSS/JS;
+- tabela paginada e ordenavel no desktop;
+- cards de contratos no iPhone e telas pequenas;
+- ficha administrativa completa no detalhe do contrato;
+- estados de carregamento, erro e vazio;
+- CSS de impressao e compatibilidade com GitHub Pages.
+
+## Como Rodar Localmente no macOS
+
+Na pasta do projeto:
 
 ```bash
-cd "Painel Prefeitura"
+cd "/Users/matheuscosta/Documents/Painel Prefeitura"
 python3 -m http.server 8000
 ```
 
-Depois abra:
+Abra no navegador:
 
 ```text
 http://localhost:8000/
 ```
 
-Também é possível abrir o `index.html` diretamente no navegador, porque o projeto inclui `data/contratos.js` como camada compatível com arquivo local. Para testes mais fiéis ao GitHub Pages, prefira o servidor local simples.
+Tambem e possivel abrir `index.html` diretamente, porque `data/contratos.js` fornece os dados em `window.CONTRATOS_DATA`. Para testar comportamento igual ao GitHub Pages, use o servidor local simples.
 
-## Como validar
+## Como Validar
 
-Execute:
+Execute sempre antes de publicar:
 
 ```bash
+node --check js/app.js
+node --check js/data-normalizer.js
 node scripts/validate-dashboard.mjs --reference-date=2026-05-01
 ```
 
-O script valida carregamento dos dados, normalização, status calculado, ordenação, totais, rankings, estados vazios, dados sem valor, dados sem vencimento, pendências e cenários de robustez com campos inválidos ou ausentes.
-
-Para testar com a data atual da máquina:
+Para validar usando a data atual da maquina:
 
 ```bash
 node scripts/validate-dashboard.mjs
 ```
 
-## Como atualizar a planilha
+O validador cobre:
 
-1. Não altere os arquivos originais dentro do painel manualmente.
-2. Atualize a planilha `contratos.xlsx` na origem administrativa.
-3. Gere novamente a camada derivada:
+- carregamento da base derivada;
+- recalculo dinamico de vencimentos;
+- busca sem diferenciar acentos e caixa;
+- filtros combinados;
+- totais, status calculados e valor total;
+- rankings de empresas e gestores;
+- agrupamentos por modalidade, categoria e mes;
+- contratos sem valor, sem vencimento e com pendencias;
+- robustez com campo vazio, valor invalido, data invalida, coluna extra e coluna faltando;
+- performance local da normalizacao.
+
+## Checklist de Responsividade
+
+Antes de publicar, conferir visualmente:
+
+- `1440px`: layout largo, hero compacto, graficos em grid e tabela legivel.
+- `1366px`: notebook comum sem cortes laterais.
+- `1024px`: tablet horizontal/notebook pequeno com grids ajustados.
+- `768px`: tablet vertical com tabela ainda legivel.
+- `430px`: iPhone grande com cards, filtros em painel e sem overflow horizontal.
+- `390px`: iPhone comum com header compacto e cards confortaveis.
+- `375px`: iPhone SE/mini com botoes tocaveis e labels legiveis.
+- `360px`: limite estreito sem texto importante cortado.
+
+Itens obrigatorios na revisao manual:
+
+- nenhum overflow horizontal no `body`;
+- cards sem corte;
+- botoes com area minima confortavel;
+- filtros abrindo e fechando no iPhone;
+- busca funcionando;
+- tabela no desktop e cards no mobile;
+- modal/drawer de detalhe com rolagem interna e safe area;
+- graficos sem labels cortados;
+- estados vazio, carregamento e erro visualmente consistentes;
+- rodape limpo e institucional.
+
+## Principais Melhorias Visuais
+
+- Design system com tokens de cores, bordas, raios, sombras, espacamentos e altura minima de controles.
+- Paleta institucional com azul escuro, azul medio, teal, dourado pontual, verde de sucesso, laranja/amarelo de atencao e vermelho apenas para criticidade.
+- Header mais compacto, com brasao e hierarquia clara entre Prefeitura, transparencia e painel.
+- KPIs agrupados por visao geral, risco de vencimento e qualidade cadastral.
+- Consulta avancada reorganizada, com filtros por grupos e bottom sheet no iPhone.
+- Tabela responsiva: tabela no desktop e cards administrativos no celular.
+- Drawer de detalhe redesenhado como ficha administrativa, com blocos de identificacao, empresa, objeto, valor, vigencia, status, responsaveis, pendencias e observacoes.
+- Sombras suavizadas e bordas mais uniformes para reduzir aparencia de prototipo.
+- Regra global de `[hidden]` para evitar componentes ocultos participando visualmente do layout.
+
+## Como Atualizar a Planilha
+
+1. Atualize a planilha administrativa de origem.
+2. Gere novamente a camada derivada:
 
 ```bash
 python3 scripts/convert-contratos.py --source /caminho/para/contratos.xlsx
@@ -52,51 +118,15 @@ O conversor atualiza:
 - `data/contratos.json`
 - `data/contratos.js`
 
-Se o Python informar ausência de `openpyxl`, instale com:
+Se faltar `openpyxl`:
 
 ```bash
 python3 -m pip install openpyxl
 ```
 
-## Como publicar no GitHub Pages
+## Campos Esperados da Planilha
 
-1. Envie estes arquivos para um repositório GitHub.
-2. Mantenha o `index.html` na raiz do repositório.
-3. No GitHub, abra `Settings > Pages`.
-4. Em `Build and deployment`, escolha publicação a partir de branch.
-5. Selecione a branch principal, geralmente `main`, e a pasta `/ (root)`.
-6. Salve e aguarde a publicação.
-
-O projeto já usa caminhos relativos e inclui `.nojekyll` para publicação direta como HTML/CSS/JS estático. A documentação oficial do GitHub Pages explica a configuração da fonte de publicação em: https://docs.github.com/en/pages/getting-started-with-github-pages/configuring-a-publishing-source-for-your-github-pages-site
-
-## Estrutura dos arquivos
-
-```text
-.
-├── index.html
-├── css/
-│   └── styles.css
-├── js/
-│   ├── app.js
-│   └── data-normalizer.js
-├── data/
-│   ├── contratos.json
-│   └── contratos.js
-├── assets/
-│   ├── brasao-iguape.png
-│   ├── favicon-iguape.png
-│   └── favicon.svg
-├── scripts/
-│   ├── convert-contratos.py
-│   └── validate-dashboard.mjs
-├── .nojekyll
-├── .gitignore
-└── README.md
-```
-
-## Campos esperados da planilha
-
-A aba principal deve conter, preferencialmente, estas colunas:
+A planilha deve conter, preferencialmente:
 
 - `ID`
 - `Modalidade`
@@ -115,17 +145,17 @@ A aba principal deve conter, preferencialmente, estas colunas:
 - `Fiscal`
 - `Observações`
 
-Colunas extras são preservadas apenas no registro bruto de origem e não quebram o painel. Colunas faltando geram valores vazios e pendências quando forem campos críticos.
+Colunas extras nao quebram o painel. Colunas ausentes geram valores vazios e, quando forem campos criticos, entram como pendencias cadastrais.
 
-## Regra importante sobre vencimentos
+## Regra Importante Sobre Vencimentos
 
-A coluna `Dias p/ Vencimento` da planilha não deve ser usada como verdade absoluta.
+A coluna `Dias p/ Vencimento` da planilha nao deve ser usada como verdade absoluta.
 
-O painel recalcula `diasParaVencimento` automaticamente no navegador, sempre com base na data atual de quem está acessando. Isso evita que o painel fique desatualizado quando a planilha foi calculada em uma data anterior.
+O painel recalcula `diasParaVencimento` no navegador, com base na data atual de quem acessa. Isso evita que o painel fique desatualizado quando a planilha foi calculada em data anterior.
 
-## Status calculado
+## Status Calculado
 
-O painel mantém o `Status` original da planilha, mas usa o status calculado como referência principal:
+O painel preserva o `Status` original da planilha, mas usa o status calculado como referencia principal:
 
 - `Sem vencimento`: sem `Data Vencimento`
 - `Vencido`: menos de 0 dias
@@ -135,60 +165,79 @@ O painel mantém o `Status` original da planilha, mas usa o status calculado com
 - `Monitorar 61 a 90 dias`: 61 a 90 dias
 - `Vigente`: acima de 90 dias
 
-## Categorias calculadas
+## Categorias Calculadas
 
-A categoria é inferida por palavras-chave no objeto, modalidade e observações. As regras ficam em `js/data-normalizer.js`, no bloco `CATEGORY_RULES`, para facilitar manutenção.
+A categoria e inferida por palavras-chave no objeto, modalidade e observacoes. As regras ficam em `js/data-normalizer.js`, no bloco `CATEGORY_RULES`.
 
 Categorias usadas:
 
-- Saúde
-- Educação
+- Saude
+- Educacao
 - Infraestrutura e Obras
 - Eventos, Cultura, Turismo e Esporte
-- Locação/Imóveis
-- Transporte e Veículos
+- Locacao/Imoveis
+- Transporte e Veiculos
 - Tecnologia/Sistemas
-- Limpeza/Serviços Urbanos
+- Limpeza/Servicos Urbanos
 - Agricultura
-- Assistência Social
-- Aquisições e Materiais
-- Administração/Convênios
+- Assistencia Social
+- Aquisicoes e Materiais
+- Administracao/Convenios
 - Outros/Pendente
 
-## Funcionalidades principais
+## Estrutura dos Arquivos
 
-- Indicadores administrativos no topo, calculados com base na data atual.
-- Alertas prioritários, saúde da base e contratos vigentes ordenados por vencimento.
-- Lista final de vencidos e próximos vencimentos, com vencidos primeiro.
-- Tabela ordenável e paginada.
-- Detalhe completo do contrato ao clicar em uma linha.
-- Estados de carregamento, erro e vazio.
-- CSS responsivo para desktop, notebook, tablet e celular.
-- CSS básico de impressão.
-
-## Limitações conhecidas
-
-- O painel depende da atualização da planilha de origem e da regeneração dos arquivos em `data/`.
-- A categorização por palavra-chave é uma regra administrativa aproximada e pode precisar de ajustes conforme a Prefeitura padronizar novos objetos.
-- O dashboard não grava alterações e não substitui sistema oficial de gestão contratual.
-- O cálculo usa a data local do navegador; computadores com data do sistema incorreta podem exibir vencimentos incorretos.
-- Valores textuais sem número em `Valor (R$)` são preservados em `Valor (Descrição)`, mas não entram no total monetário.
-
-## Checklist antes de publicar
-
-```bash
-node --check js/app.js
-node --check js/data-normalizer.js
-node scripts/validate-dashboard.mjs --reference-date=2026-05-01
-python3 -m http.server 8000
+```text
+.
+├── index.html
+├── css/
+│   └── styles.css
+├── js/
+│   ├── app.js
+│   └── data-normalizer.js
+├── data/
+│   ├── contratos.json
+│   └── contratos.js
+├── assets/
+│   ├── brasao-iguape.png
+│   ├── favicon-iguape.png
+│   ├── apple-touch-icon.png
+│   └── logo-iguape-og.png
+├── docs/
+│   ├── auditoria-visual-responsiva.md
+│   └── changelog-visual.md
+├── scripts/
+│   ├── convert-contratos.py
+│   └── validate-dashboard.mjs
+├── .nojekyll
+└── README.md
 ```
 
-Com o servidor ativo, abra `http://localhost:8000/` e confira:
+## Como Publicar no GitHub Pages
 
-- indicadores no topo;
-- alertas, saúde da base e contratos vigentes;
-- vencidos e próximos vencimentos ao final;
-- tabela;
-- modal lateral de detalhes;
-- layout em tela grande e celular;
-- rodapé com última atualização dos dados.
+1. Confirme que `index.html` esta na raiz do repositorio.
+2. Confirme que os caminhos sao relativos, como `css/styles.css`, `js/app.js` e `data/contratos.js`.
+3. Rode as validacoes.
+4. Commit e push na branch publicada, atualmente `main`.
+5. No GitHub, acesse `Settings > Pages`.
+6. Em `Build and deployment`, use `Deploy from a branch`.
+7. Selecione `main` e pasta `/ (root)`.
+8. Aguarde a publicacao e acesse:
+
+```text
+https://matheuhenriqu.github.io/painel-contratos-iguape-dashboard/
+```
+
+Para forcar atualizacao de cache depois de publicar, use um parametro com o hash do commit:
+
+```text
+https://matheuhenriqu.github.io/painel-contratos-iguape-dashboard/?v=<hash-do-commit>
+```
+
+## Limitacoes Conhecidas
+
+- O painel depende da atualizacao da planilha de origem e da regeneracao dos arquivos em `data/`.
+- A categorizacao por palavras-chave e aproximada e pode precisar de ajustes administrativos.
+- O painel nao grava alteracoes e nao substitui um sistema oficial de gestao contratual.
+- O calculo de vencimento usa a data local do navegador; computadores com data incorreta podem exibir prazos incorretos.
+- Valores textuais sem numero em `Valor (R$)` sao preservados em `Valor (Descrição)`, mas nao entram no total monetario.
