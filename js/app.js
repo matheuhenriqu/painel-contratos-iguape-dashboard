@@ -566,11 +566,7 @@ function renderActiveContracts(items) {
   }
 
   elements.activeContractsList.innerHTML = activeContracts.map((item) => {
-    const dueNotice = activeDueNotice(item);
-    const dueNoticeBadge = dueNotice
-      ? `<span class="badge ${dueNotice.badgeClass} active-due-alert">${escapeHtml(dueNotice.label)}</span>`
-      : "";
-
+    const activeBadge = activeContractBadge(item);
     return `
       <article class="active-contract-card ${activeContractClass(item)}" data-contract-id="${escapeAttribute(item.id)}" tabindex="0" aria-label="Abrir detalhes do contrato vigente ${escapeAttribute(item.contrato || item.id)}">
         <div class="active-contract-card__top">
@@ -579,8 +575,7 @@ function renderActiveContracts(items) {
             ${escapeHtml(formatDateISO(item.dataVencimento))}
           </span>
           <span class="active-contract-card__badges">
-            <span class="badge ${statusBadgeClass(item.statusCalculado)}">${escapeHtml(item.statusCalculado)}</span>
-            ${dueNoticeBadge}
+            <span class="badge ${activeBadge.badgeClass} active-due-alert">${escapeHtml(activeBadge.label)}</span>
           </span>
         </div>
         <div class="active-contract-card__body">
@@ -1094,6 +1089,13 @@ function activeDueNotice(item) {
     };
   }
   return null;
+}
+
+function activeContractBadge(item) {
+  return activeDueNotice(item) || {
+    label: item.statusCalculado,
+    badgeClass: statusBadgeClass(item.statusCalculado),
+  };
 }
 
 function sortPriorityDeadlines(a, b) {
