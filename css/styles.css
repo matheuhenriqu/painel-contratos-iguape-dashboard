@@ -222,7 +222,14 @@ tbody tr:focus-visible {
   align-items: center;
   gap: var(--space-4);
   flex-wrap: wrap;
-  margin-bottom: var(--space-6);
+  margin-bottom: var(--space-4);
+}
+
+.hero-title {
+  display: flex;
+  align-items: center;
+  gap: var(--space-5);
+  min-width: 0;
 }
 
 .hero-logo {
@@ -1364,16 +1371,19 @@ body.detail-open {
 
   .hero-brand {
     gap: var(--space-3);
-    margin-bottom: var(--space-5);
+    margin-bottom: var(--space-4);
+  }
+
+  .hero-title {
+    gap: var(--space-4);
   }
 
   .hero-logo {
-    width: 88px;
+    width: 78px;
   }
 
   .hero-brand span {
-    width: 100%;
-    justify-content: center;
+    width: auto;
   }
 
   .hero h1 {
@@ -1479,6 +1489,14 @@ body.detail-open {
 
   .hero h1 {
     font-size: 1.75rem;
+  }
+
+  .hero-title {
+    gap: var(--space-3);
+  }
+
+  .hero-logo {
+    width: 64px;
   }
 
   .section-heading h2 {
