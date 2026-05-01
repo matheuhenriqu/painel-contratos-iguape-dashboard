@@ -226,6 +226,10 @@ function toggleActiveContractsSection() {
   elements.activeContractsContent.hidden = !isHidden;
   elements.toggleActiveContracts.setAttribute("aria-expanded", String(isHidden));
   elements.toggleActiveContracts.textContent = isHidden ? "Ocultar" : "Mostrar";
+  elements.toggleActiveContracts.setAttribute(
+    "aria-label",
+    isHidden ? "Ocultar contratos vigentes" : "Mostrar contratos vigentes"
+  );
 }
 
 function render(items) {

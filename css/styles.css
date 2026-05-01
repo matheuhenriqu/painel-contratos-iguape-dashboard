@@ -68,6 +68,15 @@ body {
   overflow-x: hidden;
 }
 
+main,
+section,
+article,
+div,
+footer,
+dl {
+  min-width: 0;
+}
+
 .svg-sprite {
   position: absolute;
   width: 0;
@@ -105,6 +114,7 @@ select {
 }
 
 button {
+  max-width: 100%;
   cursor: pointer;
 }
 
@@ -171,6 +181,8 @@ tbody tr:focus-visible {
   background: var(--color-blue-800);
   color: var(--color-white);
   font-weight: 700;
+  text-align: center;
+  white-space: normal;
   box-shadow: 0 8px 18px rgba(10, 93, 143, 0.14);
   transition: background 160ms ease, border-color 160ms ease, box-shadow 160ms ease, transform 160ms ease;
 }
@@ -198,9 +210,11 @@ tbody tr:focus-visible {
 }
 
 .button--compact {
+  flex: 0 0 auto;
   min-height: 38px;
   padding-inline: var(--space-4);
   font-size: 0.9rem;
+  white-space: nowrap;
 }
 
 .app-status {
@@ -359,6 +373,10 @@ tbody tr:focus-visible {
   min-width: 0;
 }
 
+.section-heading > div {
+  min-width: 0;
+}
+
 .section-heading h2 {
   display: flex;
   align-items: center;
@@ -377,8 +395,14 @@ tbody tr:focus-visible {
 .heading-with-action {
   display: flex;
   align-items: center;
+  justify-content: space-between;
   gap: var(--space-3);
   flex-wrap: wrap;
+  width: 100%;
+  min-width: 0;
+}
+
+.heading-with-action h2 {
   min-width: 0;
 }
 
@@ -409,6 +433,7 @@ tbody tr:focus-visible {
   display: flex;
   align-items: center;
   justify-content: space-between;
+  flex-wrap: wrap;
   gap: var(--space-4);
   margin-bottom: var(--space-4);
   padding: var(--space-4);
@@ -421,6 +446,7 @@ tbody tr:focus-visible {
 
 .table-toolbar > div:first-child {
   display: grid;
+  flex: 1 1 220px;
   gap: var(--space-1);
   min-width: 0;
 }
@@ -428,9 +454,15 @@ tbody tr:focus-visible {
 .table-toolbar__actions {
   display: flex;
   align-items: end;
+  justify-content: flex-end;
   gap: var(--space-3);
   flex-wrap: wrap;
+  flex: 2 1 420px;
   min-width: 0;
+}
+
+.table-toolbar__actions .button {
+  min-width: 118px;
 }
 
 .table-toolbar select {
@@ -671,6 +703,10 @@ tbody tr:focus-visible {
   border-block: 1px solid rgba(8, 114, 118, 0.14);
 }
 
+#vigentes .section-heading > div {
+  width: 100%;
+}
+
 .active-contracts-list {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(min(100%, 320px), 1fr));
@@ -680,7 +716,9 @@ tbody tr:focus-visible {
 }
 
 .active-contracts-summary {
+  max-width: 920px;
   margin-bottom: var(--space-4);
+  line-height: 1.55;
 }
 
 .collapsible-region[hidden] {
@@ -690,6 +728,7 @@ tbody tr:focus-visible {
 .active-contract-card {
   display: grid;
   gap: var(--space-4);
+  width: 100%;
   min-width: 0;
   border: 1px solid var(--color-slate-200);
   border-left: 5px solid var(--color-green-700);
@@ -814,6 +853,7 @@ tbody tr:focus-visible {
 .deadline-item {
   display: grid;
   gap: var(--space-3);
+  width: 100%;
   min-width: 0;
   border: 1px solid var(--color-slate-200);
   border-radius: var(--radius);
@@ -1033,7 +1073,9 @@ tbody tr.row--attention:hover {
 .badge {
   display: inline-flex;
   align-items: center;
+  justify-self: start;
   gap: var(--space-2);
+  width: fit-content;
   max-width: 100%;
   min-height: 28px;
   border: 1px solid currentColor;
@@ -1048,6 +1090,7 @@ tbody tr.row--attention:hover {
 
 .badge::before {
   content: "";
+  flex: 0 0 auto;
   width: 0.45rem;
   height: 0.45rem;
   border-radius: 50%;
@@ -1290,12 +1333,14 @@ body.detail-open {
   }
 
   .table-toolbar {
+    display: grid;
     align-items: stretch;
   }
 
   .table-toolbar__actions {
+    display: grid;
+    grid-template-columns: minmax(180px, 1fr) repeat(2, minmax(118px, auto));
     align-items: stretch;
-    flex-wrap: wrap;
   }
 
   .table-wrap {
@@ -1508,6 +1553,10 @@ body.detail-open {
     width: 100%;
   }
 
+  .table-toolbar__actions .button {
+    min-width: 0;
+  }
+
   .badge {
     white-space: normal;
   }
@@ -1540,6 +1589,11 @@ body.detail-open {
 
   .section-heading h2 {
     font-size: 1.25rem;
+  }
+
+  .button--compact {
+    min-height: 36px;
+    padding-inline: var(--space-3);
   }
 }
 
