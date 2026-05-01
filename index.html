@@ -9,9 +9,9 @@
     <meta property="og:description" content="Acompanhamento administrativo dos contratos municipais de Iguape/SP.">
     <meta property="og:image" content="https://matheuhenriqu.github.io/painel-contratos-iguape-dashboard/assets/logo-iguape-og.png">
     <title>Painel de Contratos | Prefeitura Municipal de Iguape/SP</title>
-    <link rel="icon" href="assets/favicon-iguape.png?v=20260501-23" type="image/png">
-    <link rel="apple-touch-icon" href="assets/apple-touch-icon.png?v=20260501-23">
-    <link rel="stylesheet" href="css/styles.css?v=20260501-23">
+    <link rel="icon" href="assets/favicon-iguape.png?v=20260501-24" type="image/png">
+    <link rel="apple-touch-icon" href="assets/apple-touch-icon.png?v=20260501-24">
+    <link rel="stylesheet" href="css/styles.css?v=20260501-24">
   </head>
   <body>
     <a class="skip-link" href="#indicadores">Ir para os indicadores</a>
@@ -64,7 +64,7 @@
         <div class="container hero__grid">
           <div class="hero__copy">
             <div class="hero-title">
-              <img class="hero-logo" src="assets/brasao-iguape.png?v=20260501-23" alt="Brasão de Iguape">
+              <img class="hero-logo" src="assets/brasao-iguape.png?v=20260501-24" alt="Brasão de Iguape">
               <div>
                 <p class="eyebrow">Transparência municipal</p>
                 <h1>Painel de Contratos</h1>
@@ -99,78 +99,83 @@
               <p class="eyebrow">Resumo</p>
               <h2 id="indicators-title"><svg class="heading-icon" aria-hidden="true"><use href="#icon-chart"></use></svg>Indicadores</h2>
             </div>
-            <p id="last-update" class="muted">Carregando dados...</p>
+            <div class="section-actions">
+              <p id="last-update" class="muted">Carregando dados...</p>
+              <button class="button button--ghost button--compact" type="button" data-toggle-section="indicators-content" data-toggle-label="indicadores" aria-expanded="true" aria-controls="indicators-content" aria-label="Ocultar indicadores">Ocultar</button>
+            </div>
           </div>
 
-          <div class="kpi-grid kpi-grid--primary" aria-live="polite">
-            <article class="kpi-card">
-              <div class="kpi-card__top"><span>Total de contratos</span><svg class="icon" aria-hidden="true"><use href="#icon-file"></use></svg></div>
-              <strong id="kpi-total">0</strong>
-              <small>contratos encontrados</small>
-            </article>
-            <article class="kpi-card kpi-card--value">
-              <div class="kpi-card__top"><span>Valor total contratado</span><svg class="icon" aria-hidden="true"><use href="#icon-wallet"></use></svg></div>
-              <strong id="kpi-value">R$ 0,00</strong>
-              <small>somente registros com valor</small>
-            </article>
-            <article class="kpi-card kpi-card--success">
-              <div class="kpi-card__top"><span>Contratos ativos/vigentes</span><svg class="icon" aria-hidden="true"><use href="#icon-check"></use></svg></div>
-              <strong id="kpi-active">0</strong>
-              <small>não vencidos com data de vencimento</small>
-            </article>
-            <article class="kpi-card kpi-card--danger">
-              <div class="kpi-card__top"><span>Vencidos</span><svg class="icon" aria-hidden="true"><use href="#icon-alert"></use></svg></div>
-              <strong id="kpi-overdue">0</strong>
-              <small>com base na data atual</small>
-            </article>
-            <article class="kpi-card kpi-card--warning">
-              <div class="kpi-card__top"><span>Até 30 dias</span><svg class="icon" aria-hidden="true"><use href="#icon-clock"></use></svg></div>
-              <strong id="kpi-soon">0</strong>
-              <small>vencimentos próximos</small>
-            </article>
-            <article class="kpi-card kpi-card--attention">
-              <div class="kpi-card__top"><span>Atenção 31 a 60 dias</span><svg class="icon" aria-hidden="true"><use href="#icon-calendar"></use></svg></div>
-              <strong id="kpi-attention">0</strong>
-              <small>exigem acompanhamento</small>
-            </article>
-            <article class="kpi-card">
-              <div class="kpi-card__top"><span>Sem data de vencimento</span><svg class="icon" aria-hidden="true"><use href="#icon-calendar"></use></svg></div>
-              <strong id="kpi-no-due">0</strong>
-              <small>data não informada</small>
-            </article>
-            <article class="kpi-card">
-              <div class="kpi-card__top"><span>Pendências cadastrais</span><svg class="icon" aria-hidden="true"><use href="#icon-clipboard"></use></svg></div>
-              <strong id="kpi-quality">0</strong>
-              <small>campos ausentes ou datas inconsistentes</small>
-            </article>
-            <article class="kpi-card">
-              <div class="kpi-card__top"><span>Total sem gestor</span><svg class="icon" aria-hidden="true"><use href="#icon-user"></use></svg></div>
-              <strong id="kpi-no-manager">0</strong>
-              <small>responsável não informado</small>
-            </article>
-            <article class="kpi-card">
-              <div class="kpi-card__top"><span>Total sem fiscal</span><svg class="icon" aria-hidden="true"><use href="#icon-shield"></use></svg></div>
-              <strong id="kpi-no-fiscal">0</strong>
-              <small>fiscal não informado</small>
-            </article>
-          </div>
+          <div id="indicators-content" class="collapsible-region">
+            <div class="kpi-grid kpi-grid--primary" aria-live="polite">
+              <article class="kpi-card">
+                <div class="kpi-card__top"><span>Total de contratos</span><svg class="icon" aria-hidden="true"><use href="#icon-file"></use></svg></div>
+                <strong id="kpi-total">0</strong>
+                <small>contratos encontrados</small>
+              </article>
+              <article class="kpi-card kpi-card--value">
+                <div class="kpi-card__top"><span>Valor total contratado</span><svg class="icon" aria-hidden="true"><use href="#icon-wallet"></use></svg></div>
+                <strong id="kpi-value">R$ 0,00</strong>
+                <small>somente registros com valor</small>
+              </article>
+              <article class="kpi-card kpi-card--success">
+                <div class="kpi-card__top"><span>Contratos ativos/vigentes</span><svg class="icon" aria-hidden="true"><use href="#icon-check"></use></svg></div>
+                <strong id="kpi-active">0</strong>
+                <small>não vencidos com data de vencimento</small>
+              </article>
+              <article class="kpi-card kpi-card--danger">
+                <div class="kpi-card__top"><span>Vencidos</span><svg class="icon" aria-hidden="true"><use href="#icon-alert"></use></svg></div>
+                <strong id="kpi-overdue">0</strong>
+                <small>com base na data atual</small>
+              </article>
+              <article class="kpi-card kpi-card--warning">
+                <div class="kpi-card__top"><span>Até 30 dias</span><svg class="icon" aria-hidden="true"><use href="#icon-clock"></use></svg></div>
+                <strong id="kpi-soon">0</strong>
+                <small>vencimentos próximos</small>
+              </article>
+              <article class="kpi-card kpi-card--attention">
+                <div class="kpi-card__top"><span>Atenção 31 a 60 dias</span><svg class="icon" aria-hidden="true"><use href="#icon-calendar"></use></svg></div>
+                <strong id="kpi-attention">0</strong>
+                <small>exigem acompanhamento</small>
+              </article>
+              <article class="kpi-card">
+                <div class="kpi-card__top"><span>Sem data de vencimento</span><svg class="icon" aria-hidden="true"><use href="#icon-calendar"></use></svg></div>
+                <strong id="kpi-no-due">0</strong>
+                <small>data não informada</small>
+              </article>
+              <article class="kpi-card">
+                <div class="kpi-card__top"><span>Pendências cadastrais</span><svg class="icon" aria-hidden="true"><use href="#icon-clipboard"></use></svg></div>
+                <strong id="kpi-quality">0</strong>
+                <small>campos ausentes ou datas inconsistentes</small>
+              </article>
+              <article class="kpi-card">
+                <div class="kpi-card__top"><span>Total sem gestor</span><svg class="icon" aria-hidden="true"><use href="#icon-user"></use></svg></div>
+                <strong id="kpi-no-manager">0</strong>
+                <small>responsável não informado</small>
+              </article>
+              <article class="kpi-card">
+                <div class="kpi-card__top"><span>Total sem fiscal</span><svg class="icon" aria-hidden="true"><use href="#icon-shield"></use></svg></div>
+                <strong id="kpi-no-fiscal">0</strong>
+                <small>fiscal não informado</small>
+              </article>
+            </div>
 
-          <div class="ops-grid">
-            <article class="info-panel">
-              <div class="panel-title">
-                <h3>Alertas Prioritários</h3>
-                <span>Base completa</span>
-              </div>
-              <div id="priority-alerts" class="alert-list"></div>
-            </article>
+            <div class="ops-grid">
+              <article class="info-panel">
+                <div class="panel-title">
+                  <h3>Alertas Prioritários</h3>
+                  <span>Base completa</span>
+                </div>
+                <div id="priority-alerts" class="alert-list"></div>
+              </article>
 
-            <article class="info-panel">
-              <div class="panel-title">
-                <h3>Saúde da base</h3>
-                <span>Completude cadastral</span>
-              </div>
-              <div id="base-health" class="health-list"></div>
-            </article>
+              <article class="info-panel">
+                <div class="panel-title">
+                  <h3>Saúde da base</h3>
+                  <span>Completude cadastral</span>
+                </div>
+                <div id="base-health" class="health-list"></div>
+              </article>
+            </div>
           </div>
         </div>
       </section>
@@ -182,7 +187,7 @@
               <p class="eyebrow">Vigência</p>
               <div class="heading-with-action">
                 <h2 id="active-contracts-title"><svg class="heading-icon" aria-hidden="true"><use href="#icon-calendar"></use></svg>Contratos vigentes</h2>
-                <button id="toggle-active-contracts" class="button button--ghost button--compact" type="button" aria-expanded="true" aria-controls="active-contracts-content" aria-label="Ocultar contratos vigentes">Ocultar</button>
+                <button id="toggle-active-contracts" class="button button--ghost button--compact" type="button" data-toggle-section="active-contracts-content" data-toggle-label="contratos vigentes" aria-expanded="true" aria-controls="active-contracts-content" aria-label="Ocultar contratos vigentes">Ocultar</button>
               </div>
             </div>
           </div>
@@ -201,58 +206,68 @@
               <p class="eyebrow">Detalhamento</p>
               <h2 id="table-title"><svg class="heading-icon" aria-hidden="true"><use href="#icon-table"></use></svg>Contratos</h2>
             </div>
-            <p id="result-count" class="result-pill">0 contratos</p>
+            <div class="section-actions">
+              <p id="result-count" class="result-pill">0 contratos</p>
+              <button class="button button--ghost button--compact" type="button" data-toggle-section="table-content" data-toggle-label="contratos" aria-expanded="true" aria-controls="table-content" aria-label="Ocultar contratos">Ocultar</button>
+            </div>
           </div>
 
-          <div class="table-toolbar" aria-label="Controles da tabela de contratos">
-            <div class="table-toolbar__meta">
-              <strong id="page-status">Página 1 de 1</strong>
-              <span id="page-range" class="muted">0 contratos exibidos</span>
-            </div>
-            <div class="table-toolbar__actions">
-              <label class="page-size-field">
-                Linhas por página
-                <select id="page-size">
-                  <option value="25">25</option>
-                  <option value="50">50</option>
-                  <option value="100">100</option>
-                  <option value="all">Todas</option>
-                </select>
-              </label>
-              <div class="table-toolbar__buttons">
-                <button id="prev-page" class="button button--ghost" type="button" aria-label="Página anterior da tabela">Anterior</button>
-                <button id="next-page" class="button button--ghost" type="button" aria-label="Próxima página da tabela">Próxima</button>
+          <div id="table-content" class="collapsible-region">
+            <div class="table-toolbar" aria-label="Controles da tabela de contratos">
+              <div class="table-toolbar__meta">
+                <strong id="page-status">Página 1 de 1</strong>
+                <span id="page-range" class="muted">0 contratos exibidos</span>
+              </div>
+              <div class="table-toolbar__actions">
+                <label class="page-size-field">
+                  Linhas por página
+                  <select id="page-size">
+                    <option value="25">25</option>
+                    <option value="50">50</option>
+                    <option value="100">100</option>
+                    <option value="all">Todas</option>
+                  </select>
+                </label>
+                <div class="table-toolbar__buttons">
+                  <button id="prev-page" class="button button--ghost" type="button" aria-label="Página anterior da tabela">Anterior</button>
+                  <button id="next-page" class="button button--ghost" type="button" aria-label="Próxima página da tabela">Próxima</button>
+                </div>
               </div>
             </div>
-          </div>
 
-          <div class="table-wrap">
-            <table>
-              <caption class="sr-only">Tabela detalhada de contratos municipais</caption>
-              <thead id="contracts-head">
-                <tr><th scope="col">Carregando...</th></tr>
-              </thead>
-              <tbody id="contracts-table">
-                <tr>
-                  <td>Carregando contratos...</td>
-                </tr>
-              </tbody>
-            </table>
+            <div class="table-wrap">
+              <table>
+                <caption class="sr-only">Tabela detalhada de contratos municipais</caption>
+                <thead id="contracts-head">
+                  <tr><th scope="col">Carregando...</th></tr>
+                </thead>
+                <tbody id="contracts-table">
+                  <tr>
+                    <td>Carregando contratos...</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
           </div>
         </div>
       </section>
 
-      <section class="section deadlines-section" aria-labelledby="upcoming-title">
+      <section id="vencidos" class="section deadlines-section" aria-labelledby="upcoming-title">
         <div class="container">
           <div class="section-heading">
             <div>
               <p class="eyebrow">Agenda de vencimentos</p>
               <h2 id="upcoming-title"><svg class="heading-icon" aria-hidden="true"><use href="#icon-clock"></use></svg>Vencidos e próximos vencimentos</h2>
             </div>
-            <p class="muted">Vencidos primeiro; depois, os menores prazos e maiores valores</p>
+            <div class="section-actions">
+              <p class="muted">Vencidos primeiro; depois, os menores prazos e maiores valores</p>
+              <button class="button button--ghost button--compact" type="button" data-toggle-section="upcoming-content" data-toggle-label="vencidos e próximos vencimentos" aria-expanded="true" aria-controls="upcoming-content" aria-label="Ocultar vencidos e próximos vencimentos">Ocultar</button>
+            </div>
           </div>
 
-          <div id="upcoming-list" class="deadline-list"></div>
+          <div id="upcoming-content" class="collapsible-region">
+            <div id="upcoming-list" class="deadline-list"></div>
+          </div>
         </div>
       </section>
     </main>
@@ -261,7 +276,7 @@
       <div class="container footer-grid">
         <div class="footer-brand">
           <span class="footer-logo-wrap">
-            <img src="assets/brasao-iguape.png?v=20260501-23" alt="Brasão de Iguape">
+            <img src="assets/brasao-iguape.png?v=20260501-24" alt="Brasão de Iguape">
           </span>
           <div>
             <strong>Prefeitura Municipal de Iguape/SP</strong>
@@ -288,8 +303,8 @@
       <div id="detail-body" class="detail-drawer__body"></div>
     </aside>
 
-    <script src="data/contratos.js?v=20260501-23"></script>
-    <script src="js/data-normalizer.js?v=20260501-23"></script>
-    <script src="js/app.js?v=20260501-23"></script>
+    <script src="data/contratos.js?v=20260501-24"></script>
+    <script src="js/data-normalizer.js?v=20260501-24"></script>
+    <script src="js/app.js?v=20260501-24"></script>
   </body>
 </html>

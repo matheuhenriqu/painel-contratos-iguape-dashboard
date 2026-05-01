@@ -56,9 +56,8 @@ const elements = {
   footerUpdated: document.querySelector("#footer-updated"),
   activeContractsList: document.querySelector("#active-contracts-list"),
   activeContractsSummary: document.querySelector("#active-contracts-summary"),
-  activeContractsContent: document.querySelector("#active-contracts-content"),
-  toggleActiveContracts: document.querySelector("#toggle-active-contracts"),
   upcomingList: document.querySelector("#upcoming-list"),
+  toggleButtons: document.querySelectorAll("[data-toggle-section]"),
 };
 
 let contracts = [];
@@ -200,9 +199,9 @@ function bindEvents() {
     });
   }
 
-  if (elements.toggleActiveContracts && elements.activeContractsContent) {
-    elements.toggleActiveContracts.addEventListener("click", toggleActiveContractsSection);
-  }
+  elements.toggleButtons.forEach((button) => {
+    button.addEventListener("click", () => toggleDashboardSection(button));
+  });
 
   elements.closeDetail.addEventListener("click", closeContractDetail);
   elements.detailBackdrop.addEventListener("click", closeContractDetail);
@@ -215,21 +214,34 @@ function bindEvents() {
   document.querySelectorAll("[data-quick-target]").forEach((button) => {
     button.addEventListener("click", () => {
       const targetKey = button.dataset.quickTarget;
-      const target = targetKey === "vigentes" ? "#vigentes" : "#upcoming-title";
-      document.querySelector(target)?.scrollIntoView({ behavior: "smooth", block: "start" });
+      const target = targetKey === "vigentes" ? document.querySelector("#vigentes") : document.querySelector("#vencidos");
+      openCollapsibleInside(target);
+      target?.scrollIntoView({ behavior: "smooth", block: "start" });
     });
   });
 }
 
-function toggleActiveContractsSection() {
-  const isHidden = elements.activeContractsContent.hidden;
-  elements.activeContractsContent.hidden = !isHidden;
-  elements.toggleActiveContracts.setAttribute("aria-expanded", String(isHidden));
-  elements.toggleActiveContracts.textContent = isHidden ? "Ocultar" : "Mostrar";
-  elements.toggleActiveContracts.setAttribute(
-    "aria-label",
-    isHidden ? "Ocultar contratos vigentes" : "Mostrar contratos vigentes"
-  );
+function openCollapsibleInside(section) {
+  const button = section?.querySelector("[data-toggle-section]");
+  if (button) {
+    toggleDashboardSection(button, true);
+  }
+}
+
+function toggleDashboardSection(button, forceOpen = false) {
+  const content = document.getElementById(button.dataset.toggleSection);
+  if (!content) {
+    return;
+  }
+
+  const shouldHide = forceOpen ? false : !content.hidden;
+  const isExpanded = !shouldHide;
+  const label = button.dataset.toggleLabel || "seção";
+
+  content.hidden = shouldHide;
+  button.setAttribute("aria-expanded", String(isExpanded));
+  button.textContent = isExpanded ? "Ocultar" : "Mostrar";
+  button.setAttribute("aria-label", `${isExpanded ? "Ocultar" : "Mostrar"} ${label}`);
 }
 
 function render(items) {
