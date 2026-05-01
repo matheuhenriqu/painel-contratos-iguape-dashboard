@@ -694,7 +694,7 @@ function renderTable(items) {
   elements.nextPage.disabled = !total || currentPage >= totalPages;
 
   if (!pageItems.length) {
-    elements.table.innerHTML = `<tr><td colspan="${TABLE_COLUMNS.length}" class="empty-state">Nenhum contrato encontrado para os filtros selecionados.</td></tr>`;
+    elements.table.innerHTML = `<tr class="table-empty-row"><td colspan="${TABLE_COLUMNS.length}" class="empty-state">Nenhum contrato encontrado para os filtros selecionados.</td></tr>`;
     return;
   }
 
@@ -706,12 +706,14 @@ function renderTable(items) {
 }
 
 function renderTableCell(item, column) {
+  const cellLabel = `data-label="${escapeAttribute(column.label)}"`;
+
   if (column.key === "statusCalculado") {
     const statusNote = item.statusOriginal && item.statusOriginal !== item.statusCalculado
       ? `<small class="status-note">Original: ${escapeHtml(item.statusOriginal)}</small>`
       : "";
     return `
-      <td class="status-cell">
+      <td ${cellLabel} class="status-cell">
         <span class="badge ${statusBadgeClass(item.statusCalculado)}">${escapeHtml(item.statusCalculado)}</span>
         ${statusNote}
       </td>
@@ -719,24 +721,24 @@ function renderTableCell(item, column) {
   }
 
   if (column.key === "diasParaVencimento") {
-    return `<td class="numeric-cell">${item.diasParaVencimento === null ? "—" : item.diasParaVencimento}</td>`;
+    return `<td ${cellLabel} class="numeric-cell">${item.diasParaVencimento === null ? "—" : item.diasParaVencimento}</td>`;
   }
 
   if (column.key === "dataVencimento") {
-    return `<td>${formatDateISO(item.dataVencimento)}</td>`;
+    return `<td ${cellLabel}>${formatDateISO(item.dataVencimento)}</td>`;
   }
 
   if (column.key === "contrato") {
-    return `<td><strong>${escapeHtml(item.contrato || "Não informado")}</strong></td>`;
+    return `<td ${cellLabel}><strong>${escapeHtml(item.contrato || "Não informado")}</strong></td>`;
   }
 
   if (column.key === "processo") {
-    return `<td>${escapeHtml(item.processo || "Não informado")}</td>`;
+    return `<td ${cellLabel}>${escapeHtml(item.processo || "Não informado")}</td>`;
   }
 
   if (column.key === "modalidade") {
     return `
-      <td>
+      <td ${cellLabel}>
         ${escapeHtml(item.modalidade || "Não informado")}
         <small class="muted-cell">${escapeHtml(item.numeroModalidade || "")}</small>
       </td>
@@ -744,34 +746,34 @@ function renderTableCell(item, column) {
   }
 
   if (column.key === "objeto") {
-    return `<td class="object-cell">${escapeHtml(item.objeto || "Objeto não informado")}</td>`;
+    return `<td ${cellLabel} class="object-cell">${escapeHtml(item.objeto || "Objeto não informado")}</td>`;
   }
 
   if (column.key === "empresa") {
-    return `<td class="wrap-cell">${escapeHtml(item.empresa || "Não informado")}</td>`;
+    return `<td ${cellLabel} class="wrap-cell">${escapeHtml(item.empresa || "Não informado")}</td>`;
   }
 
   if (column.key === "valor") {
-    return `<td class="numeric-cell">${formatValue(item)}</td>`;
+    return `<td ${cellLabel} class="numeric-cell">${formatValue(item)}</td>`;
   }
 
   if (column.key === "gestor") {
-    return `<td class="wrap-cell">${escapeHtml(item.gestor || "Não informado")}</td>`;
+    return `<td ${cellLabel} class="wrap-cell">${escapeHtml(item.gestor || "Não informado")}</td>`;
   }
 
   if (column.key === "fiscal") {
-    return `<td class="wrap-cell">${escapeHtml(item.fiscal || "Não informado")}</td>`;
+    return `<td ${cellLabel} class="wrap-cell">${escapeHtml(item.fiscal || "Não informado")}</td>`;
   }
 
   if (column.key === "pendencias") {
-    return `<td>${formatPendencias(item)}</td>`;
+    return `<td ${cellLabel}>${formatPendencias(item)}</td>`;
   }
 
   if (column.key === "observacoes") {
-    return `<td class="notes-cell">${escapeHtml(item.observacoes || "Sem observações")}</td>`;
+    return `<td ${cellLabel} class="notes-cell">${escapeHtml(item.observacoes || "Sem observações")}</td>`;
   }
 
-  return `<td>${escapeHtml(item[column.key] || "Não informado")}</td>`;
+  return `<td ${cellLabel}>${escapeHtml(item[column.key] || "Não informado")}</td>`;
 }
 
 function updateSort(key) {

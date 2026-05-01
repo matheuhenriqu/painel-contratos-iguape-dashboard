@@ -86,6 +86,11 @@ a {
   text-decoration: none;
 }
 
+img {
+  max-width: 100%;
+  height: auto;
+}
+
 button,
 input,
 select {
@@ -125,6 +130,7 @@ tbody tr:focus-visible {
 .container {
   width: min(100% - 2rem, var(--container));
   margin-inline: auto;
+  min-width: 0;
 }
 
 .sr-only {
@@ -347,6 +353,7 @@ tbody tr:focus-visible {
   justify-content: space-between;
   gap: var(--space-5);
   margin-bottom: var(--space-5);
+  min-width: 0;
 }
 
 .section-heading h2 {
@@ -411,17 +418,20 @@ tbody tr:focus-visible {
   border-radius: var(--radius);
   background: var(--color-white);
   box-shadow: var(--shadow-card);
+  min-width: 0;
 }
 
 .table-toolbar > div:first-child {
   display: grid;
   gap: var(--space-1);
+  min-width: 0;
 }
 
 .table-toolbar__actions {
   display: flex;
   align-items: end;
   gap: var(--space-3);
+  min-width: 0;
 }
 
 .table-toolbar select {
@@ -855,18 +865,17 @@ tbody tr:focus-visible {
 }
 
 .table-wrap {
-  overflow-x: auto;
+  overflow: visible;
   border: 1px solid var(--color-slate-200);
   border-radius: var(--radius);
   background: var(--color-white);
   box-shadow: var(--shadow-soft);
-  scrollbar-color: var(--color-blue-700) var(--color-slate-100);
 }
 
 table {
   width: 100%;
-  min-width: 1580px;
   border-collapse: collapse;
+  table-layout: fixed;
 }
 
 th,
@@ -875,6 +884,8 @@ td {
   border-bottom: 1px solid var(--color-slate-200);
   text-align: left;
   vertical-align: top;
+  overflow-wrap: anywhere;
+  word-break: normal;
 }
 
 th {
@@ -936,6 +947,7 @@ tbody tr.row--attention:hover {
   gap: var(--space-2);
   width: 100%;
   min-height: 44px;
+  min-width: 0;
   border: 0;
   padding: var(--space-3) var(--space-4);
   background: transparent;
@@ -951,11 +963,11 @@ tbody tr.row--attention:hover {
 }
 
 .status-cell {
-  min-width: 168px;
+  min-width: 0;
 }
 
 .numeric-cell {
-  white-space: nowrap;
+  white-space: normal;
 }
 
 .wrap-cell,
@@ -966,13 +978,13 @@ tbody tr.row--attention:hover {
 }
 
 .notes-cell {
-  max-width: 260px;
+  max-width: none;
 }
 
 .contract-title {
   display: grid;
   gap: var(--space-1);
-  min-width: 120px;
+  min-width: 0;
 }
 
 .contract-title strong {
@@ -985,7 +997,7 @@ tbody tr.row--attention:hover {
 }
 
 .object-cell {
-  max-width: 320px;
+  max-width: none;
   color: var(--color-slate-900);
   font-weight: 650;
 }
@@ -1002,7 +1014,7 @@ tbody tr.row--attention:hover {
 }
 
 .pendencias-list {
-  max-width: 220px;
+  max-width: none;
 }
 
 .badge {
@@ -1176,6 +1188,8 @@ body.detail-open {
   display: flex;
   align-items: center;
   gap: var(--space-4);
+  flex-wrap: wrap;
+  min-width: 0;
 }
 
 .footer-logo-wrap {
@@ -1217,6 +1231,99 @@ body.detail-open {
   .table-toolbar__actions {
     align-items: stretch;
     flex-wrap: wrap;
+  }
+
+  .table-wrap {
+    border: 0;
+    background: transparent;
+    box-shadow: none;
+  }
+
+  table,
+  thead,
+  tbody,
+  tr,
+  td {
+    display: block;
+    width: 100%;
+  }
+
+  table {
+    border-collapse: separate;
+  }
+
+  thead {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+  }
+
+  tbody {
+    display: grid;
+    gap: var(--space-4);
+  }
+
+  tbody tr {
+    display: grid;
+    min-width: 0;
+    border: 1px solid var(--color-slate-200);
+    border-left: 5px solid var(--color-blue-700);
+    border-radius: var(--radius);
+    padding: var(--space-2) var(--space-4);
+    background: var(--color-white);
+    box-shadow: var(--shadow-subtle);
+  }
+
+  tbody tr.row--overdue {
+    border-left-color: var(--color-red-700);
+  }
+
+  tbody tr.row--today,
+  tbody tr.row--soon {
+    border-left-color: var(--color-orange-700);
+  }
+
+  tbody tr.row--attention {
+    border-left-color: var(--color-yellow-700);
+  }
+
+  tbody td {
+    display: grid;
+    grid-template-columns: minmax(7rem, 0.34fr) minmax(0, 1fr);
+    gap: var(--space-3);
+    align-items: start;
+    min-width: 0;
+    border-bottom: 1px solid var(--color-slate-200);
+    padding: var(--space-3) 0;
+  }
+
+  tbody td:last-child {
+    border-bottom: 0;
+  }
+
+  tbody td::before {
+    content: attr(data-label);
+    color: var(--color-slate-500);
+    font-size: 0.75rem;
+    font-weight: 850;
+    text-transform: uppercase;
+  }
+
+  tbody tr.table-empty-row {
+    border-left: 1px solid var(--color-slate-200);
+    padding: 0;
+  }
+
+  tbody tr.table-empty-row td {
+    display: block;
+    border-bottom: 0;
+  }
+
+  tbody tr.table-empty-row td::before {
+    content: none;
   }
 }
 
@@ -1334,8 +1441,47 @@ body.detail-open {
     flex-direction: column;
   }
 
+  .active-contract-card__badges {
+    justify-content: flex-start;
+    width: 100%;
+  }
+
+  tbody td {
+    grid-template-columns: 1fr;
+    gap: var(--space-1);
+  }
+
+  .table-toolbar__actions .button,
+  .table-toolbar__actions label,
+  .table-toolbar select {
+    width: 100%;
+  }
+
   .badge {
     white-space: normal;
+  }
+}
+
+@media (max-width: 430px) {
+  .container {
+    width: min(100% - 0.75rem, var(--container));
+  }
+
+  .filters-panel,
+  .kpi-card,
+  .info-panel,
+  .active-contract-card,
+  .deadline-item,
+  tbody tr {
+    padding-inline: var(--space-3);
+  }
+
+  .hero h1 {
+    font-size: 1.75rem;
+  }
+
+  .section-heading h2 {
+    font-size: 1.25rem;
   }
 }
 
@@ -1415,11 +1561,41 @@ body.detail-open {
   table {
     min-width: 0;
     font-size: 8pt;
+    table-layout: auto;
+  }
+
+  table {
+    display: table;
+    width: 100%;
+  }
+
+  thead {
+    display: table-header-group;
+    position: static;
+    height: auto;
+    overflow: visible;
+    clip: auto;
+    white-space: normal;
+  }
+
+  tbody {
+    display: table-row-group;
+  }
+
+  tr {
+    display: table-row;
+    border: 0;
+    box-shadow: none;
   }
 
   th,
   td {
+    display: table-cell;
     padding: 4pt;
+  }
+
+  td::before {
+    content: none;
   }
 
   th {
