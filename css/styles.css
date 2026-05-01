@@ -226,9 +226,10 @@ tbody tr:focus-visible {
 }
 
 .hero-logo {
-  width: min(215px, 58vw);
+  width: clamp(78px, 10vw, 112px);
   height: auto;
   display: block;
+  filter: drop-shadow(0 10px 18px rgba(0, 0, 0, 0.18));
 }
 
 .hero-brand span {
@@ -1367,7 +1368,7 @@ body.detail-open {
   }
 
   .hero-logo {
-    width: min(200px, 72vw);
+    width: 88px;
   }
 
   .hero-brand span {

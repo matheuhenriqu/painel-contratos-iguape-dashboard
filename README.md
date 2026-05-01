@@ -83,6 +83,8 @@ O projeto já usa caminhos relativos e inclui `.nojekyll` para publicação dire
 │   ├── contratos.json
 │   └── contratos.js
 ├── assets/
+│   ├── brasao-iguape.png
+│   ├── favicon-iguape.png
 │   └── favicon.svg
 ├── scripts/
 │   ├── convert-contratos.py
