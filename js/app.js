@@ -36,6 +36,7 @@ const elements = {
   detailTitle: document.querySelector("#detail-title"),
   detailBody: document.querySelector("#detail-body"),
   closeDetail: document.querySelector("#close-detail"),
+  heroLastUpdate: document.querySelector("#hero-last-update"),
   lastUpdate: document.querySelector("#last-update"),
   quickActive: document.querySelector("#quick-active"),
   quickSoon: document.querySelector("#quick-soon"),
@@ -214,11 +215,21 @@ function bindEvents() {
   document.querySelectorAll("[data-quick-target]").forEach((button) => {
     button.addEventListener("click", () => {
       const targetKey = button.dataset.quickTarget;
-      const target = targetKey === "vencidos" ? document.querySelector("#vencidos") : document.querySelector("#vigentes");
+      const target = getQuickTargetSection(targetKey);
       openCollapsibleInside(target);
       target?.scrollIntoView({ behavior: "smooth", block: "start" });
     });
   });
+}
+
+function getQuickTargetSection(targetKey) {
+  if (targetKey === "vencidos") {
+    return document.querySelector("#vencidos");
+  }
+  if (targetKey === "tabela") {
+    return document.querySelector("#tabela");
+  }
+  return document.querySelector("#vigentes");
 }
 
 function openCollapsibleInside(section) {
@@ -262,6 +273,11 @@ function renderLastUpdate() {
     : "Dados carregados";
 
   elements.lastUpdate.textContent = updateText;
+  if (elements.heroLastUpdate) {
+    elements.heroLastUpdate.textContent = hasValidDate
+      ? `Atualização dos dados: ${generatedAt.toLocaleString("pt-BR")}`
+      : "Atualização dos dados: não informada";
+  }
   if (elements.footerUpdated) {
     elements.footerUpdated.textContent = hasValidDate
       ? `Última atualização dos dados: ${generatedAt.toLocaleString("pt-BR")}`
