@@ -170,16 +170,20 @@ function renderErrorState() {
 }
 
 function bindEvents() {
-  elements.searchForm.addEventListener("submit", (event) => {
-    event.preventDefault();
-    currentPage = 1;
-    renderFiltered();
-  });
+  if (elements.searchForm) {
+    elements.searchForm.addEventListener("submit", (event) => {
+      event.preventDefault();
+      currentPage = 1;
+      renderFiltered();
+    });
+  }
 
-  elements.search.addEventListener("input", () => {
-    currentPage = 1;
-    renderFiltered();
-  });
+  if (elements.search) {
+    elements.search.addEventListener("input", () => {
+      currentPage = 1;
+      renderFiltered();
+    });
+  }
 
   filterControls().forEach((select) => {
     select.addEventListener("change", () => {
@@ -277,7 +281,9 @@ function filterControls() {
 }
 
 function clearAllFilters() {
-  elements.search.value = "";
+  if (elements.search) {
+    elements.search.value = "";
+  }
   filterControls().forEach((control) => {
     control.value = "";
   });
@@ -307,7 +313,7 @@ function renderFiltered() {
 }
 
 function applyFilters(items) {
-  const query = ContractData.normalizeSearchText(elements.search.value);
+  const query = ContractData.normalizeSearchText(elements.search ? elements.search.value : "");
   const filters = {
     modalidade: elements.modalidade.value,
     status: elements.status.value,

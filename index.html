@@ -11,38 +11,6 @@
   <body>
     <a class="skip-link" href="#indicadores">Ir para os indicadores</a>
 
-    <header class="site-header">
-      <div class="header-strip">
-        <div class="container header-strip__content">
-          <span>Município de Iguape - SP</span>
-          <span>Portal público de acompanhamento</span>
-        </div>
-      </div>
-
-      <div class="container header-main">
-        <a class="brand" href="#topo" aria-label="Início do Painel de Contratos">
-          <span class="brand__text">
-            <strong>Prefeitura Municipal de Iguape/SP</strong>
-            <small>Painel de Contratos</small>
-          </span>
-        </a>
-
-        <form class="top-search" role="search" aria-label="Busca geral de contratos">
-          <label class="sr-only" for="global-search">Buscar objeto, empresa, contrato, processo, modalidade, gestor, fiscal ou observações</label>
-          <input id="global-search" type="search" placeholder="Buscar por objeto, empresa, contrato, processo, gestor, fiscal...">
-          <button type="submit" aria-label="Aplicar busca geral">Buscar</button>
-        </form>
-      </div>
-
-      <nav class="audience-nav" aria-label="Navegação institucional">
-        <div class="container audience-nav__content">
-          <a href="#indicadores">Cidadão</a>
-          <a href="#tabela">Empresa</a>
-          <a href="#filtros">Servidor</a>
-        </div>
-      </nav>
-    </header>
-
     <main id="topo">
       <div id="app-status" class="app-status app-status--loading" role="status" aria-live="polite">
         Carregando dados dos contratos...
@@ -167,6 +135,11 @@
           </div>
 
           <div class="filters-grid">
+            <label class="filter-search">
+              Pesquisa geral
+              <input id="global-search" type="search" placeholder="Digite termo para localizar contratos">
+            </label>
+
             <label>
               Status de vencimento
               <select id="filter-status">
