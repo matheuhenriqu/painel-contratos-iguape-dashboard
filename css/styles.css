@@ -698,6 +698,12 @@ tbody tr:focus-visible {
 }
 
 .active-contract-card--today,
+.active-contract-card--urgent {
+  border-left-color: var(--color-red-700);
+  background: #fffafa;
+}
+
+.active-contract-card--near,
 .active-contract-card--soon {
   border-left-color: var(--color-orange-700);
 }
@@ -715,6 +721,18 @@ tbody tr:focus-visible {
   align-items: flex-start;
   justify-content: space-between;
   gap: var(--space-3);
+}
+
+.active-contract-card__badges {
+  display: flex;
+  align-items: flex-start;
+  justify-content: flex-end;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+}
+
+.active-due-alert {
+  box-shadow: 0 0 0 3px rgba(180, 35, 24, 0.04);
 }
 
 .active-contract-card__date {

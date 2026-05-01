@@ -558,7 +558,7 @@ function renderActiveContracts(items) {
 
   const totalValue = sumNumericValue(activeContracts);
   const summary = activeContracts.length
-    ? `${formatContractCount(activeContracts.length)} vigentes · ${formatCurrency.format(totalValue)} · ordenados por vencimento`
+    ? buildActiveContractsSummary(activeContracts, totalValue)
     : "Nenhum contrato vigente encontrado nos filtros atuais";
 
   if (elements.activeContractsSummary) {
@@ -570,39 +570,49 @@ function renderActiveContracts(items) {
     return;
   }
 
-  elements.activeContractsList.innerHTML = activeContracts.map((item) => `
-    <article class="active-contract-card ${activeContractClass(item)}" data-contract-id="${escapeAttribute(item.id)}" tabindex="0" aria-label="Abrir detalhes do contrato vigente ${escapeAttribute(item.contrato || item.id)}">
-      <div class="active-contract-card__top">
-        <span class="active-contract-card__date">
-          <svg class="icon" aria-hidden="true"><use href="#icon-calendar"></use></svg>
-          ${escapeHtml(formatDateISO(item.dataVencimento))}
-        </span>
-        <span class="badge ${statusBadgeClass(item.statusCalculado)}">${escapeHtml(item.statusCalculado)}</span>
-      </div>
-      <div class="active-contract-card__body">
-        <strong>${escapeHtml(item.contrato || "Sem contrato")}</strong>
-        <p>${escapeHtml(item.objeto || "Objeto não informado")}</p>
-      </div>
-      <dl class="active-contract-meta">
-        <div>
-          <dt>Dias</dt>
-          <dd>${escapeHtml(formatDays(item.diasParaVencimento))}</dd>
+  elements.activeContractsList.innerHTML = activeContracts.map((item) => {
+    const dueNotice = activeDueNotice(item);
+    const dueNoticeBadge = dueNotice
+      ? `<span class="badge ${dueNotice.badgeClass} active-due-alert">${escapeHtml(dueNotice.label)}</span>`
+      : "";
+
+    return `
+      <article class="active-contract-card ${activeContractClass(item)}" data-contract-id="${escapeAttribute(item.id)}" tabindex="0" aria-label="Abrir detalhes do contrato vigente ${escapeAttribute(item.contrato || item.id)}">
+        <div class="active-contract-card__top">
+          <span class="active-contract-card__date">
+            <svg class="icon" aria-hidden="true"><use href="#icon-calendar"></use></svg>
+            ${escapeHtml(formatDateISO(item.dataVencimento))}
+          </span>
+          <span class="active-contract-card__badges">
+            <span class="badge ${statusBadgeClass(item.statusCalculado)}">${escapeHtml(item.statusCalculado)}</span>
+            ${dueNoticeBadge}
+          </span>
         </div>
-        <div>
-          <dt>Empresa</dt>
-          <dd>${escapeHtml(item.empresa || "Não informada")}</dd>
+        <div class="active-contract-card__body">
+          <strong>${escapeHtml(item.contrato || "Sem contrato")}</strong>
+          <p>${escapeHtml(item.objeto || "Objeto não informado")}</p>
         </div>
-        <div>
-          <dt>Valor</dt>
-          <dd>${escapeHtml(formatValueText(item))}</dd>
-        </div>
-        <div>
-          <dt>Gestor</dt>
-          <dd>${escapeHtml(item.gestor || "Não informado")}</dd>
-        </div>
-      </dl>
-    </article>
-  `).join("");
+        <dl class="active-contract-meta">
+          <div>
+            <dt>Dias</dt>
+            <dd>${escapeHtml(formatDays(item.diasParaVencimento))}</dd>
+          </div>
+          <div>
+            <dt>Empresa</dt>
+            <dd>${escapeHtml(item.empresa || "Não informada")}</dd>
+          </div>
+          <div>
+            <dt>Valor</dt>
+            <dd>${escapeHtml(formatValueText(item))}</dd>
+          </div>
+          <div>
+            <dt>Gestor</dt>
+            <dd>${escapeHtml(item.gestor || "Não informado")}</dd>
+          </div>
+        </dl>
+      </article>
+    `;
+  }).join("");
 }
 
 function renderUpcoming(items) {
@@ -1024,6 +1034,30 @@ function formatResponsiblePair(item) {
   return `${gestor} / ${fiscal}`;
 }
 
+function buildActiveContractsSummary(activeContracts, totalValue) {
+  const today = activeContracts.filter((item) => item.diasParaVencimento === 0).length;
+  const dueIn5Days = countActiveContractsByDays(activeContracts, 1, 5);
+  const dueIn15Days = countActiveContractsByDays(activeContracts, 6, 15);
+
+  return [
+    `${formatContractCount(activeContracts.length)} vigentes`,
+    formatCurrency.format(totalValue),
+    formatDueCount(today, "hoje"),
+    formatDueCount(dueIn5Days, "em até 5 dias"),
+    formatDueCount(dueIn15Days, "entre 6 e 15 dias"),
+    "ordenados por vencimento",
+  ].join(" · ");
+}
+
+function countActiveContractsByDays(items, minDays, maxDays) {
+  return items.filter((item) => item.diasParaVencimento >= minDays && item.diasParaVencimento <= maxDays).length;
+}
+
+function formatDueCount(value, rangeLabel) {
+  const verb = value === 1 ? "vence" : "vencem";
+  return `${value} ${verb} ${rangeLabel}`;
+}
+
 function isActiveContract(item) {
   return item.diasParaVencimento !== null && item.diasParaVencimento >= 0;
 }
@@ -1042,10 +1076,17 @@ function sortActiveContracts(a, b) {
 }
 
 function activeContractClass(item) {
-  if (item.statusCalculado === "Vence hoje") {
+  const days = item.diasParaVencimento;
+  if (days === 0) {
     return "active-contract-card--today";
   }
-  if (item.statusCalculado === "Vence em até 30 dias") {
+  if (days >= 1 && days <= 5) {
+    return "active-contract-card--urgent";
+  }
+  if (days >= 6 && days <= 15) {
+    return "active-contract-card--near";
+  }
+  if (days >= 16 && days <= 30) {
     return "active-contract-card--soon";
   }
   if (item.statusCalculado === "Atenção 31 a 60 dias") {
@@ -1055,6 +1096,23 @@ function activeContractClass(item) {
     return "active-contract-card--monitor";
   }
   return "";
+}
+
+function activeDueNotice(item) {
+  const days = item.diasParaVencimento;
+  if (days >= 1 && days <= 5) {
+    return {
+      label: "Vence em até 5 dias",
+      badgeClass: "badge--danger",
+    };
+  }
+  if (days >= 6 && days <= 15) {
+    return {
+      label: "Vence em até 15 dias",
+      badgeClass: "badge--warning",
+    };
+  }
+  return null;
 }
 
 function sortPriorityDeadlines(a, b) {
