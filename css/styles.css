@@ -45,6 +45,14 @@
   box-sizing: border-box;
 }
 
+*,
+*::before,
+*::after {
+  overflow-wrap: normal;
+  word-break: normal;
+  hyphens: none;
+}
+
 html {
   scroll-behavior: smooth;
 }
@@ -513,7 +521,6 @@ tbody tr:focus-visible {
   color: var(--color-blue-900);
   font-size: 1.7rem;
   line-height: 1.1;
-  overflow-wrap: anywhere;
 }
 
 .kpi-card small {
@@ -775,7 +782,6 @@ tbody tr:focus-visible {
   margin: 0;
   color: var(--color-slate-700);
   font-weight: 650;
-  overflow-wrap: anywhere;
 }
 
 .active-contract-meta {
@@ -803,7 +809,6 @@ tbody tr:focus-visible {
   margin: var(--space-1) 0 0;
   color: var(--color-slate-800);
   font-weight: 700;
-  overflow-wrap: anywhere;
 }
 
 .deadline-list {
@@ -865,7 +870,6 @@ tbody tr:focus-visible {
 .deadline-meta dd {
   margin: var(--space-1) 0 0;
   color: var(--color-slate-700);
-  overflow-wrap: anywhere;
 }
 
 .table-section {
@@ -892,8 +896,6 @@ td {
   border-bottom: 1px solid var(--color-slate-200);
   text-align: left;
   vertical-align: top;
-  overflow-wrap: anywhere;
-  word-break: normal;
 }
 
 th {
@@ -981,7 +983,6 @@ tbody tr.row--attention:hover {
 .wrap-cell,
 .notes-cell,
 .object-cell {
-  overflow-wrap: anywhere;
   word-break: normal;
 }
 
@@ -1124,7 +1125,6 @@ tbody tr.row--attention:hover {
   margin: 0;
   color: var(--color-blue-900);
   font-size: 1.35rem;
-  overflow-wrap: anywhere;
 }
 
 .detail-drawer__body {
@@ -1170,7 +1170,6 @@ tbody tr.row--attention:hover {
 .detail-list dd {
   margin: var(--space-1) 0 0;
   color: var(--color-slate-800, var(--color-slate-700));
-  overflow-wrap: anywhere;
 }
 
 body.detail-open {
