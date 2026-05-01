@@ -425,11 +425,10 @@ function render(items) {
 
 function renderLastUpdate() {
   const generatedAt = metadata.generatedAt ? new Date(metadata.generatedAt) : null;
-  const source = metadata.source ? ` · Fonte: ${metadata.source}` : "";
   const hasValidDate = generatedAt && !Number.isNaN(generatedAt.getTime());
   const updateText = hasValidDate
-    ? `Dados gerados em ${generatedAt.toLocaleString("pt-BR")}${source}`
-    : `Dados carregados${source}`;
+    ? `Dados gerados em ${generatedAt.toLocaleString("pt-BR")}`
+    : "Dados carregados";
 
   elements.lastUpdate.textContent = updateText;
   if (elements.footerUpdated) {
