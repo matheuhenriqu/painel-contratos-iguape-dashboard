@@ -25,10 +25,12 @@ const TABLE_COLUMNS = [
 const elements = {
   tableHead: document.querySelector("#contracts-head"),
   table: document.querySelector("#contracts-table"),
+  mobileCards: document.querySelector("#contracts-mobile-cards"),
   resultCount: document.querySelector("#result-count"),
   pageStatus: document.querySelector("#page-status"),
   pageRange: document.querySelector("#page-range"),
   pageSize: document.querySelector("#page-size"),
+  tableSort: document.querySelector("#table-sort"),
   prevPage: document.querySelector("#prev-page"),
   nextPage: document.querySelector("#next-page"),
   detailBackdrop: document.querySelector("#detail-backdrop"),
@@ -226,6 +228,14 @@ function bindEvents() {
     renderTable(filteredContracts);
   });
 
+  elements.tableSort?.addEventListener("change", () => {
+    const [key, direction] = elements.tableSort.value.split(":");
+    sortState = { key, direction };
+    currentPage = 1;
+    renderTableHead();
+    renderTable(filteredContracts);
+  });
+
   elements.prevPage.addEventListener("click", () => {
     currentPage -= 1;
     renderTable(filteredContracts);
@@ -242,6 +252,7 @@ function bindEvents() {
       return;
     }
     updateSort(button.dataset.sortKey);
+    syncSortControl();
     renderTableHead();
     renderTable(filteredContracts);
   });
@@ -263,6 +274,26 @@ function bindEvents() {
       openContractDetail(row.dataset.contractId);
     }
   });
+
+  if (elements.mobileCards) {
+    elements.mobileCards.addEventListener("click", (event) => {
+      const card = event.target.closest("[data-contract-id]");
+      if (card) {
+        openContractDetail(card.dataset.contractId);
+      }
+    });
+
+    elements.mobileCards.addEventListener("keydown", (event) => {
+      if (event.key !== "Enter" && event.key !== " ") {
+        return;
+      }
+      const card = event.target.closest("[data-contract-id]");
+      if (card) {
+        event.preventDefault();
+        openContractDetail(card.dataset.contractId);
+      }
+    });
+  }
 
   if (elements.activeContractsList) {
     elements.activeContractsList.addEventListener("click", (event) => {
@@ -1250,6 +1281,7 @@ function renderTable(items) {
 
   if (!pageItems.length) {
     elements.table.innerHTML = `<tr class="table-empty-row"><td colspan="${TABLE_COLUMNS.length}" class="empty-state">Nenhum contrato encontrado.</td></tr>`;
+    renderMobileCards(pageItems);
     return;
   }
 
@@ -1257,6 +1289,79 @@ function renderTable(items) {
     <tr class="${tableRowClass(item)}" data-contract-id="${escapeAttribute(item.id)}" tabindex="0" aria-label="Abrir detalhes do contrato ${escapeAttribute(item.contrato || item.id)}">
       ${TABLE_COLUMNS.map((column) => renderTableCell(item, column)).join("")}
     </tr>
+  `).join("");
+  renderMobileCards(pageItems);
+}
+
+function renderMobileCards(items) {
+  if (!elements.mobileCards) {
+    return;
+  }
+
+  if (!items.length) {
+    elements.mobileCards.innerHTML = '<p class="empty-state">Nenhum contrato encontrado.</p>';
+    return;
+  }
+
+  elements.mobileCards.innerHTML = items.map(renderMobileContractCard).join("");
+}
+
+function renderMobileContractCard(item) {
+  const responsibleRows = renderMobileResponsibleRows(item);
+  const daysText = item.diasParaVencimento === null ? "Sem prazo informado" : formatDays(item.diasParaVencimento);
+  const contractLabel = item.contrato || `Registro ${item.id}`;
+  return `
+    <article class="contract-mobile-card ${tableRowClass(item)}" data-contract-id="${escapeAttribute(item.id)}" tabindex="0" aria-label="Abrir detalhes do contrato ${escapeAttribute(contractLabel)}">
+      <div class="contract-mobile-card__header">
+        <div class="contract-mobile-card__identity">
+          <span>Contrato</span>
+          <strong>${escapeHtml(contractLabel)}</strong>
+        </div>
+        <span class="badge ${statusBadgeClass(item.statusCalculado)}">${escapeHtml(item.statusCalculado)}</span>
+      </div>
+
+      <div class="contract-mobile-card__body">
+        <p class="contract-mobile-card__company">${escapeHtml(item.empresa || "Empresa não informada")}</p>
+        <p class="contract-mobile-card__object">${escapeHtml(item.objeto || "Objeto não informado")}</p>
+      </div>
+
+      <dl class="contract-mobile-card__meta">
+        <div>
+          <dt>Vencimento</dt>
+          <dd>${escapeHtml(formatDateISO(item.dataVencimento))}</dd>
+        </div>
+        <div>
+          <dt>Dias</dt>
+          <dd>${escapeHtml(daysText)}</dd>
+        </div>
+        <div>
+          <dt>Valor</dt>
+          <dd>${escapeHtml(formatValueText(item))}</dd>
+        </div>
+        ${responsibleRows}
+      </dl>
+
+      <div class="contract-mobile-card__footer">
+        <span>${escapeHtml([item.modalidade, item.numeroModalidade].filter(Boolean).join(" · ") || "Modalidade não informada")}</span>
+        <button class="button button--ghost button--compact" type="button" data-contract-id="${escapeAttribute(item.id)}" aria-label="Ver detalhes do contrato ${escapeAttribute(contractLabel)}">Ver detalhes</button>
+      </div>
+    </article>
+  `;
+}
+
+function renderMobileResponsibleRows(item) {
+  const rows = [];
+  if (item.gestor) {
+    rows.push(["Gestor", item.gestor]);
+  }
+  if (item.fiscal) {
+    rows.push(["Fiscal", item.fiscal]);
+  }
+  return rows.map(([label, value]) => `
+    <div>
+      <dt>${escapeHtml(label)}</dt>
+      <dd>${escapeHtml(value)}</dd>
+    </div>
   `).join("");
 }
 
@@ -1324,6 +1429,17 @@ function updateSort(key) {
     key,
     direction: key === "valor" ? "desc" : "asc",
   };
+}
+
+function syncSortControl() {
+  if (!elements.tableSort) {
+    return;
+  }
+  const value = `${sortState.key}:${sortState.direction}`;
+  const option = [...elements.tableSort.options].find((item) => item.value === value);
+  if (option) {
+    elements.tableSort.value = value;
+  }
 }
 
 function sortItems(items) {
