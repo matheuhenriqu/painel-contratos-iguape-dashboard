@@ -214,7 +214,7 @@ function bindEvents() {
   document.querySelectorAll("[data-quick-target]").forEach((button) => {
     button.addEventListener("click", () => {
       const targetKey = button.dataset.quickTarget;
-      const target = targetKey === "vigentes" ? document.querySelector("#vigentes") : document.querySelector("#vencidos");
+      const target = targetKey === "vencidos" ? document.querySelector("#vencidos") : document.querySelector("#vigentes");
       openCollapsibleInside(target);
       target?.scrollIntoView({ behavior: "smooth", block: "start" });
     });
@@ -441,18 +441,18 @@ function renderActiveContracts(items) {
 }
 
 function renderUpcoming(items) {
-  const upcoming = items
-    .filter((item) => item.diasParaVencimento !== null)
+  const overdue = items
+    .filter((item) => item.diasParaVencimento !== null && item.diasParaVencimento < 0)
     .sort(sortPriorityDeadlines)
     .slice(0, 12);
 
-  if (!upcoming.length) {
-    elements.upcomingList.innerHTML = '<p class="empty-state">Nenhum vencimento encontrado.</p>';
+  if (!overdue.length) {
+    elements.upcomingList.innerHTML = '<p class="empty-state">Nenhum contrato vencido encontrado.</p>';
     return;
   }
 
-  elements.upcomingList.innerHTML = upcoming.map((item) => `
-    <article class="deadline-item ${item.diasParaVencimento < 0 ? "deadline-item--overdue" : ""}">
+  elements.upcomingList.innerHTML = overdue.map((item) => `
+    <article class="deadline-item deadline-item--overdue">
       <div class="deadline-item__top">
         <span>${escapeHtml(item.contrato || "Sem contrato")}</span>
         <span class="badge ${statusBadgeClass(item.statusCalculado)}">${escapeHtml(item.statusCalculado)}</span>
