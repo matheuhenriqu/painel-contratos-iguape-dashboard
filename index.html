@@ -1,0 +1,420 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="Painel de acompanhamento de contratos municipais da Prefeitura Municipal de Iguape/SP.">
+    <title>Painel de Contratos | Prefeitura Municipal de Iguape/SP</title>
+    <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+    <link rel="stylesheet" href="css/styles.css">
+  </head>
+  <body>
+    <a class="skip-link" href="#indicadores">Ir para os indicadores</a>
+
+    <header class="site-header">
+      <div class="header-strip">
+        <div class="container header-strip__content">
+          <span>Município de Iguape - SP</span>
+          <span>Portal público de acompanhamento</span>
+        </div>
+      </div>
+
+      <div class="container header-main">
+        <a class="brand" href="#topo" aria-label="Início do Painel de Contratos">
+          <span class="brand__text">
+            <strong>Prefeitura Municipal de Iguape/SP</strong>
+            <small>Painel de Contratos</small>
+          </span>
+        </a>
+
+        <form class="top-search" role="search" aria-label="Busca geral de contratos">
+          <label class="sr-only" for="global-search">Buscar objeto, empresa, contrato, processo, modalidade, gestor, fiscal ou observações</label>
+          <input id="global-search" type="search" placeholder="Buscar por objeto, empresa, contrato, processo, gestor, fiscal...">
+          <button type="submit" aria-label="Aplicar busca geral">Buscar</button>
+        </form>
+      </div>
+
+      <nav class="audience-nav" aria-label="Navegação institucional">
+        <div class="container audience-nav__content">
+          <a href="#indicadores">Cidadão</a>
+          <a href="#tabela">Empresa</a>
+          <a href="#filtros">Servidor</a>
+        </div>
+      </nav>
+    </header>
+
+    <main id="topo">
+      <div id="app-status" class="app-status app-status--loading" role="status" aria-live="polite">
+        Carregando dados dos contratos...
+      </div>
+
+      <section class="hero">
+        <div class="container hero__grid">
+          <div class="hero__copy">
+            <p class="eyebrow">Transparência municipal</p>
+            <h1>Painel de Contratos</h1>
+            <p>Consulta, análise e acompanhamento administrativo dos contratos da Prefeitura Municipal de Iguape/SP.</p>
+          </div>
+
+          <div class="quick-access" aria-label="Acesso rápido">
+            <button class="quick-access__item" type="button" data-quick-filter="vigentes" aria-label="Filtrar contratos vigentes">
+              <span>Contratos vigentes</span>
+              <strong id="quick-active">0</strong>
+            </button>
+            <button class="quick-access__item" type="button" data-quick-filter="vencendo" aria-label="Filtrar vencimentos próximos">
+              <span>Vencimentos próximos</span>
+              <strong id="quick-soon">0</strong>
+            </button>
+            <button class="quick-access__item" type="button" data-quick-filter="vencidos" aria-label="Filtrar contratos vencidos">
+              <span>Vencidos</span>
+              <strong id="quick-overdue">0</strong>
+            </button>
+          </div>
+        </div>
+      </section>
+
+      <section id="indicadores" class="section" aria-labelledby="indicators-title">
+        <div class="container">
+          <div class="section-heading">
+            <div>
+              <p class="eyebrow">Resumo</p>
+              <h2 id="indicators-title">Indicadores</h2>
+            </div>
+            <p id="last-update" class="muted">Carregando dados...</p>
+          </div>
+
+          <div class="kpi-grid kpi-grid--primary" aria-live="polite">
+            <article class="kpi-card">
+              <span>Total de contratos</span>
+              <strong id="kpi-total">0</strong>
+              <small>contratos encontrados</small>
+            </article>
+            <article class="kpi-card kpi-card--value">
+              <span>Valor total contratado</span>
+              <strong id="kpi-value">R$ 0,00</strong>
+              <small>somente registros com valor</small>
+            </article>
+            <article class="kpi-card kpi-card--success">
+              <span>Contratos ativos/vigentes</span>
+              <strong id="kpi-active">0</strong>
+              <small>status calculado vigente</small>
+            </article>
+            <article class="kpi-card kpi-card--danger">
+              <span>Vencidos</span>
+              <strong id="kpi-overdue">0</strong>
+              <small>com base na data atual</small>
+            </article>
+            <article class="kpi-card kpi-card--warning">
+              <span>Até 30 dias</span>
+              <strong id="kpi-soon">0</strong>
+              <small>vencimentos próximos</small>
+            </article>
+            <article class="kpi-card kpi-card--attention">
+              <span>Atenção 31 a 60 dias</span>
+              <strong id="kpi-attention">0</strong>
+              <small>exigem acompanhamento</small>
+            </article>
+            <article class="kpi-card">
+              <span>Sem data de vencimento</span>
+              <strong id="kpi-no-due">0</strong>
+              <small>data não informada</small>
+            </article>
+            <article class="kpi-card">
+              <span>Pendências cadastrais</span>
+              <strong id="kpi-quality">0</strong>
+              <small>campos ausentes ou datas inconsistentes</small>
+            </article>
+            <article class="kpi-card">
+              <span>Total sem gestor</span>
+              <strong id="kpi-no-manager">0</strong>
+              <small>responsável não informado</small>
+            </article>
+            <article class="kpi-card">
+              <span>Total sem fiscal</span>
+              <strong id="kpi-no-fiscal">0</strong>
+              <small>fiscal não informado</small>
+            </article>
+          </div>
+
+          <div class="ops-grid">
+            <article class="chart-panel">
+              <div class="panel-title">
+                <h3>Alertas Prioritários</h3>
+                <span>Base filtrada</span>
+              </div>
+              <div id="priority-alerts" class="alert-list"></div>
+            </article>
+
+            <article class="chart-panel">
+              <div class="panel-title">
+                <h3>Saúde da base</h3>
+                <span>Completude cadastral</span>
+              </div>
+              <div id="base-health" class="health-list"></div>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section id="filtros" class="section filters-section" aria-labelledby="filters-title">
+        <div class="container filters-panel">
+          <div class="section-heading">
+            <div>
+              <p class="eyebrow">Consulta avançada</p>
+              <h2 id="filters-title">Filtros</h2>
+            </div>
+            <button id="clear-filters" class="button button--ghost" type="button" aria-label="Limpar todos os filtros">Limpar filtros</button>
+          </div>
+
+          <div class="filters-grid">
+            <label>
+              Status de vencimento
+              <select id="filter-status">
+                <option value="">Todos</option>
+              </select>
+            </label>
+
+            <label>
+              Status original
+              <select id="filter-status-original">
+                <option value="">Todos</option>
+              </select>
+            </label>
+
+            <label>
+              Modalidade
+              <select id="filter-modalidade">
+                <option value="">Todas</option>
+              </select>
+            </label>
+
+            <label>
+              Categoria
+              <select id="filter-categoria">
+                <option value="">Todas</option>
+              </select>
+            </label>
+
+            <label>
+              Empresa
+              <select id="filter-empresa">
+                <option value="">Todas</option>
+              </select>
+            </label>
+
+            <label>
+              Gestor
+              <select id="filter-gestor">
+                <option value="">Todos</option>
+              </select>
+            </label>
+
+            <label>
+              Fiscal
+              <select id="filter-fiscal">
+                <option value="">Todos</option>
+              </select>
+            </label>
+
+            <label>
+              Faixa de vencimento
+              <select id="filter-prazo">
+                <option value="">Todos</option>
+                <option value="overdue">Vencidos</option>
+                <option value="7">Próximos 7 dias</option>
+                <option value="15">Próximos 15 dias</option>
+                <option value="30">Próximos 30 dias</option>
+                <option value="60">Próximos 60 dias</option>
+                <option value="90">Próximos 90 dias</option>
+                <option value="above90">Acima de 90 dias</option>
+                <option value="nodue">Sem vencimento informado</option>
+              </select>
+            </label>
+
+            <label>
+              Pendências
+              <select id="filter-pendencias">
+                <option value="">Todos</option>
+                <option value="with">Apenas com pendências</option>
+                <option value="complete">Apenas completos</option>
+              </select>
+            </label>
+
+            <label>
+              Faixa de valor
+              <select id="filter-valor">
+                <option value="">Todas</option>
+                <option value="none">Sem valor</option>
+                <option value="upto10k">Até R$ 10 mil</option>
+                <option value="10k100k">R$ 10 mil a R$ 100 mil</option>
+                <option value="100k1m">R$ 100 mil a R$ 1 milhão</option>
+                <option value="above1m">Acima de R$ 1 milhão</option>
+              </select>
+            </label>
+          </div>
+        </div>
+      </section>
+
+      <section class="section" aria-labelledby="charts-title">
+        <div class="container">
+          <div class="section-heading">
+            <div>
+              <p class="eyebrow">Análise</p>
+              <h2 id="charts-title">Gráficos</h2>
+            </div>
+          </div>
+
+          <div class="charts-grid">
+            <article class="chart-panel">
+              <div class="panel-title">
+                <h3>Contratos por status</h3>
+                <span>Quantidade e valor total</span>
+              </div>
+              <div id="status-chart" class="metric-chart"></div>
+            </article>
+
+            <article class="chart-panel">
+              <div class="panel-title">
+                <h3>Valor por modalidade</h3>
+                <span>Maior para menor</span>
+              </div>
+              <div id="value-modalidade-chart" class="metric-chart"></div>
+            </article>
+
+            <article class="chart-panel">
+              <div class="panel-title">
+                <h3>Contratos por modalidade</h3>
+                <span>Quantidade por tipo</span>
+              </div>
+              <div id="count-modalidade-chart" class="metric-chart"></div>
+            </article>
+
+            <article class="chart-panel">
+              <div class="panel-title">
+                <h3>Valor por categoria</h3>
+                <span>Categorias calculadas</span>
+              </div>
+              <div id="value-categoria-chart" class="metric-chart"></div>
+            </article>
+
+            <article class="chart-panel chart-panel--wide">
+              <div class="panel-title">
+                <h3>Vencimentos por mês</h3>
+                <span>Agrupado por Data Vencimento</span>
+              </div>
+              <div id="monthly-due-chart" class="vertical-chart"></div>
+            </article>
+
+            <article class="chart-panel">
+              <div class="panel-title">
+                <h3>Top 10 empresas</h3>
+                <span>Valor contratado</span>
+              </div>
+              <div id="top-companies-chart" class="metric-chart"></div>
+            </article>
+
+            <article class="chart-panel">
+              <div class="panel-title">
+                <h3>Top 10 gestores</h3>
+                <span>Valor sob responsabilidade</span>
+              </div>
+              <div id="top-managers-chart" class="metric-chart"></div>
+            </article>
+
+            <article class="chart-panel">
+              <div class="panel-title">
+                <h3>Pendências cadastrais</h3>
+                <span>Campos críticos ausentes</span>
+              </div>
+              <div id="pendencias-chart" class="metric-chart"></div>
+            </article>
+
+            <article class="chart-panel chart-panel--wide">
+              <div class="panel-title">
+                <h3>Próximos vencimentos</h3>
+                <span>Vencidos primeiro, depois menor prazo e maior valor</span>
+              </div>
+              <div id="upcoming-list" class="deadline-list"></div>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section id="tabela" class="section table-section" aria-labelledby="table-title">
+        <div class="container">
+          <div class="section-heading">
+            <div>
+              <p class="eyebrow">Detalhamento</p>
+              <h2 id="table-title">Contratos</h2>
+            </div>
+            <p id="result-count" class="muted">0 registros</p>
+          </div>
+
+          <div class="table-toolbar" aria-label="Controles da tabela de contratos">
+            <div>
+              <strong id="page-status">Página 1 de 1</strong>
+              <span id="page-range" class="muted">0 registros exibidos</span>
+            </div>
+            <div class="table-toolbar__actions">
+              <label>
+                Linhas por página
+                <select id="page-size">
+                  <option value="25">25</option>
+                  <option value="50">50</option>
+                  <option value="100">100</option>
+                  <option value="all">Todas</option>
+                </select>
+              </label>
+              <button id="prev-page" class="button button--ghost" type="button" aria-label="Página anterior da tabela">Anterior</button>
+              <button id="next-page" class="button button--ghost" type="button" aria-label="Próxima página da tabela">Próxima</button>
+            </div>
+          </div>
+
+          <div class="table-wrap">
+            <table>
+              <caption class="sr-only">Tabela detalhada de contratos municipais</caption>
+              <thead id="contracts-head">
+                <tr><th scope="col">Carregando...</th></tr>
+              </thead>
+              <tbody id="contracts-table">
+                <tr>
+                  <td>Carregando contratos...</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer class="site-footer">
+      <div class="container footer-grid">
+        <div>
+          <strong>Prefeitura Municipal de Iguape/SP</strong>
+          <p>Avenida Adhemar de Barros, 1070 · CEP 11920-000</p>
+        </div>
+        <div>
+          <strong>Painel de Contratos</strong>
+          <p id="footer-updated">Última atualização dos dados: carregando...</p>
+          <p>Os dados exibidos dependem da atualização da planilha de origem.</p>
+        </div>
+      </div>
+    </footer>
+
+    <div id="detail-backdrop" class="detail-backdrop" hidden></div>
+    <aside id="contract-detail" class="detail-drawer" role="dialog" aria-modal="true" aria-labelledby="detail-title" aria-hidden="true" tabindex="-1" hidden>
+      <div class="detail-drawer__header">
+        <div>
+          <p class="eyebrow">Detalhe do contrato</p>
+          <h2 id="detail-title">Contrato</h2>
+        </div>
+        <button id="close-detail" class="button button--ghost" type="button">Fechar</button>
+      </div>
+      <div id="detail-body" class="detail-drawer__body"></div>
+    </aside>
+
+    <script src="data/contratos.js"></script>
+    <script src="js/data-normalizer.js"></script>
+    <script src="js/app.js"></script>
+  </body>
+</html>
