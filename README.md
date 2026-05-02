@@ -103,6 +103,7 @@ Itens obrigatorios na revisao manual:
 - Drawer de detalhe redesenhado como ficha administrativa, com blocos de identificacao, empresa, objeto, valor, vigencia, status, responsaveis, pendencias e observacoes.
 - Sombras suavizadas e bordas mais uniformes para reduzir aparencia de prototipo.
 - Regra global de `[hidden]` para evitar componentes ocultos participando visualmente do layout.
+- Refinamento global de cores e responsividade em 02/05/2026, com topo mais institucional, fundos alternados suaves, cards mais limpos, controles mais consistentes e ajustes adicionais para iPhone 430px, 390px, 375px e 360px.
 
 ## Como Atualizar a Planilha
 

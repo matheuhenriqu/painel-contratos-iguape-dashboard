@@ -1066,7 +1066,7 @@ function renderUpcoming(items) {
   const totalValue = sumNumericValue(overdue);
   elements.upcomingList.innerHTML = `
     <p class="muted active-contracts-summary">
-      ${formatContractCount(overdue.length)} vencidos/concluídos · ${formatCurrency.format(totalValue)} · ordenados por vencimento mais antigo
+      ${formatContractCount(overdue.length)} vencidos/concluídos · ${formatCurrency.format(totalValue)}
     </p>
     <div class="table-wrap overdue-contracts-table-wrap">
       <table class="overdue-contracts-table">

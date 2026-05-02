@@ -1,6 +1,6 @@
 # Changelog Visual e Responsivo
 
-Data: 01/05/2026
+Data: 02/05/2026
 
 Projeto: `painel-contratos-iguape-dashboard`
 
@@ -36,6 +36,8 @@ O painel passou por uma revisao visual completa para parecer mais institucional,
 - Secao principal renomeada de contratos para base de contratos, mantendo a tabela e os filtros existentes.
 - Secao de contratos vencidos/concluidos passou a usar o mesmo formato de tabela e cards responsivos dos contratos vigentes.
 - Paleta global revisada com azul institucional mais sobrio, teal de apoio, fundos claros e estados de alerta mais consistentes.
+- Nova rodada de refinamento global com cores mais equilibradas, fundos alternados mais suaves, hero institucional com textura discreta, cards menos pesados e ajustes especificos para iPhone 430px, 390px, 375px e 360px.
+- Atalhos do topo, filtros, indicadores, tabelas, cards mobile, graficos, drawer de detalhe e rodape receberam ajustes de alinhamento, contraste, espacamento e estados de hover/foco.
 
 ## Arquivos Alterados
 
