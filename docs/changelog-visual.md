@@ -33,6 +33,7 @@ O painel passou por uma revisao visual completa para parecer mais institucional,
 - Secao de contratos vigentes alinhada ao mesmo padrao visual da secao de contratos, com tabela no desktop e cards no celular.
 - Ordem da pagina reorganizada para priorizar leitura administrativa: indicadores, consulta, contratos, vigentes, vencidos e graficos.
 - Secao de contratos movida para depois de contratos vencidos/concluidos, conforme prioridade de acompanhamento.
+- Secao principal renomeada de contratos para base de contratos, mantendo a tabela e os filtros existentes.
 
 ## Arquivos Alterados
 
