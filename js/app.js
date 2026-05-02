@@ -952,44 +952,98 @@ function renderActiveContracts(items) {
     return;
   }
 
-  elements.activeContractsList.innerHTML = activeContracts.map((item) => {
-    const activeBadge = activeContractBadge(item);
-    return `
-      <article class="active-contract-card ${activeContractClass(item)}" data-contract-id="${escapeAttribute(item.id)}" tabindex="0" aria-label="Abrir detalhes do contrato vigente ${escapeAttribute(item.contrato || item.id)}">
-        <div class="active-contract-card__top">
-          <span class="active-contract-card__date">
-            <svg class="icon" aria-hidden="true"><use href="#icon-calendar"></use></svg>
-            ${escapeHtml(formatDateISO(item.dataVencimento))}
-          </span>
-          <span class="active-contract-card__badges">
-            <span class="badge ${activeBadge.badgeClass} active-due-alert">${escapeHtml(activeBadge.label)}</span>
-          </span>
+  elements.activeContractsList.innerHTML = `
+    <div class="table-wrap active-contracts-table-wrap">
+      <table class="active-contracts-table">
+        <caption class="sr-only">Tabela de contratos vigentes municipais</caption>
+        <thead>${renderStaticTableHead()}</thead>
+        <tbody>
+          ${activeContracts.map(renderActiveContractTableRow).join("")}
+        </tbody>
+      </table>
+    </div>
+    <div class="contracts-mobile-cards active-contracts-mobile-cards" aria-live="polite">
+      ${activeContracts.map(renderActiveMobileContractCard).join("")}
+    </div>
+  `;
+}
+
+function renderStaticTableHead() {
+  return `
+    <tr>
+      ${TABLE_COLUMNS.map((column) => `<th scope="col" class="static-table-heading">${escapeHtml(column.label)}</th>`).join("")}
+    </tr>
+  `;
+}
+
+function renderActiveContractTableRow(item) {
+  return `
+    <tr class="${tableRowClass(item)}" data-contract-id="${escapeAttribute(item.id)}" tabindex="0" aria-label="Abrir detalhes do contrato vigente ${escapeAttribute(item.contrato || item.id)}">
+      ${TABLE_COLUMNS.map((column) => renderActiveContractTableCell(item, column)).join("")}
+    </tr>
+  `;
+}
+
+function renderActiveContractTableCell(item, column) {
+  if (column.key !== "statusCalculado") {
+    return renderTableCell(item, column);
+  }
+
+  const activeBadge = activeContractBadge(item);
+  const statusNote = activeBadge.label !== item.statusCalculado
+    ? `<small class="status-note">${escapeHtml(item.statusCalculado)}</small>`
+    : "";
+  return `
+    <td data-label="${escapeAttribute(column.label)}" class="status-cell">
+      <span class="badge ${activeBadge.badgeClass} active-due-alert">${escapeHtml(activeBadge.label)}</span>
+      ${statusNote}
+    </td>
+  `;
+}
+
+function renderActiveMobileContractCard(item) {
+  const responsibleRows = renderMobileResponsibleRows(item);
+  const daysText = item.diasParaVencimento === null ? "Sem prazo informado" : formatDays(item.diasParaVencimento);
+  const contractLabel = item.contrato || `Registro ${item.id}`;
+  const activeBadge = activeContractBadge(item);
+
+  return `
+    <article class="contract-mobile-card ${tableRowClass(item)}" data-contract-id="${escapeAttribute(item.id)}" tabindex="0" aria-label="Abrir detalhes do contrato vigente ${escapeAttribute(contractLabel)}">
+      <div class="contract-mobile-card__header">
+        <div class="contract-mobile-card__identity">
+          <span>Contrato</span>
+          <strong>${escapeHtml(contractLabel)}</strong>
         </div>
-        <div class="active-contract-card__body">
-          <strong>${escapeHtml(item.contrato || "Sem contrato")}</strong>
-          <p>${escapeHtml(item.objeto || "Objeto não informado")}</p>
+        <span class="badge ${activeBadge.badgeClass} active-due-alert">${escapeHtml(activeBadge.label)}</span>
+      </div>
+
+      <div class="contract-mobile-card__body">
+        <p class="contract-mobile-card__company">${escapeHtml(item.empresa || "Empresa não informada")}</p>
+        <p class="contract-mobile-card__object">${escapeHtml(item.objeto || "Objeto não informado")}</p>
+      </div>
+
+      <dl class="contract-mobile-card__meta">
+        <div>
+          <dt>Vencimento</dt>
+          <dd>${escapeHtml(formatDateISO(item.dataVencimento))}</dd>
         </div>
-        <dl class="active-contract-meta">
-          <div>
-            <dt>Dias</dt>
-            <dd>${escapeHtml(formatDays(item.diasParaVencimento))}</dd>
-          </div>
-          <div>
-            <dt>Empresa</dt>
-            <dd>${escapeHtml(item.empresa || "Não informada")}</dd>
-          </div>
-          <div>
-            <dt>Valor</dt>
-            <dd>${escapeHtml(formatValueText(item))}</dd>
-          </div>
-          <div>
-            <dt>Gestor</dt>
-            <dd>${escapeHtml(item.gestor || "Não informado")}</dd>
-          </div>
-        </dl>
-      </article>
-    `;
-  }).join("");
+        <div>
+          <dt>Dias</dt>
+          <dd>${escapeHtml(daysText)}</dd>
+        </div>
+        <div>
+          <dt>Valor</dt>
+          <dd>${escapeHtml(formatValueText(item))}</dd>
+        </div>
+        ${responsibleRows}
+      </dl>
+
+      <div class="contract-mobile-card__footer">
+        <span>${escapeHtml([item.modalidade, item.numeroModalidade].filter(Boolean).join(" · ") || "Modalidade não informada")}</span>
+        <button class="button button--ghost button--compact" type="button" data-contract-id="${escapeAttribute(item.id)}" aria-label="Ver detalhes do contrato vigente ${escapeAttribute(contractLabel)}">Ver detalhes</button>
+      </div>
+    </article>
+  `;
 }
 
 function renderUpcoming(items) {
@@ -1879,29 +1933,6 @@ function sortActiveContracts(a, b) {
   }
 
   return (b.valor || 0) - (a.valor || 0);
-}
-
-function activeContractClass(item) {
-  const days = item.diasParaVencimento;
-  if (days === 0) {
-    return "active-contract-card--today";
-  }
-  if (days >= 1 && days <= 5) {
-    return "active-contract-card--urgent";
-  }
-  if (days >= 6 && days <= 15) {
-    return "active-contract-card--near";
-  }
-  if (days >= 16 && days <= 30) {
-    return "active-contract-card--soon";
-  }
-  if (item.statusCalculado === "Atenção 31 a 60 dias") {
-    return "active-contract-card--attention";
-  }
-  if (item.statusCalculado === "Monitorar 61 a 90 dias") {
-    return "active-contract-card--monitor";
-  }
-  return "";
 }
 
 function activeDueNotice(item) {

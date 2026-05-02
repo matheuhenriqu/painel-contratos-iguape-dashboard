@@ -30,6 +30,7 @@ O painel passou por uma revisao visual completa para parecer mais institucional,
 - Ajustes de breakpoints para iPhone e telas estreitas.
 - Consulta avancada recebeu botao de mostrar/ocultar como as demais secoes.
 - Secoes colapsaveis passam a iniciar ocultas por padrao, deixando a primeira visualizacao mais limpa.
+- Secao de contratos vigentes alinhada ao mesmo padrao visual da secao de contratos, com tabela no desktop e cards no celular.
 
 ## Arquivos Alterados
 
