@@ -1056,7 +1056,7 @@ function renderUpcoming(items) {
     .slice(0, 12);
 
   if (!overdue.length) {
-    elements.upcomingList.innerHTML = '<p class="empty-state">Nenhum contrato vencido encontrado.</p>';
+    elements.upcomingList.innerHTML = '<p class="empty-state">Nenhum contrato vencido/concluído encontrado.</p>';
     return;
   }
 
