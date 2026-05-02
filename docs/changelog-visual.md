@@ -34,6 +34,7 @@ O painel passou por uma revisao visual completa para parecer mais institucional,
 - Ordem da pagina reorganizada para priorizar leitura administrativa: indicadores, consulta, contratos, vigentes, vencidos e graficos.
 - Secao de contratos movida para depois de contratos vencidos/concluidos, conforme prioridade de acompanhamento.
 - Secao principal renomeada de contratos para base de contratos, mantendo a tabela e os filtros existentes.
+- Secao de contratos vencidos/concluidos passou a usar o mesmo formato de tabela e cards responsivos dos contratos vigentes.
 
 ## Arquivos Alterados
 

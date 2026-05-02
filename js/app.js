@@ -1050,43 +1050,45 @@ function renderActiveMobileContractCard(item) {
 }
 
 function renderUpcoming(items) {
+  if (!elements.upcomingList) {
+    return;
+  }
+
   const overdue = items
     .filter((item) => item.diasParaVencimento !== null && item.diasParaVencimento < 0)
-    .sort(sortPriorityDeadlines)
-    .slice(0, 12);
+    .sort(sortPriorityDeadlines);
 
   if (!overdue.length) {
     elements.upcomingList.innerHTML = '<p class="empty-state">Nenhum contrato vencido/concluído encontrado.</p>';
     return;
   }
 
-  elements.upcomingList.innerHTML = overdue.map((item) => `
-    <article class="deadline-item deadline-item--overdue">
-      <div class="deadline-item__top">
-        <span>${escapeHtml(item.contrato || "Sem contrato")}</span>
-        <span class="badge ${statusBadgeClass(item.statusCalculado)}">${escapeHtml(item.statusCalculado)}</span>
-      </div>
-      <strong>${escapeHtml(item.objeto || "Objeto não informado")}</strong>
-      <dl class="deadline-meta">
-        <div>
-          <dt>Empresa</dt>
-          <dd>${escapeHtml(item.empresa || "Não informada")}</dd>
-        </div>
-        <div>
-          <dt>Vencimento</dt>
-          <dd>${formatDateISO(item.dataVencimento)} · ${formatDays(item.diasParaVencimento)}</dd>
-        </div>
-        <div>
-          <dt>Valor</dt>
-          <dd>${escapeHtml(formatValueText(item))}</dd>
-        </div>
-        <div>
-          <dt>Gestor/Fiscal</dt>
-          <dd>${escapeHtml(formatResponsiblePair(item))}</dd>
-        </div>
-      </dl>
-    </article>
-  `).join("");
+  const totalValue = sumNumericValue(overdue);
+  elements.upcomingList.innerHTML = `
+    <p class="muted active-contracts-summary">
+      ${formatContractCount(overdue.length)} vencidos/concluídos · ${formatCurrency.format(totalValue)} · ordenados por vencimento mais antigo
+    </p>
+    <div class="table-wrap overdue-contracts-table-wrap">
+      <table class="overdue-contracts-table">
+        <caption class="sr-only">Tabela de contratos vencidos/concluídos municipais</caption>
+        <thead>${renderStaticTableHead()}</thead>
+        <tbody>
+          ${overdue.map(renderOverdueContractTableRow).join("")}
+        </tbody>
+      </table>
+    </div>
+    <div class="contracts-mobile-cards overdue-contracts-mobile-cards" aria-live="polite">
+      ${overdue.map(renderMobileContractCard).join("")}
+    </div>
+  `;
+}
+
+function renderOverdueContractTableRow(item) {
+  return `
+    <tr class="${tableRowClass(item)}" data-contract-id="${escapeAttribute(item.id)}" tabindex="0" aria-label="Abrir detalhes do contrato vencido/concluído ${escapeAttribute(item.contrato || item.id)}">
+      ${TABLE_COLUMNS.map((column) => renderTableCell(item, column)).join("")}
+    </tr>
+  `;
 }
 
 function renderCharts(items) {
