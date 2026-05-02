@@ -31,6 +31,7 @@ O painel passou por uma revisao visual completa para parecer mais institucional,
 - Consulta avancada recebeu botao de mostrar/ocultar como as demais secoes.
 - Secoes colapsaveis passam a iniciar ocultas por padrao, deixando a primeira visualizacao mais limpa.
 - Secao de contratos vigentes alinhada ao mesmo padrao visual da secao de contratos, com tabela no desktop e cards no celular.
+- Ordem da pagina reorganizada para priorizar leitura administrativa: indicadores, consulta, contratos, vigentes, vencidos e graficos.
 
 ## Arquivos Alterados
 

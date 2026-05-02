@@ -428,6 +428,9 @@ function getQuickTargetSection(targetKey) {
   if (targetKey === "tabela") {
     return document.querySelector("#tabela");
   }
+  if (targetKey === "vencendo" || targetKey === "vigentes") {
+    return document.querySelector("#vigentes");
+  }
   return document.querySelector("#vigentes");
 }
 
