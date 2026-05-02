@@ -35,6 +35,7 @@ O painel passou por uma revisao visual completa para parecer mais institucional,
 - Secao de contratos movida para depois de contratos vencidos/concluidos, conforme prioridade de acompanhamento.
 - Secao principal renomeada de contratos para base de contratos, mantendo a tabela e os filtros existentes.
 - Secao de contratos vencidos/concluidos passou a usar o mesmo formato de tabela e cards responsivos dos contratos vigentes.
+- Paleta global revisada com azul institucional mais sobrio, teal de apoio, fundos claros e estados de alerta mais consistentes.
 
 ## Arquivos Alterados
 
